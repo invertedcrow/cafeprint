@@ -3,37 +3,34 @@ import Vue from 'vue'
 
 Vue.use(Vuex)
 
-const productFilterDefault = {
-    category: '',
+const productDefault = {
     product: '',
     color: '',
     size: '',
-    showPreview: false,    
+    side: '',
+    id: '', 
 }
-
-const productPreviewDefault = {
-    id: '',
-    product: '',
-    color: '',
-    size: '',
-    side: ''
+const productFilterDefault = {
+    ...productDefault,
+    category: '',    
+    showPreview: false,    
 }
 
 export default new Vuex.Store({
     state: {
-        activeMenu: 'products',
-        activeColor: '',  
+        activeSettings: 'products',
         isShowProductFilter: false, 
+        activeProduct: {...productDefault},
         productFilter: {...productFilterDefault},
-        productPreview: {...productPreviewDefault},   
+        productPreview: {...productDefault},   
          
     },
     mutations: {
-        setActiveMenu(state, value) {
-           state.activeMenu = value;
+        setActiveSettings(state, value) {
+           state.activeSettings = value;
         },
         setActiveColor(state, value) {
-            state.activeColor = value;
+            state.activeProduct.color = value;
         },
         setFilterCategory(state, value) {
             state.productFilter.category = value;
@@ -54,7 +51,7 @@ export default new Vuex.Store({
            state.productFilter.showPreview = value;
         },
         filterResetPreview(state) {
-            state.productPreview = {...productPreviewDefault};
+            state.productPreview = {...productDefault};
         },       
         setPreviewColor(state, value) {     
             state.productPreview.color = value;
@@ -67,6 +64,9 @@ export default new Vuex.Store({
         },
         showFilterModal(state, value) {
             state.isShowProductFilter = value;
+        },
+        setActiveProduct(state) {
+            state.activeProduct = {...state.productPreview}
         }  
     }   
 })

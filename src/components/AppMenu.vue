@@ -1,10 +1,11 @@
 <template>
   <div class="app-menu d-flex flex-column">
-    <b-button @click="showFilterModal" squared variant="outline-secondary">
+    <b-button @click="showFilterModal(true)" squared variant="outline-secondary">
       <div class="app-menu__item-name">Products</div>
     </b-button>
     <b-modal
       v-model="isShowModal"
+      @hide="showFilterModal(false)"
       hide-backdrop
       hide-footer
       hide-header
@@ -40,10 +41,10 @@ export default {
   },
   methods: {
     setMenuActive(menuItem) {
-      this.$store.commit("setActiveMenu", menuItem);
+      this.$store.commit("setActiveSettings", menuItem);
     },
-    showFilterModal() {
-      this.$store.commit("showFilterModal", true);
+    showFilterModal(show) {
+      this.$store.commit("showFilterModal", show);
     }
   },
   computed: {

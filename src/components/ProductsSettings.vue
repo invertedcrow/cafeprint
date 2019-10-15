@@ -1,8 +1,8 @@
 <template>
   <div class="products-settings">
     <div class="products-settings__title">Kids' Premium Long Sleeve T-Shirt</div>
-    <div class="products-settings__color">Product color: {{currentColor}}</div>
-    <color :colors="colors" :active="currentColor" :setActiveColor="setActiveColor" />
+    <div class="products-settings__color">Product color: {{activeProduct.color}}</div>
+    <color :colors="colors" :active="activeProduct.color" :setActiveColor="setActiveColor" />
     <b-list-group>
       <b-list-group-item button v-b-toggle.product-info>Product info</b-list-group-item>
       <b-collapse id="product-info" accordion="my-accordion" class="mt-2">
@@ -41,8 +41,8 @@ export default {
     };
   },
   computed: {
-    currentColor() {
-      return this.$store.state.activeColor;
+    activeProduct() {
+      return this.$store.state.activeProduct;
     }
   },
   methods: {

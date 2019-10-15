@@ -1,14 +1,14 @@
 <template>
   <div class="main">
-    <div class="constructor" :style="{backgroundColor: getColor}">test</div>
+    <div class="constructor" :style="{backgroundColor: activeProduct.color}">test</div>
   </div>
 </template>
 
 <script>
 export default {
   computed: {
-    getColor() {
-      return this.$store.state.activeColor;
+    activeProduct() {
+      return this.$store.state.activeProduct;
     }
   }
 };

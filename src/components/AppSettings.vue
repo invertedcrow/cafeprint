@@ -1,7 +1,7 @@
 <template>
   <div class="settings d-flex flex-column justify-content-between">
-    <products-settings v-if="activeMenu === 'products'" />
-    <div v-if="activeMenu === 'text'">TEXT here</div>
+    <products-settings v-if="activeSettings === 'products'" />
+    <div v-if="activeSettings === 'text'">TEXT here</div>
     <b-button squared variant="info">Get Price</b-button>
   </div>
 </template>
@@ -14,8 +14,8 @@ export default {
     ProductsSettings
   },
   computed: {
-    activeMenu() {
-      return this.$store.state.activeMenu;
+    activeSettings() {
+      return this.$store.state.activeSettings;
     }
   }
 };
