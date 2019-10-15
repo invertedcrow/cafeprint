@@ -20,6 +20,7 @@ export default new Vuex.Store({
     state: {
         activeSettings: 'products',
         isShowProductFilter: false, 
+        isShowProductDesign: false,
         activeProduct: {...productDefault},
         productFilter: {...productFilterDefault},
         productPreview: {...productDefault},   
@@ -67,6 +68,9 @@ export default new Vuex.Store({
         },
         setActiveProduct(state) {
             state.activeProduct = {...state.productPreview}
-        }  
+        },
+        showDesignModal(state, value) {
+            state.isShowProductDesign = value;
+        }, 
     }   
 })

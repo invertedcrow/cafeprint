@@ -4,7 +4,7 @@
       <div class="app-menu__item-name">Products</div>
     </b-button>
     <b-modal
-      v-model="isShowModal"
+      v-model="isShowModal.filter"
       @hide="showFilterModal(false)"
       hide-backdrop
       hide-footer
@@ -15,9 +15,20 @@
       <product-selection />
     </b-modal>
 
-    <b-button squared variant="outline-secondary">
+    <b-button @click="showDesignModal(true)" squared variant="outline-secondary">
       <div class="app-menu__item-name">Designs</div>
     </b-button>
+    <b-modal
+      v-model="isShowModal.design"
+      @hide="showDesignModal(false)"
+      hide-backdrop
+      hide-footer
+      hide-header
+      modal-class="selection-modal"
+      size="xl"
+    >
+      <design-selection />
+    </b-modal>
     <b-button @click="setMenuActive('text')" squared variant="outline-secondary">
       <div class="app-menu__item-name">Text</div>
     </b-button>
@@ -29,10 +40,11 @@
 
 <script>
 import ProductSelection from "./ProductSelection";
-
+import DesignSelection from "./DesignSelection";
 export default {
   components: {
-    ProductSelection
+    ProductSelection,
+    DesignSelection
   },
   data() {
     return {
@@ -45,11 +57,17 @@ export default {
     },
     showFilterModal(show) {
       this.$store.commit("showFilterModal", show);
+    },
+    showDesignModal(show) {
+      this.$store.commit("showDesignModal", show);
     }
   },
   computed: {
     isShowModal() {
-      return this.$store.state.isShowProductFilter;
+      return {
+        filter: this.$store.state.isShowProductFilter,
+        design: this.$store.state.isShowProductDesign
+      };
     }
   }
 };
