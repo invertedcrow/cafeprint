@@ -1,0 +1,11 @@
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+
+.selection-modal {
+    .modal-dialog {
+        max-width: 1260px;
+    }
+    .modal-body {
+      padding: 0;
+    }
+  }
