@@ -19,6 +19,7 @@ const productFilterDefault = {
 export default new Vuex.Store({
     state: {
         activeSettings: 'products',
+        addText: false,
         isShowProductFilter: false, 
         isShowProductDesign: false,
         activeProduct: {...productDefault},
@@ -27,6 +28,9 @@ export default new Vuex.Store({
         designs: {
             list: [],  
             preview: ''          
+        },
+        constructor: {
+            items: []
         }
          
     },
@@ -83,7 +87,19 @@ export default new Vuex.Store({
         },
         setDesignPreview(state, value) {
             state.designs.preview = value;
-        }
+        },
+
+
+        addText(state, value) {
+            state.addText = value;
+        },
+        addItemToConstructor(state, value) {
+            state.constructor.items.push(value)
+        },
+        setItemsConstructor(state, value) {           
+            state.constructor.items = value
+        },
+        
 
     },
     actions: {

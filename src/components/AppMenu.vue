@@ -29,7 +29,7 @@
     >
       <design-selection />
     </b-modal>
-    <b-button @click="setMenuActive('text')" squared variant="outline-secondary">
+    <b-button @click="onAddText()" squared variant="outline-secondary">
       <div class="app-menu__item-name">Text</div>
     </b-button>
     <b-button squared variant="outline-secondary">
@@ -54,6 +54,10 @@ export default {
   methods: {
     setMenuActive(menuItem) {
       this.$store.commit("setActiveSettings", menuItem);
+    },
+    onAddText() {
+      this.$store.commit("addText", true);
+      this.$store.commit("setActiveSettings", "text");
     },
     showFilterModal(show) {
       this.$store.commit("showFilterModal", show);
