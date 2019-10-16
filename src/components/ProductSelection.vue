@@ -62,11 +62,13 @@ export default {
     height: 100px;
   }
   &__filter-pane {
-    width: 320px;
+    width: 296px;
     overflow-y: scroll;
+    flex-shrink: 0;
   }
   &__product-block {
-    width: 320px;
+    width: 296px;
+    flex-shrink: 0;
   }
   &__center-block {
     padding-top: 5px;

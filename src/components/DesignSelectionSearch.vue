@@ -1,11 +1,13 @@
 <template>
   <div class="search">
     <b-form-input class="search__input" v-model="text" placeholder="Search for design"></b-form-input>
-    <div class="search__btn" @click="onSearch()">GO</div>
+    <div class="search__btn clear" @click="resetSearch()">X</div>
+    <div class="search__btn start" @click="onSearch()">GO</div>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -13,7 +15,13 @@ export default {
     };
   },
   methods: {
-    onSearch() {}
+    ...mapActions(["searchDesign"]),
+    onSearch() {
+      this.searchDesign(this.text);
+    },
+    resetSearch() {
+      this.$store.commit("setDesigns", []);
+    }
   }
 };
 </script>
@@ -29,9 +37,16 @@ export default {
   }
   &__btn {
     position: absolute;
-    right: 20px;
     top: 12px;
     cursor: pointer;
+
+    &.clear {
+      right: 40px;
+    }
+
+    &.start {
+      right: 10px;
+    }
   }
 }
 </style>

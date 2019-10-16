@@ -6,6 +6,7 @@
         class="categories__item d-flex flex-column align-items-center justify-content-center"
         v-for="item in items"
         :key="item"
+        @click="onSelect()"
       >
         <div class="categories__item-title">title here</div>
       </div>
@@ -14,11 +15,19 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
       items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     };
+  },
+  methods: {
+    ...mapActions(["searchDesign"]),
+    onSelect() {
+      this.searchDesign("z");
+    }
   }
 };
 </script>

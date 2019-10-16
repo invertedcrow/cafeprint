@@ -52,7 +52,7 @@ export default {
   overflow-y: scroll;
   &__item {
     height: 260px;
-    width: 240px;
+    width: calc(25% - 6px);
     margin: 3px;
     &:hover {
       cursor: pointer;

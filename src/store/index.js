@@ -24,6 +24,10 @@ export default new Vuex.Store({
         activeProduct: {...productDefault},
         productFilter: {...productFilterDefault},
         productPreview: {...productDefault},   
+        designs: {
+            list: [],  
+            preview: ''          
+        }
          
     },
     mutations: {
@@ -72,5 +76,24 @@ export default new Vuex.Store({
         showDesignModal(state, value) {
             state.isShowProductDesign = value;
         }, 
-    }   
+
+
+        setDesigns(state, value) {
+            state.designs.list = value;
+        },
+        setDesignPreview(state, value) {
+            state.designs.preview = value;
+        }
+
+    },
+    actions: {
+        searchDesign({commit}, searchParams) {
+            let list = []
+            if(searchParams) {
+                list = [1,2,3,4,5,6,7,8,9,12,11,13,14,15,16,17]
+            }
+
+            commit("setDesigns", list)
+        }
+    }    
 })
