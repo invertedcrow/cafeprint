@@ -8,8 +8,54 @@ const productDefault = {
     color: '',
     size: '',
     side: '',
-    id: '', 
-}
+    id: '',
+    sides: [
+        {
+            title: 'Front',
+            area: {
+                x: 220.87,
+                y: 124.966,
+                width: 338.741418746,
+                height: 450.457665885
+            },
+            preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=50,height=50,version=1564376579.png',
+            image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=800,height=800,version=1564376579.png'
+        },
+        {
+            title: 'Back',
+            area: {
+                x: 221.998,
+                y: 77.8434,
+                width: 338.853575469,
+                height: 449.761634486
+            },
+            preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=50,height=50,version=1564376579.png',
+            image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=800,height=800,version=1564376579.png'
+        },
+        {
+            title: 'Left',
+            area: {
+                x: 280,
+                y: 350,
+                width: 250,
+                height: 300
+            },
+            preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=50,height=50,version=1564376579.png',
+            image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=800,height=800,version=1564376579.png'
+        },
+        {
+            title: 'Right',
+            area: {
+                x: 280,
+                y: 350,
+                width: 250,
+                height: 300
+            },
+            preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=50,height=50,version=1564376579.png',
+            image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=800,height=800,version=1564376579.png'
+        }
+    ]
+};
 const productFilterDefault = {
     ...productDefault,
     category: '',    
@@ -22,7 +68,6 @@ export default new Vuex.Store({
         addText: false,
         isShowProductFilter: false, 
         isShowProductDesign: false,
-        activeProduct: {...productDefault},
         productFilter: {...productFilterDefault},
         productPreview: {...productDefault},   
         designs: {
@@ -30,16 +75,18 @@ export default new Vuex.Store({
             preview: ''          
         },
         constructor: {
-            items: []
-        }
-         
+            items: [],
+            selectedElement: null,
+            selectedSide: productDefault.sides[0]
+        },
+        selectedProduct: {...productDefault},
     },
     mutations: {
         setActiveSettings(state, value) {
            state.activeSettings = value;
         },
         setActiveColor(state, value) {
-            state.activeProduct.color = value;
+            state.selectedProduct.color = value;
         },
         setFilterCategory(state, value) {
             state.productFilter.category = value;
@@ -99,8 +146,13 @@ export default new Vuex.Store({
         setItemsConstructor(state, value) {           
             state.constructor.items = value
         },
-        
-
+        setSelectedElement(state, value) {
+            state.constructor.selectedElement = value;
+        },
+        setSelectedSide(state, value) {
+            state.constructor.selectedSide = value;
+        },
+        updateElementSize() {},
     },
     actions: {
         searchDesign({commit}, searchParams) {

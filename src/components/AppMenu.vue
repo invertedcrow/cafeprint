@@ -1,41 +1,90 @@
 <template>
   <div class="app-menu d-flex flex-column">
-    <b-button @click="showFilterModal(true)" squared variant="outline-secondary">
-      <div class="app-menu__item-name">Products</div>
-    </b-button>
+    <div class="app-menu__item">
+      <b-button @click="showFilterModal(true)" class="btn-circle">
+        <div class="app-menu__item-name">P</div>
+      </b-button>
+      <div class="hint">
+        <span class="hint__content">Products</span>
+      </div>
+    </div>
+
+    <div class="app-menu__item">
+      <b-button @click="showDesignModal(true)" class="btn-circle">
+        <div class="app-menu__item-name">D</div>
+      </b-button>
+      <div class="hint">
+        <span class="hint__content">Designs</span>
+      </div>
+    </div>
+
+    <div class="app-menu__item">
+      <b-button @click="onAddText()" class="btn-circle">
+        <div class="app-menu__item-name">T</div>
+      </b-button>
+      <div class="hint">
+        <span class="hint__content">Text</span>
+      </div>
+    </div>
+    <div class="app-menu__item">
+      <b-button class="btn-circle">
+        <div class="app-menu__item-name">U</div>
+      </b-button>
+      <div class="hint">
+        <span class="hint__content">Upload</span>
+      </div>
+    </div>
+
+
     <b-modal
-      v-model="isShowModal.filter"
-      @hide="showFilterModal(false)"
-      hide-backdrop
-      hide-footer
-      hide-header
-      modal-class="selection-modal"
-      size="xl"
+            v-model="isShowModal.filter"
+            @hide="showFilterModal(false)"
+            hide-backdrop
+            hide-footer
+            hide-header
+            modal-class="selection-modal"
+            size="xl"
     >
       <product-selection />
     </b-modal>
 
-    <b-button @click="showDesignModal(true)" squared variant="outline-secondary">
-      <div class="app-menu__item-name">Designs</div>
-    </b-button>
     <b-modal
-      v-model="isShowModal.design"
-      @hide="showDesignModal(false)"
-      hide-backdrop
-      hide-footer
-      hide-header
-      modal-class="selection-modal"
-      size="xl"
+            v-model="isShowModal.design"
+            @hide="showDesignModal(false)"
+            hide-backdrop
+            hide-footer
+            hide-header
+            modal-class="selection-modal"
+            size="xl"
     >
       <design-selection />
     </b-modal>
-    <b-button @click="onAddText()" squared variant="outline-secondary">
-      <div class="app-menu__item-name">Text</div>
-    </b-button>
-    <b-button squared variant="outline-secondary">
-      <div class="app-menu__item-name">Upload</div>
-    </b-button>
+
   </div>
+
+
+
+
+  <!--<div class="menu-item">-->
+    <!--<b-button class="btn-circle">D</b-button>-->
+    <!--<div class="hint-wrapper">-->
+      <!--<span class="hint-content">Designs</span>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--<div class="menu-item">-->
+    <!--<b-button @click="setMenuActive('text')" variant="outline-secondary" class="btn-circle">T</b-button>-->
+    <!--<div class="hint-wrapper">-->
+      <!--<span class="hint-content">Text</span>-->
+    <!--</div>-->
+  <!--</div>-->
+
+  <!--<div class="menu-item">-->
+    <!--<b-button class="btn-circle">U</b-button>-->
+    <!--<div class="hint-wrapper">-->
+      <!--<span class="hint-content">Upload</span>-->
+    <!--</div>-->
+  <!--</div>-->
+
 </template>
 
 <script>
@@ -79,10 +128,50 @@ export default {
 
 <style lang="scss" scoped>
 .app-menu {
-  border: grey 1px solid;
-  background-color: #fff;
+  //border: grey 1px solid;
+  //background-color: #fff;
   position: absolute;
   left: 20px;
   top: 10px;
+  &__item {
+    margin: 10px 0;
+    position: relative;
+  }
+
+  .btn-circle {
+    position: relative;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    border: 0;
+    color: #fff;
+    background-color: #72B425;
+    z-index: 2;
+  }
+
+  .btn-circle:hover + .hint {
+    max-width: 500px;
+  }
+
+  .hint {
+    position: absolute;
+    left: 30px;
+    top: 0;
+    z-index: 1;
+    max-width: 0;
+    overflow: hidden;
+    height: 100%;
+    border: 1px solid #72B425;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    transition: all .5s ease;
+    &__content {
+      margin-left: 50px;
+      margin-right: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 60px;
+    }
+  }
 }
 </style>
