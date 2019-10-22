@@ -30,7 +30,8 @@
         },
         methods: {
             setActiveSide(side) {
-                this.$store.commit('setSelectedSide', side);
+                this.$store.commit('setSelectedSide', side.key);
+                this.$store.commit('setSelectedElement', null);
             }
         }
     };

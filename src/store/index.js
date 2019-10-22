@@ -1,7 +1,9 @@
 import Vuex from 'vuex';
 import Vue from 'vue'
 
-Vue.use(Vuex)
+import { SIDES } from '../consts';
+
+Vue.use(Vuex);
 
 const productDefault = {
     product: '',
@@ -11,6 +13,7 @@ const productDefault = {
     id: '',
     sides: [
         {
+            key: SIDES.FRONT,
             title: 'Front',
             area: {
                 x: 220.87,
@@ -22,6 +25,7 @@ const productDefault = {
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=800,height=800,version=1564376579.png'
         },
         {
+            key: SIDES.BACK,
             title: 'Back',
             area: {
                 x: 221.998,
@@ -33,6 +37,7 @@ const productDefault = {
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=800,height=800,version=1564376579.png'
         },
         {
+            key: SIDES.LEFT,
             title: 'Left',
             area: {
                 x: 280,
@@ -44,6 +49,7 @@ const productDefault = {
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=800,height=800,version=1564376579.png'
         },
         {
+            key: SIDES.RIGHT,
             title: 'Right',
             area: {
                 x: 280,
@@ -77,9 +83,18 @@ export default new Vuex.Store({
         constructor: {
             items: [],
             selectedElement: null,
-            selectedSide: productDefault.sides[0]
+            selectedSide: SIDES.FRONT
         },
         selectedProduct: {...productDefault},
+    },
+    getters: {
+        selectedSide(state) {
+            return state.selectedProduct.sides.find(x => x.key === state.constructor.selectedSide);
+        },
+        items(state) {
+            console.log(state.constructor.items);
+            return state.constructor.items.filter(x => x.side === state.constructor.selectedSide);
+        }
     },
     mutations: {
         setActiveSettings(state, value) {

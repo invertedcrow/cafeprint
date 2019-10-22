@@ -1,8 +1,8 @@
 <template>
   <div class="sides d-flex justify-content-center">
     <div
-            v-for="(side, index) in sides"
-            :key="index"
+            v-for="(side) in sides"
+            :key="side.key"
             @click="setActiveSide(side)">
       {{side.title}}
       <div class="sides__item d-flex flex-column">

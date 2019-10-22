@@ -9,23 +9,29 @@
         ></image>
 
         <g :transform="'translate('+selectedSide.area.x+', '+selectedSide.area.y+')'">
-          <rect id="editable-area" fill="none" stroke="white" :height="selectedSide.area.height" :width="selectedSide.area.width"></rect>
+          <rect id="editable-area" fill="none" vector-effect="non-scaling-stroke" stroke-width="2" :stroke="dragging || rotation || scaling ? '#007bff' : selectedElement ?  'white' : 'none'" :height="selectedSide.area.height" :width="selectedSide.area.width"></rect>
           <g>
             <template v-if="dragging && selectedElement">
-              <text>{{round(selectedElement.y + selectedElement.height + 1)}}</text>
-              <line v-if="round(selectedElement.y + (selectedElement.height / 2)) === 150" x1="-2000" x2="2000" y1="149.3281075025" y2="149.3281075025" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
-              <line v-if="round(selectedElement.y) === 0" x1="-2000" x2="2000" y1="0" y2="0" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
-              <line v-if="round(selectedElement.y + selectedElement.height + 1) === selectedSide.area.height" x1="-2000" x2="2000" :y1="selectedSide.area.height" :y2="selectedSide.area.height" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
-              <line v-if="round(selectedElement.x + (selectedElement.width / 2)) === selectedSide.area.width/2" :x1="selectedSide.area.width/2" :x2="selectedSide.area.width/2" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
-              <line v-if="round(selectedElement.x) === 0" x1="0" x2="0" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
-              <line v-if="round(selectedElement.x + selectedElement.width + 1) === selectedSide.area.width" :x1="selectedSide.area.width" :x2="selectedSide.area.width" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+              <!--<line v-if="round(selectedElement.y + (selectedElement.height / 2)) === 150" x1="-2000" x2="2000" y1="149.3281075025" y2="149.3281075025" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
+              <!--<line v-if="round(selectedElement.y) === 0" x1="-2000" x2="2000" y1="0" y2="0" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
+              <!--<line v-if="round(selectedElement.y + selectedElement.height + 1) === selectedSide.area.height" x1="-2000" x2="2000" :y1="selectedSide.area.height" :y2="selectedSide.area.height" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
+              <!--<line v-if="round(selectedElement.x + (selectedElement.width / 2)) === selectedSide.area.width/2" :x1="selectedSide.area.width/2" :x2="selectedSide.area.width/2" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
+              <!--<line v-if="round(selectedElement.x) === 0" x1="0" x2="0" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
+              <!--<line v-if="round(selectedElement.x + selectedElement.width + 1) === selectedSide.area.width" :x1="selectedSide.area.width" :x2="selectedSide.area.width" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
+
+              <line v-if="lines.centerH" x1="-2000" x2="2000" :y1="selectedSide.area.height / 2" :y2="selectedSide.area.height / 2" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+              <line v-if="lines.top" x1="-2000" x2="2000" y1="0" y2="0" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+              <line v-if="lines.bottom" x1="-2000" x2="2000" :y1="selectedSide.area.height" :y2="selectedSide.area.height" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+              <line v-if="lines.centerV" :x1="selectedSide.area.width/2" :x2="selectedSide.area.width/2" y1="-2000" y2="2000" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+              <line v-if="lines.left" x1="0" x2="0" y1="-2000" y2="2000" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+              <line v-if="lines.right" :x1="selectedSide.area.width" :x2="selectedSide.area.width" y1="-2000" y2="2000" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
             </template>
           </g>
 
 
           <g
                   v-for="(item, index) in items"
-                  ref="gElement"
+                  ref="groupEls"
                   :key="index"
                   :id="'group-'+index"
                   :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
@@ -123,7 +129,16 @@ export default {
             editableAreaEl: null,
             dragging: false,
             rotation: false,
-            scaling: false
+            scaling: false,
+
+            lines: {
+                top: false,
+                bottom: false,
+                right: false,
+                left: false,
+                centerH: false,
+                centerV: false,
+            }
         };
     },
     watch: {
@@ -142,6 +157,11 @@ export default {
             if (mutation.type === 'updateElementSize') {
                 this.updateSizes();
             }
+            if (mutation.type === 'setSelectedSide') {
+                setTimeout(() => {
+                    this.editableAreaEl = document.querySelector('.constructor svg #editable-area');
+                });
+            }
         })
     },
     computed: {
@@ -152,10 +172,10 @@ export default {
             return this.$store.state.selectedProduct;
         },
         selectedSide() {
-            return this.$store.state.constructor.selectedSide;
+            return this.$store.getters.selectedSide;
         },
         items() {
-            return this.$store.state.constructor.items;
+            return this.$store.getters.items;
         },
         selectedElement() {
             return this.$store.state.constructor.selectedElement
@@ -187,13 +207,15 @@ export default {
           eDown.stopPropagation();
 
           this.$store.commit('setSelectedElement', item);
-          this.$store.commit("setItemsConstructor", this.items);
+          this.$store.commit('updateElementSize');
 
-          const rect = this.editableAreaEl.getBoundingClientRect();
-          const o = {x: rect.left + item.x + (item.width / 2), y: rect.top + item.y + (item.height / 2) };
+          const selectedElementIndex  = this.items.indexOf(item);
+          const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);
 
-          const edRect = this.editableAreaEl.getBoundingClientRect();
-          const elRect = this.selectedElement.node.children[0].getBoundingClientRect();
+          const edBounds              = this.editableAreaEl.getBoundingClientRect();
+          const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();
+
+          const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
 
           item.drag = {
               x:        item.x,
@@ -205,10 +227,10 @@ export default {
               angle:    item.rotate,
               oX:       o.x,
               oY:       o.y,
-              left:     elRect.left - edRect.left,
-              right:    elRect.right - edRect.left,
-              top:      elRect.top - edRect.top,
-              bottom:   elRect.bottom - edRect.top
+              left:     elBounds.left - edBounds.left,
+              right:    elBounds.right - edBounds.left,
+              top:      elBounds.top - edBounds.top,
+              bottom:   elBounds.bottom - edBounds.top
           };
 
           if (!handle) {
@@ -229,39 +251,105 @@ export default {
           };
           document.onmousemove = (event) => {
               if (!handle) {
-                  const elRect = this.selectedElement.node.children[0].getBoundingClientRect();
+                  this.hideLines();
+                  const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
 
                   // Границы после перемещения мышкой
-                  const left = item.drag.left - ((event.x - item.drag.mx) * -1);
-                  const right = item.drag.right - ((event.x - item.drag.mx) * -1);
-                  const top = item.drag.top - ((event.y - item.drag.my) * -1);
-                  const bottom = item.drag.bottom - ((event.y - item.drag.my) * -1);
+                  const left    = item.drag.left - ((event.x - item.drag.mx) * -1);
+                  const right   = item.drag.right - ((event.x - item.drag.mx) * -1);
+                  const top     = item.drag.top - ((event.y - item.drag.my) * -1);
+                  const bottom  = item.drag.bottom - ((event.y - item.drag.my) * -1);
 
                   // Границы реального объекта на момент перемещения
-                  const boundLeft = elRect.left - edRect.left;
-                  const boundRight = elRect.right - edRect.left;
-                  const boundTop = elRect.top - edRect.top;
-                  const boundBottom = elRect.bottom - edRect.top;
+                  const boundLeft   = elBounds.left - edBounds.left;
+                  const boundRight  = elBounds.right - edBounds.left;
+                  const boundTop    = elBounds.top - edBounds.top;
+                  const boundBottom = elBounds.bottom - edBounds.top;
 
                   if (left < 0) {
                       item.x -= boundLeft;
+                      this.lines.left = true;
                   }
-                  if (right > edRect.width) {
-                      item.x += edRect.width - boundRight - 1;
+                  if (right > edBounds.width) {
+                      item.x += edBounds.width - boundRight - 1;
+                      this.lines.right = true;
                   }
-                  if (left > 0 && right < edRect.width) {
+                  if (left > 0 && right < edBounds.width) {
                       item.x = event.x - item.drag.mx + item.drag.x;
                   }
 
                   if (top < 0) {
                       item.y -= boundTop;
+                      this.lines.top = true;
                   }
-                  if (bottom > edRect.height) {
-                      item.y += edRect.height - boundBottom - 1;
+                  if (bottom > edBounds.height) {
+                      item.y += edBounds.height - boundBottom - 1;
+                      this.lines.bottom = bottom;
                   }
-                  if (top > 0 && bottom < edRect.height) {
+                  if (top > 0 && bottom < edBounds.height) {
                       item.y = event.y - item.drag.my + item.drag.y;
                   }
+
+
+                  const strokeWidth = 4;
+                  const centerX = (this.selectedSide.area.width - strokeWidth) / 2;
+                  const centerY = (this.selectedSide.area.height) / 2;
+                  // const centerY = (edBounds.height - strokeWidth)/ 2;
+                  const oX = (left + right) / 2;
+                  const oY = (top + bottom) / 2;
+
+                  // Прилипание к центральным линиям
+                  if (oY > centerY - 10 && oY < centerY + 10) {
+                      item.y = centerY - (item.height / 2);
+                      this.lines.centerH = true;
+                  }
+
+                  if (oX > centerX - 10 && oX < centerX + 10) {
+                      item.x = centerX - (item.width / 2);
+                      this.lines.centerV = true;
+                  }
+
+
+                  // console.log(item.y, top, boundTop)
+                  // console.log(bottom - top)
+                  // console.log(boundBottom - boundTop)
+                  // console.log(boundBottom - boundTop + bottom - boundBottom);
+
+                  // if (bottom > centerY - 15 && bottom < centerY + 15) {
+                  // if (Math.round(elBounds.bottom - edBounds.top) === Math.round(centerY)) {
+                  //     console.log(item.y, centerY, elBounds.height);
+                  //     // item.y = boundTop - item.y;
+                  //     // item.y = centerY - (boundBottom - boundTop + bottom - boundBottom);
+                  //     // item.y = centerY - elBounds.height;
+                  //     this.lines.centerH = true;
+                  // }
+
+                  // if (top > centerY - 10 && top < centerY + 10) {
+                  //     item.y = centerY;
+                  //     this.lines.centerH = true;
+                  // }
+
+                  // const strokeWidth = 4;
+                  // const centerX = (this.selectedSide.area.width - strokeWidth) / 2;
+                  // const centerY = (this.selectedSide.area.height - strokeWidth) / 2;
+                  // const oX = (left + right) / 2;
+                  // const oY = (top + bottom) / 2;
+
+                  // if (Math.round(top) === centerY) {
+                  //     this.lines.centerH = true;
+                  // }
+                  // if (oY > centerY - 15 && oY < centerY + 15) {
+                  //     this.lines.centerH = true;
+                  // }
+
+                  // if (item.x + (item.width / 2) > centerX - 15 && item.x + (item.width / 2) < centerX + 15) {
+                  //     item.x = centerX - (item.width / 2);
+                  //     this.lines.centerV = true;
+                  // }
+                  // if (item.y + (item.height / 2) > centerY - 15 && item.y + (item.height / 2) < centerY + 15) {
+                  //     item.y = centerY - (item.height / 2);
+                  //     this.lines.centerH = true;
+                  // }
 
                   // # Вариант 2 - с границами и проверкой точкой на линии
                   // const elRect = this.$refs.gElement[0].children[0].getBoundingClientRect();
@@ -335,46 +423,47 @@ export default {
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
                   let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
-                  let distance = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
-
-                  // console.log(distance, centerToDot);
+                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
 
                   // TODO Не знаю почему 1.95, но оно неплохо работает
                   distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
 
-                  let coefX = item.drag.h / item.drag.w;
-                  item.width = item.drag.w + distance;
-                  item.height = item.drag.h + distance * coefX;
-                  item.x = Math.round(item.drag.x + (distance * -1) / 2);
-                  item.y = Math.round(item.drag.y + (distance * -1 * coefX) / 2);
-
+                  const ratio   = item.drag.h / item.drag.w;
+                  item.width    = item.drag.w + distance;
+                  item.height   = item.drag.h + distance * ratio;
+                  item.x        = item.drag.x + (distance * -1) / 2;
+                  item.y        = item.drag.y + (distance * -1 * ratio) / 2;
                   item.fontSize = item.height / item.text.length;
               }
           }
+      },
+      hideLines() {
+          this.lines.left     = false;
+          this.lines.right    = false;
+          this.lines.top      = false;
+          this.lines.bottom   = false;
+          this.lines.centerH  = false;
+          this.lines.centerV  = false;
       },
       toggleColor() {
           this.showcolors = !this.showcolors;
       },
 
       addTextField() {
-          const textField = this.createTextField();
-          this.$store.commit("addItemToConstructor", textField);
-          setTimeout(() => {
-              textField.node = this.$refs.gElement[this.$refs.gElement.length - 1];
-          });
-          /// add to store
-          // this.items.push(this.createTextField());
+          const item = this.createTextField();
+          this.$store.commit('setSelectedElement', item);
+          this.$store.commit("addItemToConstructor", item);
       },
       createTextField() {
           return {
+              side: this.selectedSide.key,
               type: "text",
-              textAnchor: "end",
-              active: false,
+              textAnchor: "start",
               x: ((this.items.length + 2) % 20) * 20,
               y: ((this.items.length + 2) % 20) * 20,
-              text: ["HELLO"],
-              width: 30,
-              height: 20,
+              text: ["Your text here"],
+              width: 124,
+              height: 25,
               font: "Arial",
               fontSize: 20,
               node: null,
@@ -392,11 +481,13 @@ export default {
       },
       updateSizes() {
         setTimeout(() => {
-            const tSpans = this.selectedElement.node.querySelectorAll('text tspan');
-            const widths = Array.from(tSpans).map(x => x.getComputedTextLength());
-            const maxWidth = Math.max(...widths);
-            this.selectedElement.height = this.selectedElement.fontSize * this.selectedElement.text.length;
-            this.selectedElement.width = maxWidth;
+            const index     = this.items.indexOf(this.selectedElement);
+            const tSpans    = document.querySelectorAll(`#group-${index} text tspan`);
+            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
+            const maxWidth  = Math.max(...widths);
+
+            this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
+            this.selectedElement.width    = maxWidth;
         });
       },
 
