@@ -2,7 +2,7 @@
   <div class="main">
     <div class="constructor" :style="{borderColor: selectedProduct.color}">
       <svg :viewBox="'0 0 '+width+' '+height" :width="width" :height="height" @mousedown="resetSelected">
-        <!--<rect></rect>-->
+        <rect fill="none" :width="width" :height="height"></rect>
         <image
                 v-bind:xlink:href="selectedSide.image"
                 x="0" y="0" :width="width" :height="height"
@@ -12,13 +12,6 @@
           <rect id="editable-area" fill="none" vector-effect="non-scaling-stroke" stroke-width="2" :stroke="dragging || rotation || scaling ? '#007bff' : selectedElement ?  'white' : 'none'" :height="selectedSide.area.height" :width="selectedSide.area.width"></rect>
           <g>
             <template v-if="dragging && selectedElement">
-              <!--<line v-if="round(selectedElement.y + (selectedElement.height / 2)) === 150" x1="-2000" x2="2000" y1="149.3281075025" y2="149.3281075025" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
-              <!--<line v-if="round(selectedElement.y) === 0" x1="-2000" x2="2000" y1="0" y2="0" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
-              <!--<line v-if="round(selectedElement.y + selectedElement.height + 1) === selectedSide.area.height" x1="-2000" x2="2000" :y1="selectedSide.area.height" :y2="selectedSide.area.height" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
-              <!--<line v-if="round(selectedElement.x + (selectedElement.width / 2)) === selectedSide.area.width/2" :x1="selectedSide.area.width/2" :x2="selectedSide.area.width/2" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
-              <!--<line v-if="round(selectedElement.x) === 0" x1="0" x2="0" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
-              <!--<line v-if="round(selectedElement.x + selectedElement.width + 1) === selectedSide.area.width" :x1="selectedSide.area.width" :x2="selectedSide.area.width" y1="-2000" y2="2000" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"></line>-->
-
               <line v-if="lines.centerH" x1="-2000" x2="2000" :y1="selectedSide.area.height / 2" :y2="selectedSide.area.height / 2" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
               <line v-if="lines.top" x1="-2000" x2="2000" y1="0" y2="0" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
               <line v-if="lines.bottom" x1="-2000" x2="2000" :y1="selectedSide.area.height" :y2="selectedSide.area.height" stroke="#007bff" stroke-width="1" vector-effect="non-scaling-stroke"></line>
@@ -114,8 +107,8 @@ export default {
             TEXT_ALIGNMENT,
             CONSTRUCTOR_HANDLES,
 
-            width: 800,
-            height: 800,
+            width: 736,
+            height: 736,
             colors: defaultProps,
             onChangeColorListener: null,
             showcolors: false,
@@ -254,13 +247,13 @@ export default {
                   this.hideLines();
                   const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
 
-                  // Границы после перемещения мышкой
+                  // Границы после перемещения мышкой. Зависит от положения мышки.
                   const left    = item.drag.left - ((event.x - item.drag.mx) * -1);
                   const right   = item.drag.right - ((event.x - item.drag.mx) * -1);
                   const top     = item.drag.top - ((event.y - item.drag.my) * -1);
                   const bottom  = item.drag.bottom - ((event.y - item.drag.my) * -1);
 
-                  // Границы реального объекта на момент перемещения
+                  // Границы реального объекта на момент перемещения. Не зависит от положения мышки.
                   const boundLeft   = elBounds.left - edBounds.left;
                   const boundRight  = elBounds.right - edBounds.left;
                   const boundTop    = elBounds.top - edBounds.top;
@@ -290,44 +283,46 @@ export default {
                       item.y = event.y - item.drag.my + item.drag.y;
                   }
 
-
-                  const strokeWidth = 4;
-                  const centerX = (this.selectedSide.area.width - strokeWidth) / 2;
+                  const centerX = (this.selectedSide.area.width) / 2;
                   const centerY = (this.selectedSide.area.height) / 2;
                   // const centerY = (edBounds.height - strokeWidth)/ 2;
                   const oX = (left + right) / 2;
                   const oY = (top + bottom) / 2;
 
                   // Прилипание к центральным линиям
-                  if (oY > centerY - 10 && oY < centerY + 10) {
+                  if (oY > centerY - 5 && oY < centerY + 5) {
                       item.y = centerY - (item.height / 2);
                       this.lines.centerH = true;
                   }
 
-                  if (oX > centerX - 10 && oX < centerX + 10) {
+                  if (oX > centerX - 5 && oX < centerX + 5) {
                       item.x = centerX - (item.width / 2);
                       this.lines.centerV = true;
                   }
 
+                  // Верх и горизонтальный центр
+                  if (bottom > centerY - 5 && bottom < centerY + 5) {
+                      item.y = centerY - (bottom - top) + (item.drag.y - item.drag.top);
+                      this.lines.centerH = true;
+                  }
 
-                  // console.log(item.y, top, boundTop)
-                  // console.log(bottom - top)
-                  // console.log(boundBottom - boundTop)
-                  // console.log(boundBottom - boundTop + bottom - boundBottom);
+                  // Низ и горизонтальный центр
+                  if (top > centerY - 5 && top < centerY + 5) {
+                      item.y = centerY + (bottom - top) + (item.drag.y - item.drag.bottom);
+                      this.lines.centerH = true;
+                  }
 
-                  // if (bottom > centerY - 15 && bottom < centerY + 15) {
-                  // if (Math.round(elBounds.bottom - edBounds.top) === Math.round(centerY)) {
-                  //     console.log(item.y, centerY, elBounds.height);
-                  //     // item.y = boundTop - item.y;
-                  //     // item.y = centerY - (boundBottom - boundTop + bottom - boundBottom);
-                  //     // item.y = centerY - elBounds.height;
-                  //     this.lines.centerH = true;
-                  // }
+                  // Лево и вертикальный центр
+                  if (left > centerX - 5 && left < centerX + 5) {
+                      item.x = centerX + (right - left) + (item.drag.x - item.drag.right);
+                      this.lines.centerV = true;
+                  }
 
-                  // if (top > centerY - 10 && top < centerY + 10) {
-                  //     item.y = centerY;
-                  //     this.lines.centerH = true;
-                  // }
+                  // Право и вертикальный центр
+                  if (right > centerX - 5 && right < centerX + 5) {
+                      item.x = centerX - (right - left) + (item.drag.x - item.drag.left);
+                      this.lines.centerV = true;
+                  }
 
                   // const strokeWidth = 4;
                   // const centerX = (this.selectedSide.area.width - strokeWidth) / 2;
@@ -553,6 +548,10 @@ export default {
   },
   mounted() {
       this.svg = document.querySelector('.constructor svg');
+      const svgBounds = this.svg.getBoundingClientRect();
+      this.width = svgBounds.width;
+      this.height = svgBounds.height;
+
       this.editableAreaEl = document.querySelector('.constructor svg #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
   }
@@ -583,6 +582,9 @@ var swapArrayElements = function (arr, indexA, indexB) {
     width: auto;
     height: 80vh;
     align-self: center;
+
+      margin-right: 380px;
+      margin-left: 80px;
 
     text {
       cursor: default;

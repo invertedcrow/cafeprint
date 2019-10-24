@@ -11,6 +11,10 @@ const SIDE_BACK     = 2;
 const SIDE_RIGHT    = 3;
 const SIDE_LEFT     = 4;
 
+const MODAL_PRODUCTS    = 'products';
+const MODAL_DESIGNS     = 'designs';
+const MODAL_UPLOAD      = 'upload';
+
 export const TEXT_ALIGNMENT = {
     START:  TEXT_ALIGNMENT_START,
     MIDDLE: TEXT_ALIGNMENT_MIDDLE,
@@ -27,4 +31,10 @@ export const SIDES = {
     BACK:   SIDE_BACK,
     RIGHT:  SIDE_RIGHT,
     LEFT:   SIDE_LEFT
+};
+
+export const MODALS = {
+    PRODUCTS:   MODAL_PRODUCTS,
+    DESIGNS:    MODAL_DESIGNS,
+    UPLOAD:     MODAL_UPLOAD
 };

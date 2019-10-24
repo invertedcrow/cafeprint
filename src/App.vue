@@ -1,45 +1,30 @@
 <template>
-    <b-container class="position-relative main-container">
-        <app-menu/>
-        <app-main/>
-        <app-settings/>
-
-        <sides :sides="selectedProduct.sides" :setActiveSide="setActiveSide"/>
-    </b-container>
+    <div>
+        <b-container class="position-relative main-container">
+            <editor/>
+        </b-container>
+        <modals/>
+    </div>
 </template>
 
 <script>
     import "./assets/main.scss";
-    import AppMenu from "./components/AppMenu";
-    import AppSettings from "./components/AppSettings";
-    import AppMain from "./components/AppMain";
-    import Sides from "./components/Sides";
+
+    import Editor from "./components/Editor";
+    import Modals from "./components/Modals";
 
     export default {
         name: "app",
         components: {
-            AppMenu,
-            AppSettings,
-            AppMain,
-            Sides
-        },
-        computed: {
-            selectedProduct() {
-                return this.$store.state.selectedProduct;
-            }
-        },
-        methods: {
-            setActiveSide(side) {
-                this.$store.commit('setSelectedSide', side.key);
-                this.$store.commit('setSelectedElement', null);
-            }
+            Editor,
+            Modals
         }
     };
 </script>
 
 <style>
     .main-container {
-        min-height: 900px;
+        /*min-height: 900px;*/
         height: 100%;
         display: flex;
         align-items: center;

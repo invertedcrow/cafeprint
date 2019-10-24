@@ -16,9 +16,9 @@ const productDefault = {
             key: SIDES.FRONT,
             title: 'Front',
             area: {
-                x: 220.87,
+                x: 202.87,
                 y: 124.966,
-                width: 338.741418746,
+                width: 311.741418746,
                 height: 450.457665885
             },
             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=50,height=50,version=1564376579.png',
@@ -86,13 +86,15 @@ export default new Vuex.Store({
             selectedSide: SIDES.FRONT
         },
         selectedProduct: {...productDefault},
+        upload: {
+            items: Array(10).map((x, index) => ({ id: index, image: ''}))
+        }
     },
     getters: {
         selectedSide(state) {
             return state.selectedProduct.sides.find(x => x.key === state.constructor.selectedSide);
         },
         items(state) {
-            console.log(state.constructor.items);
             return state.constructor.items.filter(x => x.side === state.constructor.selectedSide);
         }
     },

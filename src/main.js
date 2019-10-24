@@ -3,6 +3,8 @@ import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import store from './store/'
 
+export const eventBus = new Vue();
+
 Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false
