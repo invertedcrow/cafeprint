@@ -1,9 +1,24 @@
 <template>
   <div>
-    <app-menu/>
-    <app-main/>
-    <app-settings/>        
-    <sides :sides="selectedProduct.sides" :setActiveSide="setActiveSide"/>    
+    <div class="row">
+      <div class="col-lg-2">
+        <app-menu/>
+      </div>
+      <div class="col-lg-7">
+        <app-main/>
+      </div>
+      <div class="col-lg-3">
+        <app-settings/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-lg-2 col-lg-4">
+        <sides :sides="selectedProduct.sides" :setActiveSide="setActiveSide"/>
+      </div>
+      <div class="offset-lg-2 col-lg-1">
+        <scale/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,13 +27,15 @@ import AppMenu from "./AppMenu";
 import AppSettings from "./AppSettings";
 import AppMain from "./AppMain";
 import Sides from "./Sides";
+import Scale from "./Scale";
 
 export default {
   components: {
     AppMenu,
     AppSettings,
     AppMain,
-    Sides
+    Sides,
+      Scale
   },
   computed: {
     selectedProduct() {

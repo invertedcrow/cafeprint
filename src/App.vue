@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-container class="position-relative main-container">
+        <b-container>
             <editor/>
         </b-container>
         <modals/>
@@ -29,9 +29,5 @@
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-    .sides {
-        position: absolute;
-        top: 85vh;
     }
 </style>

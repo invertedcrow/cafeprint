@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue'
 
+import constructor from './constructor.module';
 import { SIDES } from '../consts';
 
 Vue.use(Vuex);
@@ -69,6 +70,9 @@ const productFilterDefault = {
 }
 
 export default new Vuex.Store({
+    modules: {
+        constructor: constructor
+    },
     state: {
         activeSettings: 'products',
         addText: false,
@@ -80,14 +84,14 @@ export default new Vuex.Store({
             list: [],  
             preview: ''          
         },
-        constructor: {
-            items: [],
-            selectedElement: null,
-            selectedSide: SIDES.FRONT
-        },
+        // constructor: {
+        //     items: [],
+        //     selectedElement: null,
+        //     selectedSide: SIDES.FRONT
+        // },
         selectedProduct: {...productDefault},
         upload: {
-            items: Array(10).map((x, index) => ({ id: index, image: ''}))
+            items: Array(10).fill({id: 0, image: ''}).map((x, index) => ({ id: index, image: require('../assets/cloud.svg')}))
         }
     },
     getters: {

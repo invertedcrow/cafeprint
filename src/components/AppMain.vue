@@ -570,21 +570,18 @@ var swapArrayElements = function (arr, indexA, indexB) {
     /*width: 500px;*/
     /*height: 500px;*/
 
-    display: flex;
-    flex: 1 1 auto;
-    align-items: center;
-    justify-content: center;
-    height: 85vh;
-    width: 100vw;
+    /*display: flex;*/
+    /*flex: 1 1 auto;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    /*height: 85vh;*/
+    /*width: 100vw;*/
   }
 
   svg {
-    width: auto;
-    height: 80vh;
-    align-self: center;
-
-      margin-right: 380px;
-      margin-left: 80px;
+    /*width: auto;*/
+    /*height: 80vh;*/
+    /*align-self: center;*/
 
     text {
       cursor: default;

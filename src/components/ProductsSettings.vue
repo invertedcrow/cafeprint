@@ -1,7 +1,16 @@
 <template>
   <div class="products-settings">
-    <div class="products-settings__title">Kids' Premium Long Sleeve T-Shirt</div>
-    <div class="products-settings__color">Product color: {{selectedProduct.color}}</div>
+
+    <div class="sizes">
+      <span class="sizes__item">размер M</span>
+      <span class="current-size">Текущий размер принта - A4</span>
+    </div>
+    <hr>
+    <div>
+      <a>Информация о товаре</a>
+    </div>
+
+    <div class="products-settings__color">Цвет:</div>
     <color :colors="colors" :active="selectedProduct.color" :setActiveColor="setActiveColor" />
     <b-list-group>
       <b-list-group-item button v-b-toggle.product-info>Product info</b-list-group-item>
@@ -55,10 +64,34 @@ export default {
 
 <style lang="scss" scoped>
 .products-settings {
+  hr {
+    border-top: 1px solid #dcdcdc;
+    width: 100%;
+  }
+  .sizes {
+    font-size: 14px;
+
+    &__item {
+      display: inline-block;
+      padding: 5px 14px;
+      border: 1px solid #72b425;
+      border-radius: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      &:not(:last-child) {
+        margin-right: 5px;
+      }
+    }
+    .current-size {
+      color: #9aa2af;
+      margin-left: 18px;
+    }
+  }
+
   height: 100%;
   margin-bottom: 15px;
-  border: 1px lightgrey solid;
-  background-color: #fff;
+  /*border: 1px lightgrey solid;*/
+  /*background-color: #fff;*/
   display: flex;
   flex-direction: column;
   justify-content: space-between;

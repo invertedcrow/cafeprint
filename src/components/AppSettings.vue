@@ -120,9 +120,10 @@
 
 <style lang="scss" scoped>
     .settings {
-        width: 340px;
-        position: absolute;
-        right: 20px;
-        bottom: 10px;
+        margin-top: 50px;
+        /*width: 340px;*/
+        /*position: absolute;*/
+        /*right: 20px;*/
+        /*bottom: 10px;*/
     }
 </style>

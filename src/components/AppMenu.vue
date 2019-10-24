@@ -2,7 +2,9 @@
   <div class="app-menu d-flex flex-column">
     <div class="app-menu__item">
       <b-button @click="showModalProducts()" class="btn-circle">
-        <div class="app-menu__item-name">P</div>
+        <div class="app-menu__item-name">
+            <img src="../assets/icons/text.svg">
+        </div>
       </b-button>
       <div class="hint">
         <span class="hint__content">Products</span>
@@ -11,7 +13,9 @@
 
     <div class="app-menu__item">
       <b-button @click="showModalDesign()" class="btn-circle">
-        <div class="app-menu__item-name">D</div>
+        <div class="app-menu__item-name">
+          <img src="../assets/icons/image.svg">
+        </div>
       </b-button>
       <div class="hint">
         <span class="hint__content">Designs</span>
@@ -20,7 +24,9 @@
 
     <div class="app-menu__item">
       <b-button @click="onAddText()" class="btn-circle">
-        <div class="app-menu__item-name">T</div>
+        <div class="app-menu__item-name">
+          <img src="../assets/icons/text.svg">
+        </div>
       </b-button>
       <div class="hint">
         <span class="hint__content">Text</span>
@@ -28,7 +34,9 @@
     </div>
     <div class="app-menu__item">
       <b-button @click="showModalUpload()" class="btn-circle">
-        <div class="app-menu__item-name">U</div>
+        <div class="app-menu__item-name">
+          <img src="../assets/icons/import.svg">
+        </div>
       </b-button>
       <div class="hint">
         <span class="hint__content">Upload</span>
@@ -65,9 +73,9 @@ export default {
 .app-menu {
   //border: grey 1px solid;
   //background-color: #fff;
-  position: absolute;
-  left: 20px;
-  top: 10px;
+  /*position: absolute;*/
+  /*left: 20px;*/
+  /*top: 10px;*/
   &__item {
     margin: 10px 0;
     position: relative;
