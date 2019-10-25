@@ -24,7 +24,7 @@
       <design-selection />
     </b-modal>
 
-    <b-modal :id="MODALS.UPLOAD" hide-footer hide-header>
+    <b-modal :id="MODALS.UPLOAD" modal-class="upload-modal" hide-footer hide-header>
       <modal-upload />
     </b-modal>
   </div>
@@ -51,6 +51,9 @@ export default {
   mounted() {
     eventBus.$on("showModal", modalId => {
       this.$bvModal.show(modalId);
+    });
+    eventBus.$on("hideModal", modalId => {
+      this.$bvModal.hide(modalId);
     });
   }
 };

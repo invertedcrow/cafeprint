@@ -10,7 +10,11 @@
     >
       <div class="dropzone__content">Перетащите файлы сюда...</div>
     </vue-dropzone>
-    <b-button @click="chooseFiles()" squared variant="info" class="upload__btn">Выбрать изображение</b-button>
+
+    <div class="upload__btn-wrapper">
+      <div class="upload__btn-wrapper__text">Выбрать файлы</div>
+      <button class="baseBtn" @click="addFile()">Выбрать изображение</button>
+    </div>
   </div>
 </template>
 
@@ -25,8 +29,8 @@ export default {
     return {
       dropzoneOptions: {
         url: "https://httpbin.org/post",
-        thumbnailMethod: "contain",
-        previewsContainer: false
+        thumbnailMethod: "contain"
+        //addRemoveLinks: true
         // thumbnailWidth: 150,
         // maxFilesize: 0.5,
         // headers: { "My-Awesome-Header": "header value" }
@@ -35,11 +39,12 @@ export default {
   },
   methods: {
     loadedThumbs(file, dataUrl) {
-      console.log(file);
       this.$store.commit("addFile", file);
     },
-    chooseFiles() {
-      document.getElementById("fileUpload").click();
+    chooseFiles() {},
+    addFile() {
+      console.log("CLICK");
+      this.$refs.myVueDropzone.$el.click();
     }
   }
 };
@@ -47,6 +52,7 @@ export default {
 
 <style lang="scss" scoped>
 .upload {
+  height: 100%;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -64,19 +70,34 @@ export default {
   &__dropzone {
     margin-top: 20px;
   }
+  &__btn-wrapper {
+    height: 40px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    align-items: center;
+    border: 1px solid whitesmoke;
+    border-radius: 40px;
+    .baseBtn {
+      height: 100%;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    &__text {
+      color: lightgrey;
+    }
+  }
 }
 
 #dropzone {
   border: none;
   background-color: whitesmoke;
-  height: 100%;
+  height: 250px;
   .dropzone {
     &__content {
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      margin-top: 80px;
       color: #8c8c8c;
     }
   }

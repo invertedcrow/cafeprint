@@ -1,16 +1,20 @@
 <template>
   <div class="list">
-    <div v-for="(item, index) in getAllFiles" :key="index">
-      <div class="list__item">
-        <div class="list__item-preview">
-          <img :src="item.dataURL" alt />
-        </div>
-        <div class="list__item-about">
-          <div class="list__item-name">{{item.name}}</div>
-          <b-button class="baseBtn seconadary" @click="onSelectImg(item)">Добавить</b-button>
+    <perfect-scrollbar>
+      <div class="d-flex flex-wrap">
+        <div v-for="(item, index) in getAllFiles" :key="index">
+          <div class="list__item">
+            <div class="list__item-preview">
+              <img :src="item.dataURL" alt />
+            </div>
+            <div class="list__item-about">
+              <div class="list__item-name">{{item.name}}</div>
+              <b-button class="baseBtn seconadary" @click="onSelectImg(item)">Добавить</b-button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </perfect-scrollbar>
   </div>
 </template>
 
@@ -31,9 +35,9 @@ export default {
 
 <style lang="scss" scoped>
 .list {
+  height: 300px;
   padding: 10px;
   padding-right: 0;
-  padding-bottom: 30px;
   display: flex;
   border: 1px whitesmoke solid;
   border-bottom-right-radius: 5px;
@@ -43,7 +47,6 @@ export default {
     border: 1px whitesmoke solid;
     overflow: hidden;
     width: 160px;
-    height: 300px;
     margin-right: 10px;
     &-preview {
       background-color: whitesmoke;
@@ -58,7 +61,7 @@ export default {
       }
     }
     &-name {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       word-wrap: break-word;
       height: 50px;
       overflow: hidden;
