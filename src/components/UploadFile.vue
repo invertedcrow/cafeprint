@@ -35,7 +35,8 @@ export default {
   },
   methods: {
     loadedThumbs(file, dataUrl) {
-      this.$store.commit("addFile", { file, dataUrl });
+      console.log(file);
+      this.$store.commit("addFile", file);
     },
     chooseFiles() {
       document.getElementById("fileUpload").click();

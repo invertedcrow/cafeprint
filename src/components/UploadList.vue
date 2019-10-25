@@ -3,10 +3,10 @@
     <div v-for="(item, index) in getAllFiles" :key="index">
       <div class="list__item">
         <div class="list__item-preview">
-          <img :src="item.dataUrl" alt />
+          <img :src="item.dataURL" alt />
         </div>
         <div class="list__item-about">
-          <div class="list__item-name">{{item.file.name}}</div>
+          <div class="list__item-name">{{item.name}}</div>
           <b-button class="baseBtn seconadary" @click="onSelectImg(item)">Добавить</b-button>
         </div>
       </div>
