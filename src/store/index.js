@@ -17,10 +17,10 @@ const productDefault = {
             key: SIDES.FRONT,
             title: 'Front',
             area: {
-                x: 202.87,
+                x: 138,
                 y: 124.966,
-                width: 311.741418746,
-                height: 450.457665885
+                width: 210,
+                height: 300
             },
             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=50,height=50,version=1564376579.png',
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=800,height=800,version=1564376579.png'

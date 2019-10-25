@@ -19,26 +19,26 @@ export default {
 
 <style lang="scss" scoped>
 .color-list {
-  padding: 10px;
+  padding: 0 4px;
   display: flex;
   flex-wrap: wrap;
   &__item {
-    width: 30px;
-    height: 30px;
+    width: 23px;
+    height: 23px;
     border-radius: 50%;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    margin-right: 12px;
+    margin-bottom: 15px;
     position: relative;
     &.active {
       &:after {
         position: absolute;
         display: block;
         content: "";
-        border: 2px solid blue;
-        width: 36px;
-        height: 36px;
-        top: -3px;
-        left: -3px;
+        border: 1px solid #a5cd75;
+        width: 31px;
+        height: 31px;
+        top: -4px;
+        left: -4px;
         border-radius: 50%;
       }
     }

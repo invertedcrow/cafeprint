@@ -3,7 +3,7 @@
     <div class="app-menu__item">
       <b-button @click="showModalProducts()" class="btn-circle">
         <div class="app-menu__item-name">
-            <img src="../assets/icons/text.svg">
+            <img src="../assets/icons/product.svg">
         </div>
       </b-button>
       <div class="hint">

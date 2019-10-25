@@ -1,5 +1,5 @@
 <template>
-    <div class="settings d-flex flex-column justify-content-between">
+    <div class="settings">
         <template v-if="activeSettings === 'products'">
             <products-settings/>
         </template>
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </template>
-        <b-button squared variant="info">Get Price</b-button>
+        <button class="btn-get-price">Узнать стоимость</button>
     </div>
 </template>
 
@@ -121,9 +121,13 @@
 <style lang="scss" scoped>
     .settings {
         margin-top: 50px;
-        /*width: 340px;*/
-        /*position: absolute;*/
-        /*right: 20px;*/
-        /*bottom: 10px;*/
+    }
+    .btn-get-price {
+        margin-top: 25px;
+        padding: 8px 30px;
+        border-radius: 30px;
+        background-color: #72b425;
+        color: #fff;
+        border: 0;
     }
 </style>

@@ -4,18 +4,18 @@
       <div class="col-lg-2">
         <app-menu/>
       </div>
-      <div class="col-lg-7">
+      <div class="col-lg-6">
         <app-main/>
       </div>
-      <div class="col-lg-3">
+      <div class="col-lg-4">
         <app-settings/>
       </div>
     </div>
     <div class="row">
-      <div class="offset-lg-2 col-lg-4">
+      <div class="offset-lg-2 col-lg-5">
         <sides :sides="selectedProduct.sides" :setActiveSide="setActiveSide"/>
       </div>
-      <div class="offset-lg-2 col-lg-1">
+      <div class="col-lg-1">
         <scale/>
       </div>
     </div>
