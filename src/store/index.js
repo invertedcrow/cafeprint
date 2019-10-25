@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import Vue from 'vue'
 
 import constructor from './constructor.module';
+import upload from './modules/upload'
 import { SIDES } from '../consts';
 
 Vue.use(Vuex);
@@ -71,11 +72,13 @@ const productFilterDefault = {
 
 export default new Vuex.Store({
     modules: {
-        constructor: constructor
+        constructor: constructor,
+        upload
     },
     state: {
         activeSettings: 'products',
         addText: false,
+        addImg: null,
         isShowProductFilter: false, 
         isShowProductDesign: false,
         productFilter: {...productFilterDefault},
@@ -161,6 +164,11 @@ export default new Vuex.Store({
         addText(state, value) {
             state.addText = value;
         },
+
+        addImg(state, value) {
+            state.addImg = value;
+        },
+
         addItemToConstructor(state, value) {
             state.constructor.items.push(value)
         },

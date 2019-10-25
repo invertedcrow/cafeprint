@@ -1,22 +1,16 @@
 <template>
   <div class="upload">
-    <b-button squared variant="info" class="upload__btn">
-      <img src="../assets/icons/import.svg" /> Upload an image
-    </b-button>
     <vue-dropzone
       ref="myVueDropzone"
       id="dropzone"
       :useCustomSlot="true"
+      :thumbnailMethod="null"
       :options="dropzoneOptions"
+      @vdropzone-thumbnail="(file, dataUrl) => loadedThumbs(file, dataUrl)"
     >
-      <div class="dropzone__content">
-        <img src="../assets/icons/plus.svg" />
-        <p>
-          <b>Upload or drag your image here</b>
-        </p>
-        <p class="dropzone__content-formats">PNG, JPG, GIF, SVG, AI, CDR</p>
-      </div>
+      <div class="dropzone__content">Перетащите файлы сюда...</div>
     </vue-dropzone>
+    <b-button @click="chooseFiles()" squared variant="info" class="upload__btn">Выбрать изображение</b-button>
   </div>
 </template>
 
@@ -31,18 +25,27 @@ export default {
     return {
       dropzoneOptions: {
         url: "https://httpbin.org/post",
-        thumbnailWidth: 150,
-        maxFilesize: 0.5,
-        headers: { "My-Awesome-Header": "header value" }
+        thumbnailMethod: "contain",
+        previewsContainer: false
+        // thumbnailWidth: 150,
+        // maxFilesize: 0.5,
+        // headers: { "My-Awesome-Header": "header value" }
       }
     };
+  },
+  methods: {
+    loadedThumbs(file, dataUrl) {
+      this.$store.commit("addFile", { file, dataUrl });
+    },
+    chooseFiles() {
+      document.getElementById("fileUpload").click();
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .upload {
-  width: 296px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -63,8 +66,8 @@ export default {
 }
 
 #dropzone {
-  border: dashed 2px lightgrey;
-  margin-top: 20px;
+  border: none;
+  background-color: whitesmoke;
   height: 100%;
   .dropzone {
     &__content {
@@ -74,13 +77,6 @@ export default {
       align-items: center;
       justify-content: center;
       color: #8c8c8c;
-      img {
-        width: 30px;
-        margin-bottom: 20px;
-      }
-      &-formats {
-        font-size: 12px;
-      }
     }
   }
 }

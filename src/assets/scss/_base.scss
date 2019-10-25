@@ -1,0 +1,19 @@
+$baseColor: #72B425;
+
+.baseBtn {
+    background-color: $baseColor;
+    border: 1px solid $baseColor;
+    border-radius: 30px;
+    color: #fff;        
+    cursor: pointer;
+    &.seconadary {
+        background-color: #fff;
+        border: 1px solid $baseColor;
+        color: $baseColor; 
+    }   
+    &:focus {
+        box-shadow: none;
+        outline: none;
+    }
+}
+

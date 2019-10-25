@@ -1,44 +1,38 @@
 <template>
   <div>
-      <b-modal
-            :id="MODALS.PRODUCTS"
-            hide-backdrop
-            hide-footer
-            hide-header
-            modal-class="selection-modal"
-            size="xl"
+    <b-modal
+      :id="MODALS.PRODUCTS"
+      hide-backdrop
+      hide-footer
+      hide-header
+      modal-class="selection-modal"
+      size="xl"
     >
       <product-selection />
     </b-modal>
 
     <!-- @hide="showFilterModal(false)" -->
 
-    <b-modal 
-            :id="MODALS.DESIGNS"
-            hide-backdrop
-            hide-footer
-            hide-header
-            modal-class="selection-modal"
-            size="xl"
+    <b-modal
+      :id="MODALS.DESIGNS"
+      hide-backdrop
+      hide-footer
+      hide-header
+      modal-class="selection-modal"
+      size="xl"
     >
       <design-selection />
     </b-modal>
 
-    <b-modal
-            :id="MODALS.UPLOAD"
-            hide-footer
-            hide-header
-            size="xl"            
-    >
-      <modal-upload/>
+    <b-modal :id="MODALS.UPLOAD" hide-footer hide-header>
+      <modal-upload />
     </b-modal>
   </div>
 </template>
 
 <script>
-
-import {eventBus} from '../main';
-import {MODALS} from '../consts';
+import { eventBus } from "../main";
+import { MODALS } from "../consts";
 import ProductSelection from "./ProductSelection";
 import DesignSelection from "./DesignSelection";
 import ModalUpload from "./ModalUpload";
@@ -52,16 +46,15 @@ export default {
   data() {
     return {
       MODALS
-    }
+    };
   },
   mounted() {
-    eventBus.$on('showModal', modalId => {
+    eventBus.$on("showModal", modalId => {
       this.$bvModal.show(modalId);
-    })
+    });
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>

@@ -1,16 +1,25 @@
 <template>
-  <div class="upload">
-    <div class="upload__upload-pane">
-      <upload-file />
+  <div>
+    <div class="upload">
+      <b-tabs>
+        <b-tab title="Загрузить свое" active>
+          <upload-file />
+        </b-tab>
+        <b-tab title="Загруженные изображения">
+          <upload-list />
+        </b-tab>
+      </b-tabs>
     </div>
   </div>
 </template>
 
 <script>
 import UploadFile from "./UploadFile";
+import UploadList from "./UploadList";
 export default {
   components: {
-    UploadFile
+    UploadFile,
+    UploadList
   },
   data() {
     return {
@@ -22,38 +31,9 @@ export default {
       return this.$store.state.upload.items;
     }
   },
-  methods: {
-    selectItem(item) {
-      console.log(item);
-    },
-    uploadImage(event) {
-      const URL = "http://foobar.com/upload";
-
-      let data = new FormData();
-      data.append("name", "my-picture");
-      data.append("file", event.target.files[0]);
-
-      let config = {
-        header: {
-          "Content-Type": "image/png"
-        }
-      };
-
-      // axios.put(
-      //   URL,
-      //   data,
-      //   config
-      // ).then(
-      //   response => {
-      //     console.log('image upload response > ', response)
-      //   }
-      // )
-    }
-  }
+  methods: {}
 };
 </script>
 
 <style lang="scss" scoped>
-.upload {
-}
 </style>

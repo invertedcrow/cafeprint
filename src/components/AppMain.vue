@@ -45,6 +45,9 @@
 
               <tspan v-bind:key="index" v-for="(text, index) in item.text" :x="getTextXPosition(item)" :dy="index && '1em'">{{text}}</tspan>
             </text>
+                         
+            <image v-if="item.type=='img'" v-bind:xlink:href="item.file.dataUrl" :x="0" :y="0" :height="item.height" :width="item.width" />
+            
             <g v-if="selectedElement === item">
               <rect
                       :x="0"
@@ -141,6 +144,12 @@ export default {
                 this.$store.commit("addText", false);
             }
         },
+        addImg: function (val)  {            
+            if (val) {
+                this.addImgField(val);
+                this.$store.commit("addImg", null);
+            }
+        }
     },
     created() {
         this.$store.subscribe((mutation, state) => {
@@ -160,6 +169,9 @@ export default {
     computed: {
         addText() {
             return this.$store.state.addText;
+        },
+        addImg() {
+            return this.$store.state.addImg
         },
         selectedProduct() {
             return this.$store.state.selectedProduct;
@@ -449,6 +461,12 @@ export default {
           this.$store.commit('setSelectedElement', item);
           this.$store.commit("addItemToConstructor", item);
       },
+      addImgField(file) {
+          console.log(file)
+          const item = this.createImgField(file);
+          this.$store.commit('setSelectedElement', item);
+          this.$store.commit("addItemToConstructor", item);
+      },
       createTextField() {
           return {
               side: this.selectedSide.key,
@@ -467,6 +485,23 @@ export default {
               bold: false,
               italic: false,
 
+              rotate: 0,
+              o: {
+                  x: 0,
+                  y: 0
+              }
+          };
+      },
+      createImgField(file) {
+          return {
+              side: this.selectedSide.key,
+              type: "img",            
+              x: ((this.items.length + 2) % 20) * 20,
+              y: ((this.items.length + 2) % 20) * 20,             
+              width: 200,
+              file: file,
+              height: 200,
+              node: null,
               rotate: 0,
               o: {
                   x: 0,
