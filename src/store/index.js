@@ -74,7 +74,7 @@ export default new Vuex.Store({
         constructor: constructor
     },
     state: {
-        activeSettings: 'products',
+        activeSettings: 'price',
         addText: false,
         isShowProductFilter: false, 
         isShowProductDesign: false,
