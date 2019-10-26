@@ -28,10 +28,14 @@
 }
 
 .upload-modal {
+    .modal-dialog {
+        max-width: 621px;
+    }
     .modal-content {
         padding: 15px;
         padding-top: 10px;
-        width: 590px;
-        min-height: 500px;
+        width: 100%;
+        min-height: 515px;
+        border-radius: 8px;
     }
 }

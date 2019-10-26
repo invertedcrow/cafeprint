@@ -35,7 +35,8 @@ export default {
 
 <style lang="scss" scoped>
 .list {
-  height: 300px;
+  height: 330px;
+  background-color: whitesmoke;
   padding: 10px;
   padding-right: 0;
   display: flex;
@@ -43,14 +44,21 @@ export default {
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
   &__item {
-    border-radius: 5px;
+    background-color: #fff;
+    border-radius: 10px;
     border: 1px whitesmoke solid;
     overflow: hidden;
-    width: 160px;
+    width: 170px;
+    height: 286px;
     margin-right: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
     &-preview {
+      flex-shrink: 0;
       background-color: whitesmoke;
-      height: 160px;
+      height: 170px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -63,13 +71,17 @@ export default {
     &-name {
       margin-bottom: 10px;
       word-wrap: break-word;
-      height: 50px;
+      height: 42px;
       overflow: hidden;
+      color: #031127;
+      font-size: 14px;
     }
     &-about {
+      height: 100%;
       padding: 10px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
     }
   }
 }

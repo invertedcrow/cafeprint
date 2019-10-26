@@ -1,19 +1,30 @@
 <template>
   <div class="upload">
-    <vue-dropzone
-      ref="myVueDropzone"
-      id="dropzone"
-      :useCustomSlot="true"
-      :thumbnailMethod="null"
-      :options="dropzoneOptions"
-      @vdropzone-thumbnail="(file, dataUrl) => loadedThumbs(file, dataUrl)"
-    >
-      <div class="dropzone__content">Перетащите файлы сюда...</div>
-    </vue-dropzone>
+    <div class="scroll-wrapper">
+      <perfect-scrollbar>
+        <div class="drop-wrapper">
+          <vue-dropzone
+            ref="myVueDropzone"
+            id="dropzone"
+            :useCustomSlot="true"
+            :thumbnailMethod="null"
+            :options="dropzoneOptions"
+            @vdropzone-thumbnail="() => refreshLength()"
+            @vdropzone-removed-file="() => refreshLength()"
+          >
+            <div class="dropzone__content">Перетащите файлы сюда...</div>
+          </vue-dropzone>
+        </div>
+      </perfect-scrollbar>
+    </div>
 
-    <div class="upload__btn-wrapper">
+    <div v-if="!length" class="upload__btn-wrapper">
       <div class="upload__btn-wrapper__text">Выбрать файлы</div>
       <button class="baseBtn" @click="addFile()">Выбрать изображение</button>
+    </div>
+    <div v-else class="upload__btn-wrapper">
+      <div class="upload__btn-wrapper__text">Вы добавили файлы</div>
+      <button class="baseBtn" @click="chooseFiles()">Загрузить выбранное</button>
     </div>
   </div>
 </template>
@@ -27,24 +38,61 @@ export default {
   },
   data() {
     return {
+      length: 0,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
-        thumbnailMethod: "contain"
-        //addRemoveLinks: true
-        // thumbnailWidth: 150,
-        // maxFilesize: 0.5,
-        // headers: { "My-Awesome-Header": "header value" }
+        thumbnailMethod: "contain",
+        previewTemplate: this.templatePreview()
       }
     };
   },
   methods: {
-    loadedThumbs(file, dataUrl) {
-      this.$store.commit("addFile", file);
+    refreshLength() {
+      this.length = this.$refs.myVueDropzone.getAcceptedFiles().length;
     },
-    chooseFiles() {},
+    chooseFiles() {
+      const files = this.$refs.myVueDropzone.getAcceptedFiles();
+      this.$store.commit("addFile", files);
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.refreshLength();
+    },
     addFile() {
-      console.log("CLICK");
       this.$refs.myVueDropzone.$el.click();
+    },
+    templatePreview() {
+      return `     
+       <div class="custom dz-preview dz-file-preview">    
+          <div class="dz-image" style="width: 200px;height: 180px">
+              <img data-dz-thumbnail />
+          </div>
+          <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+          <div class="dz-error-message"><span data-dz-errormessage></span></div>
+          <div class="dz-success-mark"><i class="fa fa-check"></i></div>
+          <div class="dz-error-mark"><i class="fa fa-close"></i></div>
+           <div class="dz-filename"><span data-dz-name></span></div>
+           <div data-dz-remove class="remove">
+            <svg
+              width="25"
+              height="25"
+              viewBox="0 0 28 28"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="'#ababab'"
+              style="cursor: pointer"
+            >
+              <path
+                d="M24.11 9.39L22.7 7.97l-6.63 6.63-6.62-6.63-1.41 1.42 6.62 6.62-6.62 6.63 1.41 1.41 6.62-6.62 6.63 6.62 1.41-1.41-6.62-6.63 6.62-6.62z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="">
+            <select class="form-control" title="" name="image_type">
+                <options v-for="type in image_type" value="type.value">{{ type.title }}</options>
+            </select>
+        </div>
+      <div class="dz-filename"><span data-dz-name></span></div>
+          
+        `;
     }
   }
 };
@@ -89,15 +137,24 @@ export default {
     }
   }
 }
-
+.scroll-wrapper {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: whitesmoke;
+}
+.drop-wrapper {
+  height: 250px;
+}
 #dropzone {
   border: none;
   background-color: whitesmoke;
-  height: 250px;
+  padding: 5px;
+  padding-left: 15px;
+  min-height: 250px;
   .dropzone {
     &__content {
       height: 100%;
-      margin-top: 80px;
+      margin-top: 100px;
       color: #8c8c8c;
     }
   }
