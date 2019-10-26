@@ -1,0 +1,30 @@
+$baseColor: #72B425;
+
+.baseBtn {
+    background-color: $baseColor;
+    border: 1px solid $baseColor;
+    border-radius: 30px;
+    color: #fff;        
+    cursor: pointer;
+    &.seconadary {
+        background-color: #fff;
+        border: 1px solid $baseColor;
+        color: $baseColor; 
+    }   
+    &:focus {
+        box-shadow: none;
+        outline: none;
+    }
+}
+
+.ps__thumb-y {
+    background-color: #011129 !important;
+    opacity: 1 !important;
+    width: 6px !important;
+    right: 0 !important;
+}
+
+.ps__rail-y {
+    width: 6px !important;
+    right: 3px !important;
+}
