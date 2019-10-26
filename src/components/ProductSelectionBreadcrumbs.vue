@@ -6,52 +6,48 @@
       squared
       variant="outline-secondary"
       v-if="filter.category"
-      @click="filterReset"
+      @click="filterReset('')"
     >{{filter.category}} X</b-button>
     <b-button
       class="ml-3 breadcrumbs__item"
       squared
       variant="outline-secondary"
       v-if="filter.product"
-      @click="setActiveProduct"
+      @click="setFilterProduct('')"
     >{{filter.product}} X</b-button>
     <b-button
       class="ml-3 breadcrumbs__item"
       squared
       variant="outline-secondary"
       v-if="filter.color"
-      @click="setActiveColor"
+      @click="filterSetColor('')"
     >{{filter.color}} X</b-button>
     <b-button
       class="ml-3 breadcrumbs__item"
       squared
       variant="outline-secondary"
       v-if="filter.size"
-      @click="setActiveSize"
+      @click="setFilterSize('')"
     >{{filter.size}} X</b-button>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   computed: {
     filter() {
-      return this.$store.state.productFilter;
+      return this.$store.state.filter;
     }
   },
   methods: {
-    filterReset() {
-      this.$store.commit("filterReset", "");
-    },
-    setActiveProduct() {
-      this.$store.commit("setFilterProduct", "");
-    },
-    setActiveColor() {
-      this.$store.commit("filterSetColor", "");
-    },
-    setActiveSize() {
-      this.$store.commit("setFilterSize", "");
-    }
+    ...mapMutations([
+      "filterReset",
+      "setFilterSize",
+      "filterSetColor",
+      "setFilterProduct"
+    ])
   }
 };
 </script>

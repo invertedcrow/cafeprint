@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     onChoose() {
-      let filter = this.$store.state.productFilter;
+      let filter = this.$store.state.filter;
       this.$store.commit("setPreviewColor", filter.color);
       this.$store.commit("setPreviewSize", filter.size);
       this.$store.commit("showFilterPreview", true);

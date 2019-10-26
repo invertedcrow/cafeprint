@@ -35,10 +35,10 @@ export default {
   },
   computed: {
     getActiveCategory() {
-      return this.$store.state.productFilter.category;
+      return this.$store.state.filter.category;
     },
     showPreview() {
-      return this.$store.state.productFilter.showPreview;
+      return this.$store.state.filter.showPreview;
     }
   },
   methods: {

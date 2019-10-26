@@ -104,7 +104,7 @@ export default {
   },
   computed: {
     filter() {
-      return this.$store.state.productFilter;
+      return this.$store.state.filter;
     }
   }
 };

@@ -3,6 +3,7 @@ import Vue from 'vue'
 
 import constructor from './constructor.module';
 import upload from './modules/upload'
+import filter from './modules/filter'
 import { SIDES } from '../consts';
 
 Vue.use(Vuex);
@@ -73,7 +74,8 @@ const productFilterDefault = {
 export default new Vuex.Store({
     modules: {
         constructor: constructor,
-        upload
+        upload,
+        filter
     },
     state: {
         activeSettings: 'products',
@@ -81,7 +83,7 @@ export default new Vuex.Store({
         addImg: null,
         isShowProductFilter: false, 
         isShowProductDesign: false,
-        productFilter: {...productFilterDefault},
+       // productFilter: {...productFilterDefault},
         productPreview: {...productDefault},   
         designs: {
             list: [],  
@@ -112,24 +114,24 @@ export default new Vuex.Store({
         setActiveColor(state, value) {
             state.selectedProduct.color = value;
         },
-        setFilterCategory(state, value) {
-            state.productFilter.category = value;
-        },
-        setFilterProduct(state, value) {
-            state.productFilter.product = value;
-        },
-        filterSetColor(state, value) {
-            state.productFilter.color = value;
-        },
-        setFilterSize(state, value) {
-            state.productFilter.size = value;
-        },
-        filterReset(state) {
-            state.productFilter = {...productFilterDefault};
-        },
-        showFilterPreview(state, value) {
-           state.productFilter.showPreview = value;
-        },
+        // setFilterCategory(state, value) {
+        //     state.productFilter.category = value;
+        // },
+        // setFilterProduct(state, value) {
+        //     state.productFilter.product = value;
+        // },
+        // filterSetColor(state, value) {
+        //     state.productFilter.color = value;
+        // },
+        // setFilterSize(state, value) {
+        //     state.productFilter.size = value;
+        // },
+        // filterReset(state) {
+        //     state.productFilter = {...productFilterDefault};
+        // },
+        // showFilterPreview(state, value) {
+        //    state.productFilter.showPreview = value;
+        // },
         filterResetPreview(state) {
             state.productPreview = {...productDefault};
         },       
