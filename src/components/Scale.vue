@@ -1,17 +1,26 @@
 <template>
     <div class="float-right">
-        <button class="scale-button plus">
+        <button @click="plus" class="scale-button plus">
             <img src="../assets/icons/plus.svg">
         </button>
-        <button class="scale-button">
+        <button @click="minus" class="scale-button">
             <img src="../assets/icons/minus.svg">
         </button>
     </div>
 </template>
 
 <script>
+    import {eventBus} from "../main.js";
     export default {
-        name: "Zoom"
+        name: "Zoom",
+        methods: {
+            plus() {
+                eventBus.$emit('scaleChanged', '+');
+            },
+            minus() {
+                eventBus.$emit('scaleChanged', '-');
+            }
+        }
     }
 </script>
 

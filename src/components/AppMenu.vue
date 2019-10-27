@@ -3,7 +3,7 @@
     <div class="app-menu__item">
       <b-button @click="showModalProducts()" class="btn-circle">
         <div class="app-menu__item-name">
-            <img src="../assets/icons/text.svg">
+          <img src="../assets/icons/image.svg" />
         </div>
       </b-button>
       <div class="hint">
@@ -14,7 +14,7 @@
     <div class="app-menu__item">
       <b-button @click="showModalDesign()" class="btn-circle">
         <div class="app-menu__item-name">
-          <img src="../assets/icons/image.svg">
+          <img src="../assets/icons/image.svg" />
         </div>
       </b-button>
       <div class="hint">
@@ -25,7 +25,7 @@
     <div class="app-menu__item">
       <b-button @click="onAddText()" class="btn-circle">
         <div class="app-menu__item-name">
-          <img src="../assets/icons/text.svg">
+          <img src="../assets/icons/text.svg" />
         </div>
       </b-button>
       <div class="hint">
@@ -35,7 +35,7 @@
     <div class="app-menu__item">
       <b-button @click="showModalUpload()" class="btn-circle">
         <div class="app-menu__item-name">
-          <img src="../assets/icons/import.svg">
+          <img src="../assets/icons/import.svg" />
         </div>
       </b-button>
       <div class="hint">
@@ -46,21 +46,20 @@
 </template>
 
 <script>
-
-import {eventBus} from "../main.js";
-import {MODALS} from "../consts.js";
+import { eventBus } from "../main.js";
+import { MODALS } from "../consts.js";
 
 export default {
   methods: {
     showModalProducts() {
-      eventBus.$emit('showModal', MODALS.PRODUCTS);
+      eventBus.$emit("showModal", MODALS.PRODUCTS);
     },
     showModalDesign() {
-      eventBus.$emit('showModal', MODALS.DESIGNS);
+      eventBus.$emit("showModal", MODALS.DESIGNS);
     },
     showModalUpload() {
-      eventBus.$emit('showModal', MODALS.UPLOAD);
-    },    
+      eventBus.$emit("showModal", MODALS.UPLOAD);
+    },
     onAddText() {
       this.$store.commit("addText", true);
       this.$store.commit("setActiveSettings", "text");
@@ -88,7 +87,7 @@ export default {
     border-radius: 50%;
     border: 0;
     color: #fff;
-    background-color: #72B425;
+    background-color: #72b425;
     z-index: 2;
   }
 
@@ -104,10 +103,10 @@ export default {
     max-width: 0;
     overflow: hidden;
     height: 100%;
-    border: 1px solid #72B425;
+    border: 1px solid #72b425;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
-    transition: all .5s ease;
+    transition: all 0.5s ease;
     &__content {
       margin-left: 50px;
       margin-right: 25px;

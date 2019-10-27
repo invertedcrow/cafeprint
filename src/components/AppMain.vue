@@ -5,7 +5,7 @@
         <rect fill="none" :width="width" :height="height"></rect>
         <image
                 v-bind:xlink:href="selectedSide.image"
-                x="0" y="0" :width="width" :height="height"
+                :x="image.x" :y="image.y" :width="image.width" :height="image.height"
         ></image>
 
         <g :transform="'translate('+selectedSide.area.x+', '+selectedSide.area.y+')'">
@@ -98,6 +98,7 @@
 
 <script>
 
+import {eventBus} from '../main';
 import {TEXT_ALIGNMENT, CONSTRUCTOR_HANDLES} from '../consts';
 const defaultProps = {
     hex: "#fff",
@@ -127,6 +128,12 @@ export default {
             rotation: false,
             scaling: false,
 
+            image: {
+              x: 0,
+              y: 0,
+              width: 500,
+              height: 500
+            },
             lines: {
                 top: false,
                 bottom: false,
@@ -586,6 +593,83 @@ export default {
       this.width = svgBounds.width;
       this.height = svgBounds.height;
 
+      eventBus.$on('scaleChanged', sign => {
+
+
+        const sideOx = this.selectedSide.area.x + (this.selectedSide.area.width / 2);
+        const ratioLR = ((this.image.width - 4)  / 2) / sideOx; // 1.028 / 0.972
+        const ratioTB = (this.image.height - (this.selectedSide.area.y + this.selectedSide.area.height)) / this.selectedSide.area.y;
+
+        // const t = this.selectedSide.area.x + 
+
+        // w = 210
+        // x = 138
+        // scale = 1.5
+        // nW = 315
+        // nX = 92.5
+
+        // 138 / 1.5 * (((side.width - image.width) / 2) / (side.width * 1.5 - image.width * 1.5) / 2))
+
+        // console.log(ratioLR);
+        // console.log(sideOx);
+        // console.log(this.image.width  / 2);
+        // бол на мен
+
+        // console.log(ratioTB);
+        
+        const scale = 1.5;
+
+        const r = ((this.image.width - this.selectedSide.area.width) / 2) / ((this.image.width - this.selectedSide.area.width * 1.5) / 2);
+        console.log(r);
+
+        const distance = 250;
+        if (sign === '-') {
+          this.image.x = 0;
+          this.image.y = 0;
+          this.image.width = 500;
+          this.image.height = 500;
+          this.selectedSide.area.x = 138; // 138 -> ||| <- 152
+          this.selectedSide.area.y = 124.966;
+          this.selectedSide.area.width = 210;
+          this.selectedSide.area.height = 300;
+          // this.items.map(item => {
+          //   item.x *= 1.5;
+          //   item.y *= 1.5;
+          //   item.width /= 1.5;
+          //   item.height /= 1.5;
+          //   return item;
+          // });
+        } else {
+          this.image.x *= 0.670289;
+          // this.image.x += (distance * -1) / 2;
+          this.image.y += (distance * -1) / 2;
+          this.image.width += distance;
+          this.image.height += distance;
+          this.selectedSide.area.x = this.selectedSide.area.x / scale * r;
+          this.selectedSide.area.y = (this.selectedSide.area.y / scale) * ratioTB;
+          this.selectedSide.area.width *= scale;
+          this.selectedSide.area.height *= scale;
+
+          // const sideOx = this.selectedSide.area.width / 2;
+          const sideOy = this.selectedSide.area.height / 2;
+          const oX = this.selectedSide.area.x + (this.selectedSide.area.width / 2);
+          const oY = this.selectedSide.area.y + (this.selectedSide.area.height / 2);
+          const newW = this.selectedSide.area.width * scale;
+          const newH = this.selectedSide.area.height * scale;
+
+          // console.log(oX);
+
+          console.log(this.selectedSide.area.x);
+          this.items.map(item => {
+            item.x = (item.x / scale) * ratioLR;
+            item.y = (item.y / scale) * ratioTB;
+            item.width *= scale;
+            item.height *= scale;            
+            return item;
+          });                       
+        }
+      })
+
       this.editableAreaEl = document.querySelector('.constructor svg #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
   }
@@ -613,6 +697,8 @@ var swapArrayElements = function (arr, indexA, indexB) {
   }
 
   svg {
+    width: 500px;
+    height: 500px;
     /*width: auto;*/
     /*height: 80vh;*/
     /*align-self: center;*/
