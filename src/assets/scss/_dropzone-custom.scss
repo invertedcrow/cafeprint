@@ -1,0 +1,47 @@
+.dropzone {
+    .dz-preview.custom {
+        width: 170px;
+        height: 240px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 0;
+        margin-right: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);       
+        .dz-image {
+            width: 100% !important;
+            height: 170px;
+            border: 1px solid #e1e1e1;
+            background-color: #e1e1e1;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }        
+        .dz-filename {
+            padding: 10px;
+            font-size: 14px;
+            word-wrap: break-word;
+            color: #031127;
+            max-height: 62px;
+            overflow: hidden;
+        }
+        .remove {
+            position: absolute;
+            right: 5px;
+            top: 3px;
+            z-index: 10;       
+        }
+        &:hover {
+            .dz-image {               
+                img {
+                    filter: none;
+                    transform: none;
+                }
+               
+            }     
+            
+        }
+    }
+}

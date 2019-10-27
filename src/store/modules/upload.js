@@ -14,7 +14,7 @@ const actions = {
 
 const mutations = {
     addFile(state, value) {
-        state.items.push(value)
+        state.items.push(...value)
     }
 }
 

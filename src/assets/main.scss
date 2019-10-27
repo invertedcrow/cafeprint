@@ -1,43 +1,9 @@
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
-@import '_base.scss';
-@import '_modal.scss';
-@import '_dropzone-custom';
-@import '_fonts';
 
 body {
   background-color: #F7F7F7;
 }
-
-.selection-modal {
-    .modal-dialog {
-        max-width: 1350px;
-    }
-    .modal-body {
-      padding: 0;
-    }
-  }
-
-.nav-tabs {
-  border: none;
-  .nav-link {
-    padding: 5px 20px;
-    border-top-right-radius: 15px;
-    border-top-left-radius: 15px;
-    border: 2px solid $baseColor;
-    border-bottom: none;
-    color: #000;
-    margin-right: 5px;
-    &:hover,
-    &.active {
-     background-color: $baseColor;
-     color: #fff;
-     border: 2px solid $baseColor;
-     border-bottom: none;
-    }
-  }
-}
-
 
 ul {
   list-style: none;
@@ -48,6 +14,15 @@ ul {
 hr {
   border-color: #ebebeb;
   margin: 20px 0;
+}
+
+.selection-modal {
+    .modal-dialog {
+        max-width: 1350px;
+    }
+    .modal-body {
+      padding: 0;
+    }
 }
 
 .sidebar-card {
@@ -103,11 +78,3 @@ hr {
     }
   }
 }
-
-.divider {
-  height: 2px;
-  background-color: #ebebeb;
-  margin-bottom: 20px;
-}
-
- 

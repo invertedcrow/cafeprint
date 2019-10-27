@@ -1,49 +1,66 @@
 <template>
-    <div class="settings d-flex flex-column justify-content-between">
+    <div class="sidebar">
         <template v-if="activeSettings === 'products'">
-            <products-settings/>
+            <sidebar-product/>
         </template>
-        <template v-if="activeSettings === 'text'">
-            <text-edit/>
-            <div class="row">
-                <div class="col">
-                    <b-button @click="randomColor" pill>Color</b-button>
-                    <b-button pill @click="setFontBold" :variant="isBold ? 'danger' : 'secondary'">B</b-button>
-                    <b-button pill @click="setFontItalic" :variant="isItalic ? 'danger' : 'secondary'">I</b-button>
+        <template v-if="activeSettings !== 'products'">
+            <div class="sidebar-card">
+                <div class="sidebar-card-body" v-bind:class="{ 'pb-0': activeSettings === 'font-select' }">
+                    <template v-if="activeSettings === 'text'">
+                        <sidebar-text/>
+                        <!--<div class="row">-->
+                        <!--<div class="col">-->
+                        <!--<b-button @click="randomColor" pill>Color</b-button>-->
+                        <!--<b-button pill @click="setFontBold" :variant="isBold ? 'danger' : 'secondary'">B</b-button>-->
+                        <!--<b-button pill @click="setFontItalic" :variant="isItalic ? 'danger' : 'secondary'">I</b-button>-->
 
-                    <b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.START)"
-                              :variant="isTextAlignment(TEXT_ALIGNMENT.START) ? 'danger' : 'secondary'">Left
-                    </b-button>
-                    <b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.MIDDLE)"
-                              :variant="isTextAlignment(TEXT_ALIGNMENT.MIDDLE) ? 'danger' : 'secondary'">Center
-                    </b-button>
-                    <b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.END)"
-                              :variant="isTextAlignment(TEXT_ALIGNMENT.END) ? 'danger' : 'secondary'">Right
-                    </b-button>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    Font size
-                    <b-button pill @click="setFontSize('-')">-</b-button>
-                    {{fontSize}}
-                    <b-button pill @click="setFontSize('+')">+</b-button>
+                        <!--<b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.START)"-->
+                        <!--:variant="isTextAlignment(TEXT_ALIGNMENT.START) ? 'danger' : 'secondary'">Left-->
+                        <!--</b-button>-->
+                        <!--<b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.MIDDLE)"-->
+                        <!--:variant="isTextAlignment(TEXT_ALIGNMENT.MIDDLE) ? 'danger' : 'secondary'">Center-->
+                        <!--</b-button>-->
+                        <!--<b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.END)"-->
+                        <!--:variant="isTextAlignment(TEXT_ALIGNMENT.END) ? 'danger' : 'secondary'">Right-->
+                        <!--</b-button>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="row mt-2">-->
+                        <!--<div class="col">-->
+                        <!--Font size-->
+                        <!--<b-button pill @click="setFontSize('-')">-</b-button>-->
+                        <!--{{fontSize}}-->
+                        <!--<b-button pill @click="setFontSize('+')">+</b-button>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                    </template>
+                    <template v-if="activeSettings === 'font-select'">
+                        <sidebar-font></sidebar-font>
+                    </template>
+                    <template v-if="activeSettings === 'price'">
+                        <sidebar-price></sidebar-price>
+                    </template>
                 </div>
             </div>
         </template>
-        <b-button squared variant="info">Get Price</b-button>
+
+        <button class="get-price">Узнать стоимость</button>
     </div>
 </template>
 
 <script>
-    import ProductsSettings from "./ProductsSettings";
+    import SidebarProduct from "./SidebarProduct";
+    import SidebarText from "./SidebarText";
+    import SidebarFont from "./SidebarFont";
+    import SidebarPrice from "./SidebarPrice";
     import {TEXT_ALIGNMENT} from "../consts";
-    import TextEdit from "./TextEdit";
 
     export default {
         components: {
-            ProductsSettings,
-            TextEdit
+            SidebarProduct,
+            SidebarFont,
+            SidebarText,
+            SidebarPrice
         },
         data() {
             return {
@@ -119,11 +136,17 @@
 </script>
 
 <style lang="scss" scoped>
-    .settings {
+    .sidebar {
         margin-top: 50px;
-        /*width: 340px;*/
-        /*position: absolute;*/
-        /*right: 20px;*/
-        /*bottom: 10px;*/
+    }
+    button.get-price {
+        padding: 8px 30px;
+        border-radius: 30px;
+        background-color: #72b425;
+        color: #fff;
+        border: 0;
+        &:focus, &:active {
+            outline: none;
+        }
     }
 </style>

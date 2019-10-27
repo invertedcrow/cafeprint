@@ -3,6 +3,7 @@ import Vue from 'vue'
 
 import constructor from './constructor.module';
 import upload from './modules/upload'
+import filter from './modules/filter'
 import { SIDES } from '../consts';
 
 Vue.use(Vuex);
@@ -18,10 +19,10 @@ const productDefault = {
             key: SIDES.FRONT,
             title: 'Front',
             area: {
-                x: 202.87,
+                x: 138,
                 y: 124.966,
-                width: 311.741418746,
-                height: 450.457665885
+                width: 210,
+                height: 300
             },
             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=50,height=50,version=1564376579.png',
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=800,height=800,version=1564376579.png'
@@ -64,25 +65,25 @@ const productDefault = {
         }
     ]
 };
-const productFilterDefault = {
-    ...productDefault,
-    category: '',    
-    showPreview: false,    
-}
+// const productFilterDefault = {
+//     ...productDefault,
+//     category: '',    
+//     showPreview: false,    
+// }
 
 export default new Vuex.Store({
     modules: {
         constructor: constructor,
-        upload
+        upload,
+        filter
     },
     state: {
-        activeSettings: 'products',
+        activeSettings: 'price',
         addText: false,
         addImg: null,
         isShowProductFilter: false, 
         isShowProductDesign: false,
-        productFilter: {...productFilterDefault},
-        productPreview: {...productDefault},   
+      //  productPreview: {...productDefault},   
         designs: {
             list: [],  
             preview: ''          
@@ -111,28 +112,10 @@ export default new Vuex.Store({
         },
         setActiveColor(state, value) {
             state.selectedProduct.color = value;
-        },
-        setFilterCategory(state, value) {
-            state.productFilter.category = value;
-        },
-        setFilterProduct(state, value) {
-            state.productFilter.product = value;
-        },
-        filterSetColor(state, value) {
-            state.productFilter.color = value;
-        },
-        setFilterSize(state, value) {
-            state.productFilter.size = value;
-        },
-        filterReset(state) {
-            state.productFilter = {...productFilterDefault};
-        },
-        showFilterPreview(state, value) {
-           state.productFilter.showPreview = value;
-        },
-        filterResetPreview(state) {
-            state.productPreview = {...productDefault};
         },       
+        // filterResetPreview(state) {
+        //     state.productPreview = {...productDefault};
+        // },       
         setPreviewColor(state, value) {     
             state.productPreview.color = value;
         },
