@@ -43,7 +43,7 @@
                     :text-anchor="item.textAnchor"
             >
 
-              <tspan v-bind:key="index" v-for="(text, index) in item.text" :x="getTextXPosition(item)" :dy="index && '1em'">{{text}}</tspan>
+              <tspan v-bind:key="index" v-for="(text, index) in item.text" :letter-spacing="text.letterSpacing" :x="getTextXPosition(item)" :dy="index && '1em'">{{text.text}}</tspan>
             </text>
                          
             <image v-if="item.type=='img'" v-bind:xlink:href="item.file.dataURL" :x="0" :y="0" :height="item.height" :width="item.width" />
@@ -99,7 +99,7 @@
 <script>
 
 import {eventBus} from '../main';
-import {TEXT_ALIGNMENT, CONSTRUCTOR_HANDLES} from '../consts';
+import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar} from '../consts';
 const defaultProps = {
     hex: "#fff",
     a: 1
@@ -108,7 +108,7 @@ const defaultProps = {
 export default {
     data() {
         return {
-            TEXT_ALIGNMENT,
+            TextAlignment,
             CONSTRUCTOR_HANDLES,
 
             width: 736,
@@ -201,25 +201,48 @@ export default {
           }
       },
       getTextXPosition(item) {
-          if (item.textAnchor === TEXT_ALIGNMENT.END) {
+          if (item.textAnchor === TextAlignment.END) {
               return item.width;
           }
-          if (item.textAnchor === TEXT_ALIGNMENT.MIDDLE) {
+          if (item.textAnchor === TextAlignment.MIDDLE) {
               return item.width / 2;
           }
           return 0;
+      },
+      getTextLetterSpacing(item, text) {
+          // if (item.textAnchor !== TextAlignment.JUSTIFIED) {
+          //     return 0;
+          // }
+          //
+          // const maxLengthLine = Math.max(...item.text.map(x => x.text.length));
+          // const widthPerLetter = item.width / maxLengthLine;
+          //
+          // item.text.map(x => {
+          //     x.letterSpacing = (item.width - x.text.length * widthPerLetter) / x.text.length;
+          //     return x;
+          // });
+
+          // const index     = this.items.indexOf(this.selectedElement);
+          // const tSpans    = document.querySelectorAll(`#group-${index} text tspan`);
+          // const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
+          // const maxWidth  = Math.max(...widths);
+
       },
       round(value) {
           return Math.round(value);
       },
       resetSelected() {
           this.$store.commit('setSelectedElement', null);
+          this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },
       onMouseDown(eDown, item, handle) {
           eDown.stopPropagation();
 
           this.$store.commit('setSelectedElement', item);
-          this.$store.commit('updateElementSize');
+          eventBus.$emit('updateElementSize');
+          if (item.type === 'text') {
+              this.$store.commit('setActiveSidebar', Sidebar.TEXT);
+          }
 
           const selectedElementIndex  = this.items.indexOf(item);
           const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);
@@ -480,7 +503,7 @@ export default {
               textAnchor: "start",
               x: ((this.items.length + 2) % 20) * 20,
               y: ((this.items.length + 2) % 20) * 20,
-              text: ["Your text here"],
+              text: [{text: "Your text here", letterSpacing: 0}],
               width: 124,
               height: 25,
               font: "Arial",
@@ -524,6 +547,15 @@ export default {
 
             this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
             this.selectedElement.width    = maxWidth;
+
+            // if (this.selectedElement.textAnchor === TextAlignment.JUSTIFIED) {
+            //     const maxLengthLine = Math.max(...this.selectedElement.text.map(x => x.text.length));
+            //     const widthPerLetter = maxWidth / maxLengthLine;
+            //     this.selectedElement.text.map(x => {
+            //         x.letterSpacing = (this.selectedElement.width - x.text.length * widthPerLetter) / x.text.length - 1;
+            //         return x;
+            //     });
+            // }
         });
       },
 
@@ -592,6 +624,10 @@ export default {
       const svgBounds = this.svg.getBoundingClientRect();
       this.width = svgBounds.width;
       this.height = svgBounds.height;
+
+      eventBus.$on('updateElementSize', () => {
+          this.updateSizes();
+      });
 
       eventBus.$on('scaleChanged', sign => {
 

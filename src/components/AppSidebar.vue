@@ -1,18 +1,14 @@
 <template>
     <div class="sidebar">
-        <template v-if="activeSettings === 'products'">
+        <template v-if="activeSidebar === Sidebar.PRODUCT">
             <sidebar-product/>
         </template>
-        <template v-if="activeSettings !== 'products'">
+        <template v-if="activeSidebar !== Sidebar.PRODUCT">
             <div class="sidebar-card">
-                <div class="sidebar-card-body" v-bind:class="{ 'pb-0': activeSettings === 'font-select' }">
-                    <template v-if="activeSettings === 'text'">
+                <div class="sidebar-card-body" v-bind:class="{ 'pb-0': activeSidebar === Sidebar.FONT }">
+                    <template v-if="activeSidebar === Sidebar.TEXT">
                         <sidebar-text/>
-                        <!--<div class="row">-->
-                        <!--<div class="col">-->
                         <!--<b-button @click="randomColor" pill>Color</b-button>-->
-                        <!--<b-button pill @click="setFontBold" :variant="isBold ? 'danger' : 'secondary'">B</b-button>-->
-                        <!--<b-button pill @click="setFontItalic" :variant="isItalic ? 'danger' : 'secondary'">I</b-button>-->
 
                         <!--<b-button pill @click="setTextAlignment(TEXT_ALIGNMENT.START)"-->
                         <!--:variant="isTextAlignment(TEXT_ALIGNMENT.START) ? 'danger' : 'secondary'">Left-->
@@ -31,14 +27,18 @@
                         <!--<b-button pill @click="setFontSize('-')">-</b-button>-->
                         <!--{{fontSize}}-->
                         <!--<b-button pill @click="setFontSize('+')">+</b-button>-->
-                        <!--</div>-->
-                        <!--</div>-->
                     </template>
-                    <template v-if="activeSettings === 'font-select'">
+                    <template v-if="activeSidebar === Sidebar.FONT">
                         <sidebar-font></sidebar-font>
                     </template>
-                    <template v-if="activeSettings === 'price'">
+                    <template v-if="activeSidebar === Sidebar.PRICE">
                         <sidebar-price></sidebar-price>
+                    </template>
+                    <template v-if="activeSidebar === Sidebar.ARTICLE">
+                        <sidebar-article></sidebar-article>
+                    </template>
+                    <template v-if="activeSidebar === Sidebar.LAYERS">
+                        <sidebar-layers></sidebar-layers>
                     </template>
                 </div>
             </div>
@@ -53,10 +53,14 @@
     import SidebarText from "./SidebarText";
     import SidebarFont from "./SidebarFont";
     import SidebarPrice from "./SidebarPrice";
-    import {TEXT_ALIGNMENT} from "../consts";
+    import {TextAlignment, Sidebar} from "../consts";
+    import SidebarArticle from "./SidebarArticle";
+    import SidebarLayers from "./SidebarLayers";
 
     export default {
         components: {
+            SidebarLayers,
+            SidebarArticle,
             SidebarProduct,
             SidebarFont,
             SidebarText,
@@ -64,30 +68,28 @@
         },
         data() {
             return {
-                TEXT_ALIGNMENT
+                TextAlignment,
+                Sidebar
             }
         },
         computed: {
-            activeSettings() {
-                return this.$store.state.activeSettings;
+            activeSidebar() {
+                return this.$store.state.activeSidebar;
             },
             selectedElement() {
                 return this.$store.state.constructor.selectedElement;
             },
-            isBold() {
-                return this.selectedElement && this.selectedElement.bold;
-            },
-            isItalic() {
-                return this.selectedElement && this.selectedElement.italic;
-            },
-            fontSize() {
-                return this.selectedElement && Math.round(this.selectedElement.fontSize);
-            }
+            // isBold() {
+            //     return this.selectedElement && this.selectedElement.bold;
+            // },
+            // isItalic() {
+            //     return this.selectedElement && this.selectedElement.italic;
+            // },
+            // fontSize() {
+            //     return this.selectedElement && Math.round(this.selectedElement.fontSize);
+            // }
         },
         methods: {
-            isTextAlignment(value) {
-                return this.selectedElement && this.selectedElement.textAnchor === value;
-            },
             randomColor() {
                 if (this.selectedElement) {
                     this.$store.state.constructor.selectedElement.color = '#' + (function co(lor) {
@@ -97,27 +99,7 @@
                     })('');
                 }
             },
-            setFontBold() {
-                if (this.selectedElement) {
-                    this.selectedElement.bold = !this.selectedElement.bold;
-                    setTimeout(() => {
-                        this.$store.commit('updateElementSize');
-                    });
-                }
-            },
-            setFontItalic() {
-                if (this.selectedElement) {
-                    this.selectedElement.italic = !this.selectedElement.italic;
-                    setTimeout(() => {
-                        this.$store.commit('updateElementSize');
-                    });
-                }
-            },
-            setTextAlignment(alignment) {
-                if (this.selectedElement) {
-                    this.selectedElement.textAnchor = alignment;
-                }
-            },
+
             setFontSize(value) {
                 if (this.selectedElement) {
                     if (value === '+') {

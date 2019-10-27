@@ -8,7 +8,7 @@
         <app-main/>
       </div>
       <div class="col-lg-4">
-        <app-settings/>
+        <app-sidebar/>
       </div>
     </div>
     <div class="row">
@@ -24,7 +24,7 @@
 
 <script>
 import AppMenu from "./AppMenu";
-import AppSettings from "./AppSettings";
+import AppSidebar from "./AppSidebar";
 import AppMain from "./AppMain";
 import Sides from "./Sides";
 import Scale from "./Scale";
@@ -32,7 +32,7 @@ import Scale from "./Scale";
 export default {
   components: {
     AppMenu,
-    AppSettings,
+      AppSidebar,
     AppMain,
     Sides,
       Scale

@@ -51,7 +51,7 @@ export default {
       this.$store.commit("setPreviewSide", side);
     },
     onSelect() {
-      this.$store.commit("setActiveSettings", "products");
+      this.$store.commit("setActiveSidebar", "products");
       this.$store.commit("showFilterModal", false);
       this.$store.commit("setActiveProduct");
     }

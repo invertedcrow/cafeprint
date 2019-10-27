@@ -44,8 +44,8 @@
         <hr>
 
         <div class="sidebar-price__summary">
-            <div class="sidebar-price__summary-count">Выбрано 9 позиций</div>
-            <div class="sidebar-price__summary-sum">Итого: 3 150 UAH</div>
+            <div class="sidebar-price__summary-count">выбрано 9 позиций</div>
+            <div class="sidebar-price__summary-sum">Итого: {{3150 | groupSumNumber}} UAH</div>
         </div>
     </div>
 </template>
@@ -54,6 +54,18 @@
     import NumberInput from './NumberInput';
     export default {
         name: "SidebarPrice",
+        filters: {
+            groupSumNumber: function (value) {
+                if (!value) {
+                    return '';
+                }
+                value = value.toString();
+                for(let i = value.length; i >= 0; i -= 3) {
+                    value = value.slice(0, i) + ' ' + value.slice(i);
+                }
+                return value;
+            }
+        },
         data() {
             return {
                 sizes: [{
@@ -142,16 +154,33 @@
                 font-weight: 600;
             }
             &-discount {
+                margin-top: 5px;
                 font-size: 12px;
                 font-weight: 600;
                 color: #eb4626;
             }
             &-details {
+                margin-top: 15px;
+                width: 100%;
                 padding: 8px 30px;
                 border-radius: 30px;
                 color: #939aa6;
                 background-color: transparent;
                 border: 1px solid #e1e1e1;
+                &:focus, &:active {
+                    outline: none;
+                }
+            }
+        }
+
+        &__summary {
+            &-count {
+                font-size: 12px;
+                margin-bottom: 5px;
+            }
+            &-sum {
+                font-size: 18px;
+                font-weight: 600;
             }
         }
     }

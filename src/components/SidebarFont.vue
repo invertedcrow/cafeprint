@@ -9,7 +9,7 @@
             <div class="sidebar-card-header__title">
                 Выбор шрифта
             </div>
-            <div class="sidebar-card-header__close">
+            <div @click="close" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -17,23 +17,40 @@
         </div>
         <div class="sidebar-font__fonts-list">
             <ul>
-                <li :key="index" v-for="(font, index) in fonts"><div>{{font}}</div></li>
+                <li @click="onFontSelected(font)" :key="index" v-for="(font, index) in fonts"><div>{{font}}</div></li>
             </ul>
         </div>
     </div>
 </template>
 
 <script>
+    import {Sidebar} from "../consts";
+    import {eventBus} from '../main';
+
     export default {
         data() {
             return {
-                fonts: ['Arial', 'Robotto', 'Times New Roman', 'Calibri', 'Helvetica', 'Cambria', 'Bebas Neue']
+                fonts: ['Arial', 'Times New Roman', 'Helvetica', 'Times', 'Courier New', 'Verdana']
             }
         },
         name: "SettingsFontSelect",
+        computed: {
+            selectedElement() {
+                return this.$store.state.constructor.selectedElement;
+            },
+        },
         methods: {
             back() {
-                this.$store.commit('setActiveSettings', 'text');
+                this.$store.commit('setActiveSidebar', Sidebar.TEXT);
+            },
+            close() {
+                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
+            },
+            onFontSelected(font) {
+                this.selectedElement.font = font;
+
+                this.$store.commit('setActiveSidebar', Sidebar.TEXT);
+                eventBus.$emit('updateElementSize');
             }
         }
     }

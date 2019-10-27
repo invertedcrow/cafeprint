@@ -26,7 +26,7 @@
         methods: {
             onKeyUp(evt) {
                 this.innerValue = evt.target.value;
-                this.emitValue();
+                this.emit();
             },
             onKeyPress(evt) {
                 const pattern = this.pattern || /[0-9.]+/;
@@ -36,14 +36,15 @@
             },
             increment() {
                 this.innerValue = +this.innerValue >= +this.max ? this.innerValue : +this.innerValue + 1;
-                this.emitValue();
+                this.emit();
             },
             decrement() {
                 this.innerValue = +this.innerValue <= +this.min ? this.innerValue : +this.innerValue - 1;
-                this.emitValue();
+                this.emit();
             },
-            emitValue() {
+            emit() {
                 this.$emit('input', this.innerValue);
+                this.$emit('change', this.innerValue);
             }
         },
         created() {

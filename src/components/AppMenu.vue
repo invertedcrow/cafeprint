@@ -62,7 +62,7 @@ export default {
     },
     onAddText() {
       this.$store.commit("addText", true);
-      this.$store.commit("setActiveSettings", "text");
+      this.$store.commit("setActiveSidebar", "text");
     }
   }
 };
