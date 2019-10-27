@@ -1,14 +1,7 @@
 <template>
   <div>
-    <b-modal
-      :id="MODALS.PRODUCTS"
-      hide-backdrop
-      hide-footer
-      hide-header
-      modal-class="selection-modal"
-      size="xl"
-    >
-      <product-selection />
+    <b-modal :id="MODALS.PRODUCTS" hide-footer hide-header modal-class="products-modal">
+      <modal-products />
     </b-modal>
 
     <!-- @hide="showFilterModal(false)" -->
@@ -33,13 +26,13 @@
 <script>
 import { eventBus } from "../main";
 import { MODALS } from "../consts";
-import ProductSelection from "./ProductSelection";
+import ModalProducts from "./ModalProducts";
 import DesignSelection from "./DesignSelection";
 import ModalUpload from "./ModalUpload";
 
 export default {
   components: {
-    ProductSelection,
+    ModalProducts,
     DesignSelection,
     ModalUpload
   },

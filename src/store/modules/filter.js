@@ -1,42 +1,30 @@
-const getDefaultState = () => ({
-    product: '',
-    color: '',
-    size: '',
-    side: '',
-    id: '',
-    sides: [],
-    category: '',    
-    showPreview: false,    
+const getDefaultState = () => ({    
+    activeCategory: '', 
+    categories: [] 
 });
 
 const state = getDefaultState();
 
+const subCategories = ["Регланы", "Поло", "Кенгуру", "Мантия", "Лонгсливы", "Футболки"];
+const categories = [
+    { title: "Мужские", subCategories: [...subCategories]},
+    { title: "Женские", subCategories: [...subCategories]},
+    { title: "Детские", subCategories: [...subCategories]},
+    { title: "Аксессуары", subCategories: [...subCategories]}
+];
+
 const getters = {
+    categories: (state) => state.categories,
+    activeCategory: (state) => state.activeCategory
 }
 
 const actions = {
-   
+   fetchCategories: (state) => state.commit('setCategories', categories)   
 }
 
 const mutations = {
-    setFilterCategory(state, value) {
-        state.category = value;
-    },
-    setFilterProduct(state, value) {
-        state.product = value;
-    },
-    filterSetColor(state, value) {
-        state.color = value;
-    },
-    setFilterSize(state, value) {
-        state.size = value;
-    },
-    filterReset(state) {
-        Object.assign(state, getDefaultState()) //{ ...state, ...filterDefault };
-    },
-    showFilterPreview(state, value) {
-       state.showPreview = value;
-    },    
+    setCategories: (state, value) => state.categories = value,
+    setFilterCategory: (state, value) => state.activeCategory = value,
 }
 
 export default {

@@ -3,6 +3,7 @@
 @import '_base.scss';
 @import '_modal.scss';
 @import '_dropzone-custom';
+@import '_fonts';
 
 body {
   background-color: #F7F7F7;
@@ -101,6 +102,12 @@ hr {
       }
     }
   }
+}
+
+.divider {
+  height: 2px;
+  background-color: #ebebeb;
+  margin-bottom: 20px;
 }
 
  
