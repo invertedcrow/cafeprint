@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="constructor" :style="{borderColor: selectedProduct.color}">
-      <svg :viewBox="'0 0 '+width+' '+height" :width="width" :height="height" @mousedown="resetSelected">
+      <svg id="editor" :viewBox="'0 0 '+width+' '+height" :width="width" :height="height" @mousedown="resetSelected">
         <rect fill="none" :width="width" :height="height"></rect>
         <image
                 v-bind:xlink:href="selectedSide.image"
@@ -31,20 +31,38 @@
                   @mousedown="onMouseDown($event,item)"
           >
             <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent"></rect>
+
+            <g>
             <text
-                    v-if="item.type=='text'"
+                    v-bind:key="index"
+                    v-for="(text, index) in item.text"
                     :x="getTextXPosition(item)"
-                    :y="'1em'"
-                    :font-size="item.fontSize"
+                    :y="'0.9em'"
+                    :dy="index + 'em'"
                     :font-family="item.font"
+                    :font-size="item.fontSize"
+                    :text-anchor="item.textAnchor"
                     :font-weight="item.bold ? 'bold' : 'normal'"
                     :font-style="item.italic ? 'italic' : 'normal'"
                     :fill="item.color"
-                    :text-anchor="item.textAnchor"
-            >
+                    :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
+            >{{text}}</text>
+            </g>
 
-              <tspan v-bind:key="index" v-for="(text, index) in item.text" :letter-spacing="text.letterSpacing" :x="getTextXPosition(item)" :dy="index && '1em'">{{text.text}}</tspan>
-            </text>
+            <!--<text-->
+                    <!--v-if="item.type=='text'"-->
+                    <!--:x="getTextXPosition(item)"-->
+                    <!--:y="'1em'"-->
+                    <!--:font-size="item.fontSize"-->
+                    <!--:font-family="item.font"-->
+                    <!--:font-weight="item.bold ? 'bold' : 'normal'"-->
+                    <!--:font-style="item.italic ? 'italic' : 'normal'"-->
+                    <!--:fill="item.color"-->
+                    <!--:text-anchor="item.textAnchor"-->
+            <!--&gt;-->
+
+              <!--<tspan v-bind:key="index" v-for="(text, index) in item.text" :x="getTextXPosition(item)" :dy="index && '1em'">{{text}}</tspan>-->
+            <!--</text>-->
                          
             <image v-if="item.type=='img'" v-bind:xlink:href="item.file.dataURL" :x="0" :y="0" :height="item.height" :width="item.width" />
             
@@ -62,30 +80,25 @@
                 <text v-if="scaling">H: {{round(item.height)}} W: {{round(item.width)}}</text>
               </g>
               <g>
-                <rect
-                        class="ctrl-rect rotate"
-                        :width="tools.squaresize"
-                        :height="tools.squaresize"
-                        :x="item.width"
-                        :y="0-tools.squaresize"
-                        @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
-                />
-                <rect
-                        class="ctrl-rect remove"
-                        @click="removeActiveItem()"
-                        :width="tools.squaresize"
-                        :height="tools.squaresize"
-                        :x="0-tools.squaresize"
-                        :y="item.height"
-                />
-                <rect
-                        class="ctrl-rect scale"
-                        :width="tools.squaresize"
-                        :height="tools.squaresize"
-                        :x="item.width"
-                        :y="item.height"
-                        @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
-                />
+                    <g @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)" :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'">
+                        <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize"/>
+                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" class="ctrl-icon" width="15px" height="18px" xmlns="http://www.w3.org/2000/svg" version="1.1" x="4px" y="3px" viewBox="0 0 76.398 76.398" style="enable-background:new 0 0 76.398 76.398;" xml:space="preserve">
+	                        <path d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"/>
+                        </svg>
+                    </g>
+                    <g @click="removeActiveItem()" :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'">
+                        <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                        <svg class="ctrl-icon" xmlns="http://www.w3.org/2000/svg" height="17px" viewBox="-18 0 511 512" width="15px" fill="#757575" x="4px" y="3px">
+                            <path d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"/>
+                        </svg>
+                    </g>
+
+                  <g @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)" :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'">
+                      <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize"/>
+                      <svg xmlns:xlink="http://www.w3.org/1999/xlink" class="ctrl-icon" width="15px" height="15px" xmlns="http://www.w3.org/2000/svg" version="1.1" x="5px" y="5px" viewBox="0 0 472.774 472.774" xml:space="preserve">
+		                    <polygon transform="rotate(-45 236.387 236.387)" points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "/>
+                      </svg>
+                  </g>
               </g>
             </g>
           </g>
@@ -119,7 +132,7 @@ export default {
             movetarget: null,
             activeItemIndex: null,
             tools: {
-                squaresize: 20,
+                squaresize: 24,
                 min_height: 10
             },
             svg: null,
@@ -168,7 +181,7 @@ export default {
             }
             if (mutation.type === 'setSelectedSide') {
                 setTimeout(() => {
-                    this.editableAreaEl = document.querySelector('.constructor svg #editable-area');
+                    this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
                 });
             }
         })
@@ -209,25 +222,6 @@ export default {
           }
           return 0;
       },
-      getTextLetterSpacing(item, text) {
-          // if (item.textAnchor !== TextAlignment.JUSTIFIED) {
-          //     return 0;
-          // }
-          //
-          // const maxLengthLine = Math.max(...item.text.map(x => x.text.length));
-          // const widthPerLetter = item.width / maxLengthLine;
-          //
-          // item.text.map(x => {
-          //     x.letterSpacing = (item.width - x.text.length * widthPerLetter) / x.text.length;
-          //     return x;
-          // });
-
-          // const index     = this.items.indexOf(this.selectedElement);
-          // const tSpans    = document.querySelectorAll(`#group-${index} text tspan`);
-          // const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
-          // const maxWidth  = Math.max(...widths);
-
-      },
       round(value) {
           return Math.round(value);
       },
@@ -239,7 +233,6 @@ export default {
           eDown.stopPropagation();
 
           this.$store.commit('setSelectedElement', item);
-          eventBus.$emit('updateElementSize');
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
           }
@@ -490,6 +483,7 @@ export default {
           const item = this.createTextField();
           this.$store.commit('setSelectedElement', item);
           this.$store.commit("addItemToConstructor", item);
+          eventBus.$emit('updateElementSize');
       },
       addImgField(file) {
           const item = this.createImgField(file);
@@ -503,7 +497,7 @@ export default {
               textAnchor: "start",
               x: ((this.items.length + 2) % 20) * 20,
               y: ((this.items.length + 2) % 20) * 20,
-              text: [{text: "Your text here", letterSpacing: 0}],
+              text: ["Your text here"],
               width: 124,
               height: 25,
               font: "Arial",
@@ -541,7 +535,9 @@ export default {
       updateSizes() {
         setTimeout(() => {
             const index     = this.items.indexOf(this.selectedElement);
-            const tSpans    = document.querySelectorAll(`#group-${index} text tspan`);
+            // Text justify test
+            const tSpans    = document.querySelectorAll(`#group-${index} g > text`);
+            // const tSpans    = document.querySelectorAll(`#group-${index} text tspan`);
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
             const maxWidth  = Math.max(...widths);
 
@@ -558,27 +554,6 @@ export default {
             // }
         });
       },
-
-    // onClickItem(event, item) {
-    //   event.stopPropagation(); //prevent parent from firing
-    //   if (item.active) {
-    //     return;
-    //   }
-    //
-    //   this.$store.commit('setSelectedElement', item);
-    //
-    //   // select item if not selected
-    //   this.deactivateItems();
-    //   item.active = true;
-    //   this.onChangeColorListener = function() {
-    //     item.color = this.colors.hex;
-    //   };
-    //   this.colors = defaultProps;
-    //   this.colors.hex = item.color;
-    //   this.activeItemIndex = this.items.indexOf(item);
-    //   this.$store.commit("setItemsConstructor", this.items);
-    // },
-
       moveUp() {
           if (
               this.activeItemIndex >= 0 &&
@@ -620,7 +595,7 @@ export default {
       },
   },
   mounted() {
-      this.svg = document.querySelector('.constructor svg');
+      this.svg = document.querySelector('#editor');
       const svgBounds = this.svg.getBoundingClientRect();
       this.width = svgBounds.width;
       this.height = svgBounds.height;
@@ -706,7 +681,7 @@ export default {
         }
       })
 
-      this.editableAreaEl = document.querySelector('.constructor svg #editable-area');
+      this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
   }
 };
@@ -732,7 +707,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
     /*width: 100vw;*/
   }
 
-  svg {
+  #editor {
     width: 500px;
     height: 500px;
     /*width: auto;*/
@@ -751,25 +726,18 @@ var swapArrayElements = function (arr, indexA, indexB) {
     }
     .ctrl-rect {
       fill: #ffffff;
-      stroke: #000;
-      stroke-width: 1;
+      /*stroke: #000;*/
+      /*stroke-width: 1;*/
       &:hover {
         cursor: pointer;
       }
-      &.remove {
-        fill: red;
-        content: "";
-      }
-      &.rotate {
-        fill: orange;
-      }
-      &.scale {
-        fill: greenyellow;
-      }
     }
+      .ctrl-icon {
+          fill: #757575;
+      }
     .ctrl-bounds {
       fill-opacity: 0;
-      stroke: #fff;
+      stroke: #a4a7ae;
       stroke-width: 1;
       stroke-linecap: round;
     }

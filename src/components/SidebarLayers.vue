@@ -9,7 +9,7 @@
             <div class="sidebar-card-header__title">
                 Управление слоями
             </div>
-            <div class="sidebar-card-header__close">
+            <div @click="close" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -65,6 +65,7 @@
 
 <script>
     import Checkbox from './Checkbox';
+    import {Sidebar} from "../consts";
     export default {
         data() {
             return {
@@ -100,6 +101,11 @@
         },
         components: {
             Checkbox
+        },
+        methods: {
+            close() {
+                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
+            }
         },
         name: "SidebarLayers"
     }
@@ -180,53 +186,6 @@
                         height: 20px;
                         width: 20px;
                     }
-
-
-                    .check {
-                        width: 60px;
-                        height: 60px;
-                        position: absolute;
-
-                        input {
-                            display: none;
-                            &:checked + .box {
-                                background-color: #b3ffb7;
-
-                                &:after {
-                                    top: 0;
-                                }
-                            }
-                        }
-
-                        .box {
-                            width: 100%;
-                            height: 100%;
-                            border: 2px solid transparent;
-                            background-color: white;
-                            position: relative;
-                            overflow: hidden;
-                            cursor: pointer;
-                            box-shadow: 0 5px rgba(0,0,0,.2);
-                            &:after {
-                                width: 50%;
-                                height: 20%;
-                                content: '';
-                                position: absolute;
-                                border-left: 7.5px solid;
-                                border-bottom: 7.5px solid;
-                                border-color: #40c540;
-                                transform: rotate(-45deg);
-                                left: 0;
-                                right: 0;
-                                top: 200%;
-                                bottom: 5%;
-                                margin: auto;
-                            }
-                        }
-                    }
-
-
-
                 }
             }
         }

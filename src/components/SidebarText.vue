@@ -10,7 +10,7 @@
             <div class="sidebar-card-header__title">
                 Управление текстом
             </div>
-            <div class="sidebar-card-header__close">
+            <div @click="close" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -18,11 +18,11 @@
         </div>
 
         <div class="sidebar-text__input">
-            <textarea
-                    v-model="text"
-                    @keyup="updateInput"
-                    placeholder="Your text here..."
-            ></textarea>
+             <textarea
+                v-model="text"
+                @keyup="updateInput"
+                placeholder="Your text here..."
+             ></textarea>
         </div>
         <div class="sidebar-text__tools">
             <button @click="setFontBold" class="sidebar-text__tools-item" :class="{'active': isBold}">
@@ -35,7 +35,7 @@
                     <path d="m409.294 58.471v-58.471h-175.412v58.471h43.373l-150.352 350.823h-68.432v58.471h175.412v-58.471h-43.373l150.351-350.823z"/>
                 </svg>
             </button>
-            <button @click="setTextAlignment(TextAlignment.START)" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.START)}">
+            <button @click="setTextAlignment(TextAlignment.START)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.START) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1_357_" d="m0 116.941h292.353v58.471h-292.353z" transform="translate(1 5)"/>
                     <path id="path-2_27_" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -43,7 +43,7 @@
                     <path id="path-2_26_" d="m0 0h409.294v58.471h-409.294z" transform="translate(1 1)"/>
                 </svg>
             </button>
-            <button @click="setTextAlignment(TextAlignment.MIDDLE)" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.MIDDLE)}">
+            <button @click="setTextAlignment(TextAlignment.MIDDLE)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.MIDDLE) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1" d="m58.471 116.941h292.353v58.471h-292.353z" transform="translate(3 5)"/>
                     <path id="path-2" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -51,7 +51,7 @@
                     <path id="path-2_1_" d="m0 0h409.294v58.471h-409.294z" transform="translate(1 1)"/>
                 </svg>
             </button>
-            <button @click="setTextAlignment(TextAlignment.END)" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.END)}">
+            <button @click="setTextAlignment(TextAlignment.END)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.END) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1_5_" d="m116.941 116.941h292.353v58.471h-292.353z" transform="translate(5 5)"/>
                     <path id="path-2_5_" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -59,7 +59,7 @@
                     <path id="path-2_4_" d="m0 0h409.294v58.471h-409.294z" transform="translate(1 1)"/>
                 </svg>
             </button>
-            <button @click="setTextAlignment(TextAlignment.JUSTIFIED)" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.JUSTIFIED)}">
+            <button @click="setTextAlignment(TextAlignment.JUSTIFIED)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.JUSTIFIED) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1_97_" d="m0 116.941h409.294v58.471h-409.294z" transform="translate(1 5)"/>
                     <path id="path-1_96_" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -161,7 +161,7 @@
         },
         mounted() {
             if (this.selectedElement) {
-                this.text = (this.selectedElement.text.map(x => x.text).join('\n')) || '';
+                this.text = (this.selectedElement.text.join('\n')) || '';
             }
         },
         computed: {
@@ -177,13 +177,16 @@
             isItalic() {
                 return this.selectedElement && this.selectedElement.italic;
             },
+            isMultiLine() {
+                return this.selectedElement && this.selectedElement.text.length > 1;
+            },
             fontSize() {
                 return this.selectedElement && Math.round(this.selectedElement.fontSize);
             }
         },
         methods: {
             updateInput() {
-                this.selectedElement.text = this.text.split('\n').map(x => ({text: x, letterSpacing: 0}));
+                this.selectedElement.text = this.text.split('\n');
                 setTimeout(() => {
                     this.$store.commit("setItemsConstructor", this.items);
                 })
@@ -232,6 +235,10 @@
                 if (this.selectedElement) {
                     this.selectedElement.color = color;
                 }
+            },
+            close() {
+                this.$store.commit('setSelectedElement', null);
+                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
             }
         }
     };
@@ -285,7 +292,7 @@
                 &:focus, &:active {
                     outline: none;
                 }
-                &:hover {
+                &:hover:not(:disabled) {
                     border-color: #81b241;
                     svg {
                         fill: #81b241;
@@ -296,8 +303,12 @@
                     background-color: #81b241;
                     border-color: #81b241;
                     svg {
-                        fill: #fff;
+                        fill: #fff !important;
                     }
+                }
+
+                &:disabled {
+                    cursor: not-allowed;
                 }
             }
         }

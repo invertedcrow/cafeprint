@@ -9,7 +9,7 @@
             <div class="sidebar-card-header__title">
                 Подробности об артикуле
             </div>
-            <div class="sidebar-card-header__close">
+            <div @click="close()" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -64,7 +64,8 @@
 </template>
 
 <script>
-    import {SIDES} from '../consts';
+    import {Sidebar, SIDES} from '../consts';
+    import {eventBus} from "../main";
 
     export default {
         name: "SidebarArticle",
@@ -114,10 +115,13 @@
         },
         methods: {
             back() {
-                this.$store.commit('setActiveSidebar', 'price');
+                this.$store.commit('setActiveSidebar', Sidebar.PRICE);
             },
             filteredItems(side) {
                 return this.items.filter(x => x.side === side);
+            },
+            close() {
+                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
             }
         }
     }
