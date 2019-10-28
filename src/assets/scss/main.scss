@@ -11,14 +11,23 @@ body {
 
 .nav-tabs {
   border: none;
+  .nav-item {
+    &:first-child {
+      .nav-link {
+        margin-right: 7px;
+      }
+    }
+  }
   .nav-link {
-    padding: 5px 20px;
+    padding: 5px 15px;
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
     border: 2px solid $baseColor;
     border-bottom: none;
-    color: #000;
-    margin-right: 5px;
+    color: #000;  
+    font-size: 14px;
+    font-family: "MuseoSansCyrl", sans-serif;
+    font-weight: 500;
     &:hover,
     &.active {
      background-color: $baseColor;
@@ -26,7 +35,13 @@ body {
      border: 2px solid $baseColor;
      border-bottom: none;
     }
+    
   }
+  @media screen and (max-width: 768px) {
+    .nav-link {
+      padding: 5px 12px;
+    }         
+}
 }
 
 

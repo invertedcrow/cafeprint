@@ -9,8 +9,7 @@
             :useCustomSlot="true"
             :thumbnailMethod="null"
             :options="dropzoneOptions"
-            @vdropzone-thumbnail="() => refreshLength()"
-            @vdropzone-removed-file="() => refreshLength()"
+            @vdropzone-success="(file, response) => addFile(file)"
           >
             <div class="dropzone__content">Перетащите файлы сюда...</div>
           </vue-dropzone>
@@ -18,13 +17,9 @@
       </perfect-scrollbar>
     </div>
 
-    <div v-if="!length" class="upload__btn-wrapper">
+    <div class="upload__btn-wrapper">
       <div class="upload__btn-wrapper__text">Выбрать файлы</div>
-      <button class="baseBtn" @click="addFile()">Выбрать изображение</button>
-    </div>
-    <div v-else class="upload__btn-wrapper">
-      <div class="upload__btn-wrapper__text">Вы добавили файлы</div>
-      <button class="baseBtn" @click="chooseFiles()">Загрузить выбранное</button>
+      <button class="baseBtn" @click="onAddFile()">Выбрать изображение</button>
     </div>
   </div>
 </template>
@@ -32,6 +27,7 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import { mapMutations } from "vuex";
 export default {
   components: {
     vueDropzone: vue2Dropzone
@@ -47,16 +43,8 @@ export default {
     };
   },
   methods: {
-    refreshLength() {
-      this.length = this.$refs.myVueDropzone.getAcceptedFiles().length;
-    },
-    chooseFiles() {
-      const files = this.$refs.myVueDropzone.getAcceptedFiles();
-      this.$store.commit("addFile", files);
-      this.$refs.myVueDropzone.removeAllFiles();
-      this.refreshLength();
-    },
-    addFile() {
+    ...mapMutations(["addFile"]),
+    onAddFile() {
       this.$refs.myVueDropzone.$el.click();
     },
     templatePreview() {
@@ -89,9 +77,7 @@ export default {
             <select class="form-control" title="" name="image_type">
                 <options v-for="type in image_type" value="type.value">{{ type.title }}</options>
             </select>
-        </div>
-      <div class="dz-filename"><span data-dz-name></span></div>
-          
+        </div>     
         `;
     }
   }
@@ -104,6 +90,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+  font-family: "MuseoSansCyrl", sans-serif;
   &__btn {
     height: 50px;
     font-weight: bold;
@@ -131,9 +118,17 @@ export default {
       height: 100%;
       padding-left: 20px;
       padding-right: 20px;
+      box-shadow: 0 9px 35px rgba(0, 0, 0, 0.07);
     }
     &__text {
       color: lightgrey;
+    }
+    @media screen and (max-width: 768px) {
+      border: none;
+      justify-content: center;
+      &__text {
+        display: none;
+      }
     }
   }
 }

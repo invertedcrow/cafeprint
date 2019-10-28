@@ -43,7 +43,7 @@
     </div>
     <div class="upload h-100">
       <b-tabs>
-        <b-tab title="Загрузить свое" active>
+        <b-tab :title="titleTab" active>
           <upload-file />
         </b-tab>
         <b-tab title="Загруженные изображения">
@@ -66,13 +66,22 @@ export default {
   },
   data() {
     return {
-      selectedItem: null
+      selectedItem: null,
+      titleTab: window.innerWidth > 768 ? "Загрузить свое" : "Загрузить"
     };
   },
   computed: {
     items() {
       return this.$store.state.upload.items;
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener("resize", () => {
+        this.titleTab =
+          window.innerWidth > 768 ? "Загрузить свое" : "Загрузить";
+      });
+    });
   },
   methods: {
     onHide() {
