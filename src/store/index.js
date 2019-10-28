@@ -2,8 +2,9 @@ import Vuex from 'vuex';
 import Vue from 'vue'
 
 import constructor from './constructor.module';
-import upload from './modules/upload'
-import filter from './modules/filter'
+import upload from './modules/upload';
+import filter from './modules/filter';
+import design from './modules/design'
 import { SIDES } from '../consts';
 
 Vue.use(Vuex);
@@ -75,7 +76,8 @@ export default new Vuex.Store({
     modules: {
         constructor: constructor,
         upload,
-        filter
+        filter,
+        design
     },
     state: {
         activeSettings: 'price',
@@ -84,10 +86,10 @@ export default new Vuex.Store({
         isShowProductFilter: false, 
         isShowProductDesign: false,
       //  productPreview: {...productDefault},   
-        designs: {
-            list: [],  
-            preview: ''          
-        },
+        // designs: {
+        //     list: [],  
+        //     preview: ''          
+        // },
         // constructor: {
         //     items: [],
         //     selectedElement: null,
@@ -136,12 +138,12 @@ export default new Vuex.Store({
         }, 
 
 
-        setDesigns(state, value) {
-            state.designs.list = value;
-        },
-        setDesignPreview(state, value) {
-            state.designs.preview = value;
-        },
+        // setDesigns(state, value) {
+        //     state.designs.list = value;
+        // },
+        // setDesignPreview(state, value) {
+        //     state.designs.preview = value;
+        // },
 
 
         addText(state, value) {
@@ -167,13 +169,6 @@ export default new Vuex.Store({
         updateElementSize() {},
     },
     actions: {
-        searchDesign({commit}, searchParams) {
-            let list = []
-            if(searchParams) {
-                list = [1,2,3,4,5,6,7,8,9,12,11,13,14,15,16,17]
-            }
-
-            commit("setDesigns", list)
-        }
+       
     }    
 })

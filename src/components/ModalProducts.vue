@@ -1,6 +1,6 @@
 <template>
   <div class="product">
-    <div class="filter__title">Категории товаров</div>
+    <div class="modal-title">Категории товаров</div>
 
     <div class="modal-head">
       <div class="modal-head__close" @click="onHide()">
@@ -91,13 +91,7 @@ export default {
     }
   }
 }
-.filter__title {
-  color: #212121;
-  font-family: Oswald;
-  font-size: 16px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.16px;
+.modal-title {
   display: none;
   @media screen and (max-width: 768px) {
     display: block;

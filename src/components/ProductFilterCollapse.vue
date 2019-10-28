@@ -60,7 +60,7 @@ export default {
     }
     &-title {
       color: #031127;
-      font-family: "Museo Sans Cyrl -700";
+      font-family: "MuseoSansCyrl", sans-serif;
       font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
@@ -77,7 +77,7 @@ export default {
     p {
       margin-left: 12px;
       color: #162237;
-      font-family: "Museo Sans Cyrl -300";
+      font-family: "MuseoSansCyrl", sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.14px;

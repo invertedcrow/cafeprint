@@ -1,33 +1,56 @@
 <template>
   <div class="categories d-flex flex-column">
-    <b>Categories</b>
-    <div class="categories__wrapper">
-      <div
-        class="categories__item d-flex flex-column align-items-center justify-content-center"
-        v-for="item in items"
-        :key="item"
-        @click="onSelect()"
-      >
-        <div class="categories__item-title">title here</div>
+    <div @click="showCollapse = !showCollapse" class="categories__title justify-content-between">
+      <div>Выберите категории</div>
+      <div class="categories__arrow d-flex" :class="{open: showCollapse}">
+        <img src="../assets/icons/arrow.svg" alt />
       </div>
     </div>
+
+    <b-collapse id="collapse-4" v-model="showCollapse">
+      <div
+        class="categories__item d-flex align-items-center"
+        v-for="(item, index) in designCategories"
+        :key="index"
+        @click="onSelect(item)"
+      >
+        <checkbox :checked="item == designActiveCategory" />
+        <p>{{item}}</p>
+      </div>
+    </b-collapse>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
+import Checkbox from "./Checkbox";
 
 export default {
   data() {
     return {
-      items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      showCollapse: true
     };
   },
+  components: {
+    Checkbox
+  },
   methods: {
-    ...mapActions(["searchDesign"]),
-    onSelect() {
-      this.searchDesign("z");
+    ...mapActions(["fetchDesigns"]),
+    ...mapMutations(["setActiveCategory"]),
+    onSelect(category) {
+      this.setActiveCategory(category);
+      this.fetchDesigns();
     }
+  },
+  computed: {
+    ...mapGetters(["designCategories", "designActiveCategory"])
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener("resize", () => {
+        this.showCollapse = window.innerWidth > 768 ? true : this.showCollapse;
+      });
+    });
   }
 };
 </script>
@@ -37,21 +60,48 @@ export default {
   padding-top: 30px;
   height: 100%;
   overflow: hidden;
-  &__wrapper {
-    height: 100%;
-    overflow-y: scroll;
-    margin-top: 10px;
+  &__arrow {
+    width: 12px;
+    height: 12px;
+    img {
+      width: 100%;
+      transform: rotate(180deg);
+    }
+    &.open {
+      img {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+  &__title {
+    display: none;
   }
   &__item {
-    height: 70px;
-    background-color: forestgreen;
-    margin-bottom: 5px;
-    &:hover {
-      cursor: pointer;
+    margin-bottom: 20px;
+    cursor: pointer;
+    p {
+      margin-left: 20px;
+      margin-bottom: 0;
+      color: #3d3d3d;
+      font-family: "MuseoSansCyrl", sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.14px;
+      line-height: 15px;
     }
-    &-title {
-      padding: 0 15px;
-      background-color: #fff;
+  }
+  @media screen and (max-width: 768px) {
+    padding-top: 20px;
+    border-bottom: 1px solid #d0d0d0;
+    margin-bottom: 20px;
+    &__title {
+      display: flex;
+      color: #001129;
+      font-family: "MuseoSansCyrl", sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 20px;
     }
   }
 }

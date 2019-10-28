@@ -1,6 +1,6 @@
 <template>
   <div class="filter d-flex flex-column h-100">
-    <div class="filter__title">Категории товаров</div>
+    <div class="modal-title">Категории товаров</div>
     <div class="divider"></div>
     <div class="filter__sub-title">Все товары</div>
     <perfect-scrollbar>
@@ -33,18 +33,12 @@ export default {
 <style lang="scss" scoped>
 .filter {
   padding-right: 3px;
-  &__title {
-    color: #212121;
-    font-family: Oswald;
-    font-size: 16px;
-    font-weight: 500;
+  .modal-title {
     margin-bottom: 30px;
-    text-transform: uppercase;
-    letter-spacing: 0.16px;
   }
   &__sub-title {
     color: #031127;
-    font-family: "Museo Sans Cyrl -500";
+    font-family: "MuseoSansCyrl", sans-serif;
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
@@ -54,7 +48,7 @@ export default {
   }
   @media screen and (max-width: 768px) {
     padding-right: 22px;
-    &__title {
+    .modal-title {
       display: none;
     }
     &__sub-title {
