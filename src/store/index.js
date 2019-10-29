@@ -2,10 +2,11 @@ import Vuex from 'vuex';
 import Vue from 'vue'
 
 import constructor from './constructor.module';
+
 import upload from './modules/upload';
 import filter from './modules/filter';
-import design from './modules/design'
-import { SIDES } from '../consts';
+import design from './modules/design';
+import { SIDES, Sidebar } from '../consts';
 
 Vue.use(Vuex);
 
@@ -80,7 +81,7 @@ export default new Vuex.Store({
         design
     },
     state: {
-        activeSettings: 'price',
+        activeSidebar: Sidebar.PRODUCT,
         addText: false,
         addImg: null,
         isShowProductFilter: false, 
@@ -95,10 +96,7 @@ export default new Vuex.Store({
         //     selectedElement: null,
         //     selectedSide: SIDES.FRONT
         // },
-        selectedProduct: {...productDefault},
-        upload: {
-            items: Array(10).fill({id: 0, image: ''}).map((x, index) => ({ id: index, image: require('../assets/cloud.svg')}))
-        }
+        selectedProduct: {...productDefault}
     },
     getters: {
         selectedSide(state) {
@@ -109,8 +107,8 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        setActiveSettings(state, value) {
-           state.activeSettings = value;
+        setActiveSidebar(state, value) {
+           state.activeSidebar = value;
         },
         setActiveColor(state, value) {
             state.selectedProduct.color = value;

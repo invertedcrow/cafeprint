@@ -14,7 +14,7 @@
         :key="index"
         @click="onSelect(item)"
       >
-        <checkbox :checked="item == designActiveCategory" />
+        <filter-checkbox :checked="item == designActiveCategory" />
         <p>{{item}}</p>
       </div>
     </b-collapse>
@@ -23,7 +23,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
-import Checkbox from "./Checkbox";
+import FilterCheckbox from "./FilterCheckbox";
 
 export default {
   data() {
@@ -32,7 +32,7 @@ export default {
     };
   },
   components: {
-    Checkbox
+    FilterCheckbox
   },
   methods: {
     ...mapActions(["fetchDesigns"]),

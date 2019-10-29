@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="sidebar-text">
 
         <div class="sidebar-card-header">
             <div class="sidebar-card-header__с-icon">
@@ -10,7 +10,7 @@
             <div class="sidebar-card-header__title">
                 Управление текстом
             </div>
-            <div class="sidebar-card-header__close">
+            <div @click="close" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -18,24 +18,24 @@
         </div>
 
         <div class="sidebar-text__input">
-            <textarea
-                    v-model="text"
-                    @keyup="updateInput"
-                    placeholder="Your text here..."
-            ></textarea>
+             <textarea
+                v-model="text"
+                @keyup="updateInput"
+                placeholder="Your text here..."
+             ></textarea>
         </div>
         <div class="sidebar-text__tools">
-            <button class="sidebar-text__tools-item active">
+            <button @click="setFontBold" class="sidebar-text__tools-item" :class="{'active': isBold}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 467.765 467.765">
                     <path d="m360.345 233.882c29.835-24.139 48.949-61.04 48.949-102.324 0-72.545-59.013-131.558-131.559-131.558h-219.264v58.471h29.235v350.824h-29.235v58.471h219.265c72.546 0 131.559-59.013 131.559-131.559-.001-41.285-19.115-78.186-48.95-102.325zm-82.61 175.412h-131.559v-146.176h131.559c40.299 0 73.088 32.79 73.088 73.088s-32.789 73.088-73.088 73.088zm0-204.647h-131.559v-146.176h131.559c40.299 0 73.088 32.79 73.088 73.088s-32.789 73.088-73.088 73.088z"/>
                 </svg>
             </button>
-            <button class="sidebar-text__tools-item">
+            <button @click="setFontItalic" class="sidebar-text__tools-item" :class="{'active': isItalic}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 467.765 467.765">
                     <path d="m409.294 58.471v-58.471h-175.412v58.471h43.373l-150.352 350.823h-68.432v58.471h175.412v-58.471h-43.373l150.351-350.823z"/>
                 </svg>
             </button>
-            <button class="sidebar-text__tools-item">
+            <button @click="setTextAlignment(TextAlignment.START)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.START) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1_357_" d="m0 116.941h292.353v58.471h-292.353z" transform="translate(1 5)"/>
                     <path id="path-2_27_" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -43,7 +43,7 @@
                     <path id="path-2_26_" d="m0 0h409.294v58.471h-409.294z" transform="translate(1 1)"/>
                 </svg>
             </button>
-            <button class="sidebar-text__tools-item">
+            <button @click="setTextAlignment(TextAlignment.MIDDLE)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.MIDDLE) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1" d="m58.471 116.941h292.353v58.471h-292.353z" transform="translate(3 5)"/>
                     <path id="path-2" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -51,7 +51,7 @@
                     <path id="path-2_1_" d="m0 0h409.294v58.471h-409.294z" transform="translate(1 1)"/>
                 </svg>
             </button>
-            <button class="sidebar-text__tools-item">
+            <button @click="setTextAlignment(TextAlignment.END)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.END) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1_5_" d="m116.941 116.941h292.353v58.471h-292.353z" transform="translate(5 5)"/>
                     <path id="path-2_5_" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -59,7 +59,7 @@
                     <path id="path-2_4_" d="m0 0h409.294v58.471h-409.294z" transform="translate(1 1)"/>
                 </svg>
             </button>
-            <button class="sidebar-text__tools-item">
+            <button @click="setTextAlignment(TextAlignment.JUSTIFIED)" :disabled="!isMultiLine" class="sidebar-text__tools-item" :class="{'active': isTextAlignment(TextAlignment.JUSTIFIED) && isMultiLine}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.294 409.294">
                     <path id="path-1_97_" d="m0 116.941h409.294v58.471h-409.294z" transform="translate(1 5)"/>
                     <path id="path-1_96_" d="m0 233.882h409.294v58.471h-409.294z" transform="translate(1 9)"/>
@@ -71,7 +71,7 @@
         <hr class="mb-0">
 
         <div class="sidebar-text__font-select" @click="fontSelect()">
-            Arial
+            {{selectedElement.font}}
             <span>
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 451.847 451.847">
                     <path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0   c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744   c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"/>
@@ -81,14 +81,14 @@
         <hr class="mt-0">
 
         <div class="sidebar-text__colors">
-            <div class="settings-text__colors-label">Цвет:</div>
-            <Color :colors="colors"></Color>
+            <div class="sidebar-text__colors-label">Цвет:</div>
+            <Color :setActiveColor="onColorChanged" :active="selectedElement.color" :colors="colors"></Color>
         </div>
         <hr class="sidebar-text__line-colors-bottom">
 
         <div class="sidebar-text__font-size">
             Размер текста
-            <number-input :min="1" v-model="fontSize"></number-input>
+            <number-input :min="1" :value="fontSize" @change="onFontSizeChanged"></number-input>
         </div>
         <hr>
 
@@ -143,6 +143,8 @@
 <script>
     import Color from './Color';
     import NumberInput from './NumberInput';
+    import {Sidebar, TextAlignment} from '../consts';
+    import {eventBus} from '../main';
 
     export default {
         components: {
@@ -151,14 +153,15 @@
         },
         data() {
             return {
-                colors: ["tomato", "green", "gold", "gray"],
+                TextAlignment,
+                colors: ["tomato", "green", "gold", "gray", '#fff'],
                 text: "",
-                fontSize: 1
+                innerFontSize: 14
             };
         },
-        watch: {
-            selectedElement: function (val) {
-                this.text = (val && val.text && val.text.join('\n')) || '';
+        mounted() {
+            if (this.selectedElement) {
+                this.text = (this.selectedElement.text.join('\n')) || '';
             }
         },
         computed: {
@@ -167,6 +170,18 @@
             },
             selectedElement() {
                 return this.$store.state.constructor.selectedElement;
+            },
+            isBold() {
+                return this.selectedElement && this.selectedElement.bold;
+            },
+            isItalic() {
+                return this.selectedElement && this.selectedElement.italic;
+            },
+            isMultiLine() {
+                return this.selectedElement && this.selectedElement.text.length > 1;
+            },
+            fontSize() {
+                return this.selectedElement && Math.round(this.selectedElement.fontSize);
             }
         },
         methods: {
@@ -177,7 +192,53 @@
                 })
             },
             fontSelect() {
-                this.$store.commit('setActiveSettings', 'font-select');
+                this.$store.commit('setActiveSidebar', Sidebar.FONT);
+            },
+            setFontBold() {
+                // TODO убрать if (this.selectedElement) {}
+                if (this.selectedElement) {
+                    this.selectedElement.bold = !this.selectedElement.bold;
+                    setTimeout(() => {
+                        this.$store.commit('updateElementSize');
+                    });
+                }
+            },
+            setFontItalic() {
+                if (this.selectedElement) {
+                    this.selectedElement.italic = !this.selectedElement.italic;
+                    setTimeout(() => {
+                        this.$store.commit('updateElementSize');
+                    });
+                }
+            },
+            isTextAlignment(value) {
+                return this.selectedElement && this.selectedElement.textAnchor === value;
+            },
+            setTextAlignment(alignment) {
+                if (this.selectedElement) {
+                    this.selectedElement.textAnchor = alignment;
+                }
+            },
+            onFontSizeChanged(fontSize) {
+                if (this.selectedElement) {
+                    this.selectedElement.fontSize = fontSize;
+                    eventBus.$emit('updateElementSize');
+                }
+            },
+            onFontChanged(font) {
+                if (this.selectedElement) {
+                    this.selectedElement.font = font;
+                    eventBus.$emit('updateElementSize');
+                }
+            },
+            onColorChanged(color) {
+                if (this.selectedElement) {
+                    this.selectedElement.color = color;
+                }
+            },
+            close() {
+                this.$store.commit('setSelectedElement', null);
+                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
             }
         }
     };
@@ -231,7 +292,7 @@
                 &:focus, &:active {
                     outline: none;
                 }
-                &:hover {
+                &:hover:not(:disabled) {
                     border-color: #81b241;
                     svg {
                         fill: #81b241;
@@ -242,8 +303,12 @@
                     background-color: #81b241;
                     border-color: #81b241;
                     svg {
-                        fill: #fff;
+                        fill: #fff !important;
                     }
+                }
+
+                &:disabled {
+                    cursor: not-allowed;
                 }
             }
         }

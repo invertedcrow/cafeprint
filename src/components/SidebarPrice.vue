@@ -9,7 +9,7 @@
             <div class="sidebar-card-header__title">
                 Стоимость изделия
             </div>
-            <div class="sidebar-card-header__close">
+            <div @click="close" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -39,21 +39,43 @@
         <div class="sidebar-price__info">
             <div class="sidebar-price__info-item">Стоимость изделия: 350 UAH</div>
             <div class="sidebar-price__info-discount">скидка от 10 единиц -10%</div>
-            <button class="sidebar-price__info-details">Подробнее</button>
+            <button @click="onDetailsClicked" class="sidebar-price__info-details">Подробнее</button>
         </div>
         <hr>
 
         <div class="sidebar-price__summary">
-            <div class="sidebar-price__summary-count">Выбрано 9 позиций</div>
-            <div class="sidebar-price__summary-sum">Итого: 3 150 UAH</div>
+            <div class="sidebar-price__summary-count">выбрано 9 позиций</div>
+            <div class="sidebar-price__summary-sum">Итого: {{3150 | groupSumNumber}} UAH</div>
         </div>
     </div>
 </template>
 
 <script>
     import NumberInput from './NumberInput';
+    import {Sidebar} from "../consts";
+
     export default {
         name: "SidebarPrice",
+        filters: {
+            groupSumNumber: function (value) {
+                if (!value) {
+                    return '';
+                }
+                value = value.toString();
+                for(let i = value.length; i >= 0; i -= 3) {
+                    value = value.slice(0, i) + ' ' + value.slice(i);
+                }
+                return value;
+            }
+        },
+        methods: {
+            onDetailsClicked() {
+                this.$store.commit('setActiveSidebar', Sidebar.ARTICLE);
+            },
+            close() {
+                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
+            }
+        },
         data() {
             return {
                 sizes: [{
@@ -142,16 +164,33 @@
                 font-weight: 600;
             }
             &-discount {
+                margin-top: 5px;
                 font-size: 12px;
                 font-weight: 600;
                 color: #eb4626;
             }
             &-details {
+                margin-top: 15px;
+                width: 100%;
                 padding: 8px 30px;
                 border-radius: 30px;
                 color: #939aa6;
                 background-color: transparent;
                 border: 1px solid #e1e1e1;
+                &:focus, &:active {
+                    outline: none;
+                }
+            }
+        }
+
+        &__summary {
+            &-count {
+                font-size: 12px;
+                margin-bottom: 5px;
+            }
+            &-sum {
+                font-size: 18px;
+                font-weight: 600;
             }
         }
     }
