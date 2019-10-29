@@ -1,0 +1,122 @@
+<template>
+  <div class="d-flex flex-column">
+    <div class="modal-head">
+      <div class="modal-head__close" @click="onHide()">
+        <svg
+          data-v-0cb6d606
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          width="17px"
+          height="17px"
+          viewBox="0 0 357 357"
+        >
+          <polygon
+            data-v-0cb6d606
+            points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="modal-title xsvisible mb-3">Категории товаров</div>
+    <perfect-scrollbar>
+      <div class="design d-flex justify-content-between">
+        <div class="design__search-pane d-flex flex-column">
+          <div class="modal-title">Категории товаров</div>
+          <design-selection-search />
+          <design-selection-categories />
+        </div>
+        <div class="design__list d-flex">
+          <design-selection-list v-if="designList.length" :list="designList" />
+          <div
+            v-else
+            class="h-100 w-100 d-flex flex-column justify-content-center align-items-center"
+          >Не найдено</div>
+        </div>
+      </div>
+    </perfect-scrollbar>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+import DesignSelectionSearch from "./DesignSelectionSearch";
+import DesignSelectionCategories from "./DesignSelectionCategories";
+import DesignSelectionList from "./DesignSelectionList";
+import { MODALS } from "../consts";
+import { eventBus } from "../main";
+export default {
+  components: {
+    DesignSelectionSearch,
+    DesignSelectionCategories,
+    DesignSelectionList
+  },
+  computed: {
+    ...mapGetters(["designList"])
+  },
+  methods: {
+    ...mapActions(["fetchDesignCategories"]),
+    onHide() {
+      eventBus.$emit("hideModal", MODALS.DESIGNS);
+    }
+  },
+  mounted() {
+    this.fetchDesignCategories();
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.modal-head__close {
+  right: 15px;
+  top: 15px;
+}
+.modal-title {
+  &.xsvisible {
+    display: none;
+    @media screen and (max-width: 768px) {
+      display: block;
+    }
+  }
+}
+.design {
+  max-height: 750px;
+  // overflow: hidden;
+  .modal-title {
+    margin-bottom: 20px;
+    &.xsvisible {
+      display: none;
+    }
+  }
+  &__search-pane {
+    width: 200px;
+    flex-shrink: 0;
+    padding-right: 15px;
+  }
+  &__list {
+    width: 100%;
+  }
+  &__back-btn {
+    position: absolute;
+    left: 0;
+    top: 45%;
+    height: 100px;
+  }
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    max-height: 800px;
+    &__search-pane {
+      width: 100%;
+      padding-right: 18px;
+      .modal-title {
+        display: none;
+      }
+    }
+    .xsvisible {
+      display: block;
+    }
+  }
+}
+</style>

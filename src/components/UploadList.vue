@@ -2,15 +2,27 @@
   <div class="list">
     <perfect-scrollbar>
       <div class="d-flex flex-wrap">
-        <div v-for="(item, index) in getAllFiles" :key="index">
-          <div class="list__item">
-            <div class="list__item-preview">
-              <img :src="item.dataURL" alt />
-            </div>
-            <div class="list__item-about">
-              <div class="list__item-name">{{item.name}}</div>
-              <b-button class="baseBtn seconadary" @click="onSelectImg(item)">Добавить</b-button>
-            </div>
+        <div class="list__item" v-for="(item, index) in getAllFiles" :key="index">
+          <div class="list__item-remove">
+            <svg
+              width="25"
+              height="25"
+              viewBox="0 0 28 28"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="'#ababab'"
+              style="cursor: pointer"
+            >
+              <path
+                d="M24.11 9.39L22.7 7.97l-6.63 6.63-6.62-6.63-1.41 1.42 6.62 6.62-6.62 6.63 1.41 1.41 6.62-6.62 6.63 6.62 1.41-1.41-6.62-6.63 6.62-6.62z"
+              />
+            </svg>
+          </div>
+          <div class="list__item-preview">
+            <img :src="item.dataURL" alt />
+          </div>
+          <div class="list__item-about">
+            <div class="list__item-name">{{item.name}}</div>
+            <b-button class="baseBtn secondary" @click="onSelectImg(item)">Добавить</b-button>
           </div>
         </div>
       </div>
@@ -19,15 +31,19 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
+import { MODALS } from "../consts";
+import { eventBus } from "../main";
 
 export default {
   computed: {
     ...mapGetters(["getAllFiles"])
   },
   methods: {
+    ...mapMutations(["addImg"]),
     onSelectImg(file) {
-      this.$store.commit("addImg", file);
+      this.addImg(file);
+      eventBus.$emit("hideModal", MODALS.UPLOAD);
     }
   }
 };
@@ -48,13 +64,19 @@ export default {
     border-radius: 10px;
     border: 1px whitesmoke solid;
     overflow: hidden;
-    width: 170px;
+    width: calc(33% - 10px);
     height: 286px;
     margin-right: 10px;
     margin-bottom: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    position: relative;
+    &-remove {
+      position: absolute;
+      right: 3px;
+      top: 3px;
+    }
     &-preview {
       flex-shrink: 0;
       background-color: whitesmoke;
@@ -82,6 +104,9 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+    }
+    @media screen and (max-width: 768px) {
+      width: calc(50% - 12px);
     }
   }
 }

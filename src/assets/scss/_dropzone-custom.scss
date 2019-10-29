@@ -43,5 +43,8 @@
             }     
             
         }
+        @media screen and (max-width: 768px) {
+            width: calc(50% - 8px);
+        }
     }
 }

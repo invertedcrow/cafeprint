@@ -7,7 +7,7 @@ $baseColor: #72B425;
     color: #fff;     
     height: 40px;   
     cursor: pointer;
-    &.seconadary {
+    &.secondary {
         background-color: #fff;
         border: 1px solid $baseColor;
         color: $baseColor; 
@@ -38,6 +38,7 @@ $baseColor: #72B425;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
     img {
         width: 80%;
         height: 80%;

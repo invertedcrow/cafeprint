@@ -22,8 +22,9 @@
     }
     &__title {
         text-transform: uppercase;
-        font-weight: bold;
         font-size: 14px;
+        font-family: "MuseoSansCyrl", sans-serif;
+        font-weight: 500;
     }
     &__close {
         position: absolute;
@@ -34,13 +35,15 @@
     }
 }
 
-.modal-dialog {
-    padding-right: 15px;  
-    padding-left: 15px; 
-}
 .upload-modal {
+    padding-left: 15px; 
+    padding-right: 15px;  
     .modal-dialog {
         max-width: 621px;
+        @media screen and (max-width: 768px) {
+            max-width: 380px;
+            height: auto;            
+        }
     }
     .modal-content {
         padding: 15px;
@@ -51,11 +54,12 @@
     }
 }
 
-.products-modal {    
+.xl-modal {    
     .modal-dialog {
+        padding-left: 15px; 
+        padding-right: 15px;  
         max-width: 1050px;  
-        height: 1105px;       
-       
+        height: 1105px; 
         box-shadow: 0 9px 35px rgba(0, 0, 0, 0.07);
         .modal-body {
             padding:  15px 25px 40px 35px;
@@ -69,5 +73,13 @@
                 padding-right: 15px;
             }
         }
+    }
+    .modal-title {
+        color: #212121;
+        font-family: Oswald;
+        font-size: 16px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.16px;
     }
 }
