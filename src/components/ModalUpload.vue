@@ -29,14 +29,18 @@
       <div class="modal-head__title">Загрузить свое изображение</div>
       <div class="modal-head__close" @click="onHide()">
         <svg
-          width="25"
-          height="25"
-          viewBox="0 0 28 28"
+          data-v-0cb6d606
+          version="1.1"
           xmlns="http://www.w3.org/2000/svg"
-          fill="lightgrey"
+          x="0px"
+          y="0px"
+          width="17px"
+          height="17px"
+          viewBox="0 0 357 357"
         >
-          <path
-            d="M24.11 9.39L22.7 7.97l-6.63 6.63-6.62-6.63-1.41 1.42 6.62 6.62-6.62 6.63 1.41 1.41 6.62-6.62 6.63 6.62 1.41-1.41-6.62-6.63 6.62-6.62z"
+          <polygon
+            data-v-0cb6d606
+            points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"
           />
         </svg>
       </div>

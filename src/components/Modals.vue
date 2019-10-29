@@ -10,8 +10,12 @@
       <modal-design />
     </b-modal>
 
-    <b-modal :id="MODALS.UPLOAD" modal-class="upload-modal" hide-footer hide-header>
+    <b-modal :id="MODALS.UPLOAD" modal-class="upload-modal md-modal" hide-footer hide-header>
       <modal-upload />
+    </b-modal>
+
+    <b-modal :id="MODALS.INFO" modal-class="info-modal md-modal" hide-footer hide-header>
+      <modal-info />
     </b-modal>
   </div>
 </template>
@@ -22,12 +26,14 @@ import { MODALS } from "../consts";
 import ModalProducts from "./ModalProducts";
 import ModalDesign from "./ModalDesign";
 import ModalUpload from "./ModalUpload";
+import ModalInfo from "./ModalInfo";
 
 export default {
   components: {
     ModalProducts,
     ModalDesign,
-    ModalUpload
+    ModalUpload,
+    ModalInfo
   },
   data() {
     return {
