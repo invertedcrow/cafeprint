@@ -2,21 +2,21 @@
   <div>
     <div class="row">
       <div class="col-lg-2">
-        <app-menu/>
+        <app-menu />
       </div>
       <div class="col-lg-6">
-        <app-main/>
+        <app-main />
       </div>
       <div class="col-lg-4">
-        <app-sidebar/>
+        <app-sidebar />
       </div>
     </div>
     <div class="row">
       <div class="offset-lg-2 col-lg-5">
-        <sides :sides="selectedProduct.sides" :setActiveSide="setActiveSide"/>
+        <sides />
       </div>
       <div class="col-lg-1">
-        <scale/>
+        <scale />
       </div>
     </div>
   </div>
@@ -32,22 +32,16 @@ import Scale from "./Scale";
 export default {
   components: {
     AppMenu,
-      AppSidebar,
+    AppSidebar,
     AppMain,
     Sides,
-      Scale
+    Scale
   },
   computed: {
     selectedProduct() {
       return this.$store.state.selectedProduct;
     }
-  },
-  methods: {
-    setActiveSide(side) {
-      this.$store.commit('setSelectedSide', side.key);
-      this.$store.commit('setSelectedElement', null);
-    }
-  }  
+  }
 };
 </script>
 

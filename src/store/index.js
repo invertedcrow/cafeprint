@@ -18,6 +18,7 @@ const productDefault = {
     id: '',
     sides: [
         {
+            items: [],
             key: SIDES.FRONT,
             title: 'Front',
             area: {
@@ -30,37 +31,40 @@ const productDefault = {
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=800,height=800,version=1564376579.png'
         },
         {
+            items: [],
             key: SIDES.BACK,
             title: 'Back',
             area: {
-                x: 221.998,
-                y: 77.8434,
-                width: 338.853575469,
-                height: 449.761634486
+                x: 138,
+                y: 124.966,
+                width: 210,
+                height: 300
             },
             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=50,height=50,version=1564376579.png',
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=800,height=800,version=1564376579.png'
         },
         {
+            items: [],
             key: SIDES.LEFT,
             title: 'Left',
             area: {
-                x: 280,
-                y: 350,
-                width: 250,
-                height: 300
+                x: 138,
+                y: 200.966,
+                width: 210,
+                height: 150
             },
             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=50,height=50,version=1564376579.png',
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=800,height=800,version=1564376579.png'
         },
         {
+            items: [],
             key: SIDES.RIGHT,
             title: 'Right',
             area: {
-                x: 280,
-                y: 350,
-                width: 250,
-                height: 300
+                x: 138,
+                y: 200,
+                width: 210,
+                height: 150
             },
             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=50,height=50,version=1564376579.png',
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=800,height=800,version=1564376579.png'

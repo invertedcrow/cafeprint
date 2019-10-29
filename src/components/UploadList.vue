@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="list d-flex flex-column">
     <perfect-scrollbar>
       <div class="d-flex flex-wrap">
         <div class="list__item" v-for="(item, index) in getAllFiles" :key="index">

@@ -15,7 +15,7 @@
             <div class="list__item-price">500 uah</div>
           </div>
           <div class="list__item-hover">
-            <button class="baseBtn w-100" @click="onChoose()">Добавить</button>
+            <button class="baseBtn w-100" @click="onChoose()">Выбрать</button>
           </div>
         </div>
       </div>
