@@ -17,6 +17,10 @@
     <b-modal :id="MODALS.INFO" modal-class="info-modal md-modal" hide-footer hide-header>
       <modal-info />
     </b-modal>
+
+    <b-modal :id="MODALS.SIZES" modal-class="sizes-modal md-modal" hide-footer hide-header>
+      <modal-sizes />
+    </b-modal>
   </div>
 </template>
 
@@ -27,13 +31,15 @@ import ModalProducts from "./ModalProducts";
 import ModalDesign from "./ModalDesign";
 import ModalUpload from "./ModalUpload";
 import ModalInfo from "./ModalInfo";
+import ModalSizes from "./ModalSizes";
 
 export default {
   components: {
     ModalProducts,
     ModalDesign,
     ModalUpload,
-    ModalInfo
+    ModalInfo,
+    ModalSizes
   },
   data() {
     return {

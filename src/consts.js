@@ -23,6 +23,7 @@ const MODAL_PRODUCTS    = 'products';
 const MODAL_DESIGNS     = 'designs';
 const MODAL_UPLOAD      = 'upload';
 const MODAL_INFO        = 'info';
+const MODAL_SIZES       = 'sizes';
 
 export const TextAlignment = {
     START:      TEXT_ALIGNMENT_START,
@@ -47,7 +48,8 @@ export const MODALS = {
     PRODUCTS:   MODAL_PRODUCTS,
     DESIGNS:    MODAL_DESIGNS,
     UPLOAD:     MODAL_UPLOAD,
-    INFO:       MODAL_INFO
+    INFO:       MODAL_INFO,
+    SIZES:      MODAL_SIZES
 };
 
 export const Sidebar = {

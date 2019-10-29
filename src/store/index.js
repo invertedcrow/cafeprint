@@ -67,12 +67,6 @@ const productDefault = {
         }
     ]
 };
-// const productFilterDefault = {
-//     ...productDefault,
-//     category: '',    
-//     showPreview: false,    
-// }
-
 export default new Vuex.Store({
     modules: {
         constructor: constructor,
@@ -83,19 +77,7 @@ export default new Vuex.Store({
     state: {
         activeSidebar: Sidebar.PRODUCT,
         addText: false,
-        addImg: null,
-        isShowProductFilter: false, 
-        isShowProductDesign: false,
-      //  productPreview: {...productDefault},   
-        // designs: {
-        //     list: [],  
-        //     preview: ''          
-        // },
-        // constructor: {
-        //     items: [],
-        //     selectedElement: null,
-        //     selectedSide: SIDES.FRONT
-        // },
+        addImg: null,  
         selectedProduct: {...productDefault}
     },
     getters: {
@@ -104,7 +86,8 @@ export default new Vuex.Store({
         },
         items(state) {
             return state.constructor.items.filter(x => x.side === state.constructor.selectedSide);
-        }
+        },
+        activeSize: (state) => state.selectedProduct.size
     },
     mutations: {
         setActiveSidebar(state, value) {
@@ -112,10 +95,7 @@ export default new Vuex.Store({
         },
         setActiveColor(state, value) {
             state.selectedProduct.color = value;
-        },       
-        // filterResetPreview(state) {
-        //     state.productPreview = {...productDefault};
-        // },       
+        },      
         setPreviewColor(state, value) {     
             state.productPreview.color = value;
         },
@@ -124,26 +104,10 @@ export default new Vuex.Store({
         }, 
         setPreviewSide(state, value) {     
             state.productPreview.side = value;
-        },
-        showFilterModal(state, value) {
-            state.isShowProductFilter = value;
-        },
+        },       
         setActiveProduct(state) {
             state.activeProduct = {...state.productPreview}
-        },
-        showDesignModal(state, value) {
-            state.isShowProductDesign = value;
-        }, 
-
-
-        // setDesigns(state, value) {
-        //     state.designs.list = value;
-        // },
-        // setDesignPreview(state, value) {
-        //     state.designs.preview = value;
-        // },
-
-
+        },    
         addText(state, value) {
             state.addText = value;
         },
@@ -163,6 +127,9 @@ export default new Vuex.Store({
         },
         setSelectedSide(state, value) {
             state.constructor.selectedSide = value;
+        },
+        setSelectedSize(state, value) {
+            state.selectedProduct.size = value;
         },
         updateElementSize() {},
     },

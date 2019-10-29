@@ -44,7 +44,7 @@
     <hr class="sidebar-product__line-colors-bottom" />
 
     <div>
-      <a href="#">
+      <a @click="showSizesModal()">
         <svg
           width="20"
           height="20"
@@ -137,6 +137,9 @@ export default {
     },
     showInfoModal() {
       eventBus.$emit("showModal", MODALS.INFO);
+    },
+    showSizesModal() {
+      eventBus.$emit("showModal", MODALS.SIZES);
     }
   }
 };
