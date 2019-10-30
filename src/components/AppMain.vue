@@ -194,7 +194,7 @@ export default {
             return this.$store.state.addImg
         },
         selectedProduct() {
-            return this.$store.state.selectedProduct;
+            return this.$store.state.constructor;
         },
         selectedSide() {
             return this.$store.getters.selectedSide;

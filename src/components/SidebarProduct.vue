@@ -96,18 +96,12 @@
 
 <script>
 import Color from "./Color";
-import ProductInfo from "./ProductInfo";
-import SizeTable from "./SizeTable";
-import DesignLayers from "./DesignLayers";
 import { Sidebar, MODALS } from "../consts";
 import { eventBus } from "../main";
 
 export default {
   components: {
-    Color,
-    ProductInfo,
-    SizeTable,
-    DesignLayers
+    Color
   },
   data() {
     return {
@@ -125,7 +119,7 @@ export default {
   },
   computed: {
     selectedProduct() {
-      return this.$store.state.selectedProduct;
+      return this.$store.state.constructor.selectedProduct;
     }
   },
   methods: {

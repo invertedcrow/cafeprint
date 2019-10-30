@@ -13,7 +13,7 @@
         :key="index"
         @click="setFilterCategory(subItem)"
       >
-        <filter-checkbox :checked="subItem == activeCategory" />
+        <checkbox :checked="subItem == activeCategory" />
         <p>{{subItem}}</p>
       </div>
     </b-collapse>
@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import FilterCheckbox from "./FilterCheckbox";
+import Checkbox from "./Checkbox";
 import { mapMutations, mapGetters } from "vuex";
 export default {
   components: {
-    FilterCheckbox
+    Checkbox
   },
   data() {
     return {

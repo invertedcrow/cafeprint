@@ -75,19 +75,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["selectedSide"]),
-    renderSides() {
-      const sidesList = this.$store.state.selectedProduct.sides;
-      const items = this.$store.state.constructor.items;
-      if (sidesList && sidesList.length) {
-        for (let i = 0; i < sidesList.length; i++) {
-          sidesList[i].items = items.filter(
-            layer => layer.side == sidesList[i].key
-          );
-        }
-      }
-      return sidesList;
-    }
+    ...mapGetters(["selectedSide", "renderSides"])
   }
 };
 </script>

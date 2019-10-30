@@ -36,11 +36,6 @@ export default {
     AppMain,
     Sides,
     Scale
-  },
-  computed: {
-    selectedProduct() {
-      return this.$store.state.selectedProduct;
-    }
   }
 };
 </script>
