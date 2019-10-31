@@ -13,11 +13,9 @@ const actions = {
 }
 
 const mutations = {
-    addFile(state, value) {
-        state.items.push(value)
-    },
-    remove(state, value) {
-        // TODO: add mutation to remove files from statw
+    addFile: (state, file) => state.items = [...state.items, file],
+    remove: (state, value) => {
+        // TODO: add mutation to remove files from state
     }
 }
 

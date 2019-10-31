@@ -31,10 +31,10 @@ const actions = {
 }
 
 const mutations = {
-    setCategories: (state, value) => state.designCategories = value,
-    setDesignList: (state, value) => state.designs = value,
-    setSearchText: (state, value) => state.searchText = value,
-    setActiveCategory: (state, value) => state.designActiveCategory =value
+    setCategories: (state, categories) => state.designCategories = categories,
+    setDesignList: (state, designs) => state.designs = designs,
+    setSearchText: (state, searchText) => state.searchText = searchText,
+    setActiveCategory: (state, category) => state.designActiveCategory = category
 }
 
 export default {

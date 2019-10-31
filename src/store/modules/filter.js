@@ -23,8 +23,8 @@ const actions = {
 }
 
 const mutations = {
-    setCategories: (state, value) => state.categories = value,
-    setFilterCategory: (state, value) => state.activeCategory = value,
+    setCategories: (state, categories) => state.categories = categories,
+    setFilterCategory: (state, category) => state.activeCategory = category,
 }
 
 export default {

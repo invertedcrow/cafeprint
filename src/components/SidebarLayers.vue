@@ -41,7 +41,7 @@
         <div :key="index" v-for="(side, index) in renderSides">
           <div class="sidebar-layers__side-head">
             <div class="sidebar-layers__side-head__title">{{side.title}}</div>
-            <div class="sidebar-layers__side-head__tools">
+            <!-- <div class="sidebar-layers__side-head__tools">
               <svg
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 class="replay"
@@ -80,7 +80,7 @@
                   points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
                 />
               </svg>
-            </div>
+            </div>-->
           </div>
           <draggable
             v-model="draggList[index].items"
@@ -107,7 +107,10 @@
               </div>
 
               <div class="sidebar-layers__side-layer__tools">
-                <checkbox />
+                <div @click="onSelectLayer(index, itemIndex)">
+                  <checkbox :checked="layer.selected" />
+                </div>
+
                 <div
                   title="Дублировать"
                   @click="addItemToConstructor({...layer, x: layer.x + 10, y: layer.y + 10})"
@@ -185,6 +188,14 @@ export default {
       const sides = [...this.draggList];
       let items = [];
       sides[index].items.splice(itemIndex, 1);
+      sides.forEach(item => items.push(...item.items));
+      this.setItemsConstructor(items);
+    },
+    onSelectLayer(index, itemIndex) {
+      const sides = [...this.draggList];
+      let items = [];
+      sides[index].items[itemIndex].selected = !sides[index].items[itemIndex]
+        .selected;
       sides.forEach(item => items.push(...item.items));
       this.setItemsConstructor(items);
     }

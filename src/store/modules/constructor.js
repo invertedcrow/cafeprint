@@ -1,6 +1,6 @@
 import {SIDES} from "../../consts";
 
-const productDefault = {
+const productDefault = () => ({
     product: '',
     color: '',
     size: '',
@@ -60,21 +60,25 @@ const productDefault = {
             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=800,height=800,version=1564376579.png'
         }
     ]
-};
+});
 
-const initialState = {
+const initialState = () => ({
     items: [],
     selectedElement: null,
+    selectedLayers: [],
     selectedSide: SIDES.FRONT,
-    selectedProduct:  {...productDefault}
-};
+    selectedProduct:  productDefault()
+});
 
-export const state = { ...initialState };
+export const state = initialState;
 
 const getters = {
+  selectedProduct: (state) => state.selectedProduct,
+  selectedElement: (state) => state.selectedElement,
   activeSize: (state) => state.selectedProduct.size,
-  selectedSide: (state) => state.selectedProduct.sides.find(x => x.key === state.selectedSide),        
-  items: (state) => state.items.filter(x => x.side === state.selectedSide),
+  selectedSide: (state) => state.selectedProduct.sides.find(x => x.key === state.selectedSide),  
+  selectedLayers: (state) => state.items.filter(item => item.selected),      
+  items: (state) => state.items.filter(x => x.side === state.selectedSide),  
   renderSides: (state) => {
     const sides = state.selectedProduct.sides;
     const items = state.items;
@@ -86,18 +90,18 @@ const getters = {
         }
       }
     return sides
-},
+  },
 };
 
 const actions = {};
 
 const mutations = {
-    addItemToConstructor: (state, value) => state.items.push(value),
-    setItemsConstructor: (state, value) => state.items = value,
-    setSelectedElement: (state, value) => state.selectedElement = value,
-    setSelectedSide: (state, value) => state.selectedSide = value,
-    setSelectedSize: (state, value) => state.selectedProduct.size = value,
-    setActiveColor: (state, value) => state.selectedProduct.color = value,  
+    addItemToConstructor: (state, value) => state.items = [...state.items, value],
+    setItemsConstructor: (state, items) => state.items = items,
+    setSelectedElement: (state, element) => state.selectedElement = element,
+    setSelectedSide: (state, side) => state.selectedSide = side,
+    setSelectedSize: (state, size) => state.selectedProduct.size = size,
+    setActiveColor: (state, color) => state.selectedProduct.color = color,    
 };
 
 export default {
