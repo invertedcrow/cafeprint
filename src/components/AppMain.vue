@@ -98,7 +98,7 @@
               :y="groupParams.y"
               :width="groupParams.width"
               :height="groupParams.height"
-              class="ctrl-bounds group-bound"              
+              class="ctrl-bounds group-bound"
             />
             <g>
               <g
@@ -148,6 +148,10 @@
                   viewBox="0 0 472.774 472.774"
                   xml:space="preserve"
                 >
+                  <polygon
+                    transform="rotate(45 236.387 236.387)"
+                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
+                  />
                   <polygon
                     transform="rotate(-45 236.387 236.387)"
                     points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
@@ -292,7 +296,7 @@ export default {
         return {
             TextAlignment,
             CONSTRUCTOR_HANDLES,
-
+            
             width: 736,
             height: 736,
             colors: defaultProps,
@@ -365,7 +369,7 @@ export default {
         },  
         groupParams() {            
              const items = this.selectedLayers;
-             console.log(items)
+            
              if(!items.length) {
                  return null
              }         
@@ -426,15 +430,14 @@ export default {
 /// TODO: finish resizing 
 
       onMouseDownGroup(eDown, items, handle) {
+      
           eDown.stopPropagation();
           items.forEach((item, i) => {
           const selectedElementIndex  = this.items.indexOf(item);
           const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);
            
-          const edBounds              = this.editableAreaEl.getBoundingClientRect();
-           console.log(edBounds)
-          const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();
-            console.log(elBounds)
+          const edBounds              = this.editableAreaEl.getBoundingClientRect();          
+          const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();          
           const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
 
           item.drag = {
@@ -452,15 +455,16 @@ export default {
               top:      elBounds.top - edBounds.top,
               bottom:   elBounds.bottom - edBounds.top
           };
+          });
           document.onmouseup = () => {
               this.dragging = false;
               this.rotation = false;
               this.scaling = false;
               document.onmousemove = null;
           };
-        document.onmousemove = (event) => {   
-            console.log('MOVE')  
-            console.log(item)                    
+        document.onmousemove = (event) => {  
+            
+           this.selectedLayers.forEach((item, index) => {                
               if (!handle) {
                   this.hideLines();
                   const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
@@ -513,26 +517,22 @@ export default {
                       item.x = centerX - (item.width / 2);
                       this.lines.centerV = true;
                   }
-
-                  // Верх и горизонтальный центр
+                 
                   if (bottom > centerY - 5 && bottom < centerY + 5) {
                       item.y = centerY - (bottom - top) + (item.drag.y - item.drag.top);
                       this.lines.centerH = true;
                   }
-
-                  // Низ и горизонтальный центр
+                 
                   if (top > centerY - 5 && top < centerY + 5) {
                       item.y = centerY + (bottom - top) + (item.drag.y - item.drag.bottom);
                       this.lines.centerH = true;
                   }
-
-                  // Лево и вертикальный центр
+                
                   if (left > centerX - 5 && left < centerX + 5) {
                       item.x = centerX + (right - left) + (item.drag.x - item.drag.right);
                       this.lines.centerV = true;
                   }
 
-                  // Право и вертикальный центр
                   if (right > centerX - 5 && right < centerX + 5) {
                       item.x = centerX - (right - left) + (item.drag.x - item.drag.left);
                       this.lines.centerV = true;
@@ -550,21 +550,25 @@ export default {
                   item.rotate = newAngle % 359;                 
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
-                  let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
-                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
+                 
+                  let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2));// + Math.pow(item.drag.oY - item.drag.my, 2));
+                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2)); //+ Math.pow(event.clientY - item.drag.oY, 2));
 
-                  // TODO Не знаю почему 1.95, но оно неплохо работает
-                  distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
-
-                  const ratio   = item.drag.h / item.drag.w;
-                  item.width    = item.drag.w + distance;
-                  item.height   = item.drag.h + distance * ratio;
-                  item.x        = item.drag.x + (distance * -1) / 2;
-                  item.y        = item.drag.y + (distance * -1 * ratio) / 2;
-                  item.fontSize = item.height / item.text.length;
-                  console.log(item.width)
+                
+                  distance = (distance - centerToDot) * 1.95;
+                 
+                 
+                console.log(distance)
+                  const ratio   = item.drag.h / item.drag.w;        
+                  item.width    = item.drag.w + item.drag.w*distance/100,
+                  item.height   = item.drag.h + item.drag.h*distance/100,
+                  item.x        = item.drag.x + item.drag.x*distance/100,
+                  item.y        = item.drag.y + item.drag.y*distance/100,
+                  item.fontSize = item.fontSize ? item.height / item.text.length : null;
+                  
               }
-          }          })
+              })
+          }          
       },  
       
       
