@@ -4,7 +4,7 @@
       <div class="list d-flex flex-wrap justify-content-start">
         <div
           class="list__item d-flex flex-column justify-content-between"
-          v-for="item in list"
+          v-for="item in bases"
           :key="item.id"
         >
           <div class="list__item-img">
@@ -26,23 +26,9 @@
 <script>
 import { MODALS } from "../consts";
 import { eventBus } from "../main";
+import { mapGetters } from "vuex";
 
 export default {
-  data() {
-    return {
-      list: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 }
-      ]
-    };
-  },
   methods: {
     onChoose() {
       // let filter = this.$store.state.filter;
@@ -53,6 +39,9 @@ export default {
 
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
     }
+  },
+  computed: {
+    ...mapGetters(["bases"])
   }
 };
 </script>
