@@ -287,7 +287,7 @@ import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
 import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
-import {CONSTRUCTOR_DELETE_ITEM} from "../store/mutations.type";
+import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS} from "../store/mutations.type";
 const defaultProps = {
     hex: "#fff",
     a: 1
@@ -420,7 +420,7 @@ export default {
       },
       resetSelected() {
           this.items.forEach(item => item.selected = false);       
-           this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
+          this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
           this.$store.commit('setSelectedElement', null);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },  

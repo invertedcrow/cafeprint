@@ -13,19 +13,19 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import ProductFilterCollapse from "./ProductFilterCollapse";
-
+import { GET_BASES_CATEGORIES } from "../store/actions.type";
 export default {
   components: {
     ProductFilterCollapse
   },
   methods: {
-    ...mapActions(["fetchCategories"])
+    ...mapActions([GET_BASES_CATEGORIES])
   },
   computed: {
     ...mapGetters(["categories"])
   },
   mounted() {
-    this.fetchCategories("");
+    this.$store.dispatch(GET_BASES_CATEGORIES);
   }
 };
 </script>

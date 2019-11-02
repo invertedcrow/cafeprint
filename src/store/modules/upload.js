@@ -1,4 +1,4 @@
-
+import { UPLOAD_ADD_FILE, UPLOAD_REMOVE_FILE } from '../mutations.type';
 const state = {
     items: [],
     selectedElement: null,
@@ -13,8 +13,8 @@ const actions = {
 }
 
 const mutations = {
-    addFile: (state, file) => state.items = [...state.items, file],
-    remove: (state, value) => {
+    [UPLOAD_ADD_FILE]: (state, file) => state.items = [...state.items, file],
+    [UPLOAD_REMOVE_FILE]: (state, value) => {
         // TODO: add mutation to remove files from state
     }
 }

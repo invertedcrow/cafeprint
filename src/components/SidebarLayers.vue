@@ -113,7 +113,7 @@
 
                 <div
                   title="Дублировать"
-                  @click="addItemToConstructor({...layer, x: layer.x + 10, y: layer.y + 10})"
+                  @click="duplicateLayer({...layer, x: layer.x + 10, y: layer.y + 10})"
                 >
                   <svg
                     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -168,28 +168,34 @@ import Checkbox from "./Checkbox";
 import { Sidebar } from "../consts";
 import { mapGetters, mapMutations } from "vuex";
 import draggable from "vuedraggable";
-
+import {
+  CONSTRUCTOR_SET_ITEMS,
+  CONSTRUCTOR_ADD_ITEM
+} from "../store/mutations.type";
 export default {
   components: {
     Checkbox,
     draggable
   },
   methods: {
-    ...mapMutations(["setItemsConstructor", "addItemToConstructor"]),
+    ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM]),
     close() {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
     },
     change() {
       const items = [];
       this.draggList.forEach(item => items.push(...item.items));
-      this.setItemsConstructor(items);
+      this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
+    },
+    duplicateLayer(item) {
+      this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
     },
     removeItem(index, itemIndex) {
       const sides = [...this.draggList];
       let items = [];
       sides[index].items.splice(itemIndex, 1);
       sides.forEach(item => items.push(...item.items));
-      this.setItemsConstructor(items);
+      this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
     },
     onSelectLayer(index, itemIndex) {
       const sides = [...this.draggList];
@@ -197,7 +203,7 @@ export default {
       sides[index].items[itemIndex].selected = !sides[index].items[itemIndex]
         .selected;
       sides.forEach(item => items.push(...item.items));
-      this.setItemsConstructor(items);
+      this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
     }
   },
   computed: {

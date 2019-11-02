@@ -101,7 +101,7 @@ const getters = {
 const actions = {};
 
 const mutations = {
-    [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items.push(value),
+    [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, value],
     [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
     [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.selectedSide = value,

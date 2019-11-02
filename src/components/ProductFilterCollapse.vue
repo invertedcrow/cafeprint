@@ -11,7 +11,7 @@
         class="filter__subCategory-item d-flex"
         v-for="(subItem, index) in category.subCategories"
         :key="index"
-        @click="setFilterCategory(subItem)"
+        @click="$store.commit(FILTER_SET_ACTIVE_CATEGORY, subItem)"
       >
         <checkbox :checked="subItem == activeCategory" />
         <p>{{subItem}}</p>
@@ -23,6 +23,7 @@
 <script>
 import Checkbox from "./Checkbox";
 import { mapMutations, mapGetters } from "vuex";
+import { FILTER_SET_ACTIVE_CATEGORY } from "../store/mutations.type";
 export default {
   components: {
     Checkbox
@@ -34,7 +35,7 @@ export default {
   },
   props: ["category"],
   methods: {
-    ...mapMutations(["setFilterCategory"])
+    ...mapMutations([FILTER_SET_ACTIVE_CATEGORY])
   },
   computed: {
     ...mapGetters(["activeCategory"])

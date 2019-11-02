@@ -1,3 +1,13 @@
+import {
+    FILTER_SET_CATEGORIES,
+    FILTER_SET_ACTIVE_CATEGORY
+} from '../mutations.type';
+
+import {
+    GET_BASES,
+    GET_BASES_CATEGORIES
+} from '../actions.type.js'
+
 const getDefaultState = () => ({    
     activeCategory: '', 
     categories: [] 
@@ -19,12 +29,15 @@ const getters = {
 }
 
 const actions = {
-   fetchCategories: (state) => state.commit('setCategories', categories)   
+   [GET_BASES_CATEGORIES]: (state) => state.commit(FILTER_SET_CATEGORIES, categories),
+   [GET_BASES]: (state) => {
+      // searchText, activeCategory
+   },
 }
 
 const mutations = {
-    setCategories: (state, categories) => state.categories = categories,
-    setFilterCategory: (state, category) => state.activeCategory = category,
+    [FILTER_SET_CATEGORIES]: (state, categories) => state.categories = categories,
+    [FILTER_SET_ACTIVE_CATEGORY]: (state, category) => state.activeCategory = category,
 }
 
 export default {

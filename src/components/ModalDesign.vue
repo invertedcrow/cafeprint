@@ -46,6 +46,7 @@ import DesignSelectionCategories from "./DesignSelectionCategories";
 import DesignSelectionList from "./DesignSelectionList";
 import { MODALS } from "../consts";
 import { eventBus } from "../main";
+import { GET_DESIGN_CATEGORIES } from "../store/actions.type";
 export default {
   components: {
     DesignSelectionSearch,
@@ -56,13 +57,13 @@ export default {
     ...mapGetters(["designList"])
   },
   methods: {
-    ...mapActions(["fetchDesignCategories"]),
+    ...mapActions([GET_DESIGN_CATEGORIES]),
     onHide() {
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     }
   },
   mounted() {
-    this.fetchDesignCategories();
+    this.$store.dispatch(GET_DESIGN_CATEGORIES);
   }
 };
 </script>
