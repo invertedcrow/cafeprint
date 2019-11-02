@@ -1,4 +1,9 @@
 import {SIDES} from "../../consts";
+import {
+    CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
+    CONSTRUCTOR_SET_SELECTED_SIDE, PRODUCT_SET_COLOR, PRODUCT_SET_SIZE,
+    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM
+} from '../mutations.type';
 
 const productDefault = () => ({
     product: '',
@@ -96,12 +101,61 @@ const getters = {
 const actions = {};
 
 const mutations = {
-    addItemToConstructor: (state, value) => state.items = [...state.items, value],
-    setItemsConstructor: (state, items) => state.items = items,
-    setSelectedElement: (state, element) => state.selectedElement = element,
-    setSelectedSide: (state, side) => state.selectedSide = side,
-    setSelectedSize: (state, size) => state.selectedProduct.size = size,
-    setActiveColor: (state, color) => state.selectedProduct.color = color,    
+    [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items.push(value),
+    [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
+    [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
+    [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.selectedSide = value,
+    [PRODUCT_SET_SIZE]: (state, value) => state.selectedProduct.size = value,
+    [PRODUCT_SET_COLOR]: (state, value) => state.selectedProduct.color = value,
+    [CONSTRUCTOR_DELETE_ITEM] (state, value) {
+        const index = state.items.indexOf(value);
+        if (index >= 0) {
+            state.items = [
+                ...state.items.slice(0, index),
+                ...state.items.slice(index+1)
+            ];
+        }
+    },
+    [CONSTRUCTOR_MOVE_LAYER_UP]: (state, value) => {
+        let foundIndex = 0;
+        const index = state.items.indexOf(value);
+        // Найти индекс ближайшего
+        for (let i=index+1; i < state.items.length; i++) {
+            if (foundIndex > 0) {
+                continue;
+            }
+            if (state.items[i].side === value.side) {
+                foundIndex = i;
+            }
+        }
+        // Обмен
+        if (foundIndex > 0) {
+            const found = state.items.splice(index, 1)[0];
+            state.items = [
+                ...state.items.slice(0, foundIndex), found, ...state.items.slice(foundIndex)
+            ];       
+        }        
+    },
+    [CONSTRUCTOR_MOVE_LAYER_DOWN]: (state, value) => {
+        let foundIndex = -1;
+        const index = state.items.indexOf(value);
+        // Найти индекс ближайшего
+        for (let i=index-1; i >= 0; i--) {
+            if (foundIndex > -1) {
+                continue;
+            }
+            if (state.items[i].side === value.side) {
+                foundIndex = i;
+            }
+        }
+        // Обмен
+        if (foundIndex > -1) {
+            const found = state.items.splice(index, 1)[0];
+            state.items = [
+                ...state.items.slice(0, foundIndex), found, ...state.items.slice(foundIndex)
+            ];       
+        }       
+    },
 };
 
 export default {
