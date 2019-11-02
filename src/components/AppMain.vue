@@ -113,6 +113,8 @@
 
 import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar} from '../consts';
+import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
+import {CONSTRUCTOR_DELETE_ITEM} from "../store/mutations.type";
 const defaultProps = {
     hex: "#fff",
     a: 1
@@ -174,9 +176,6 @@ export default {
     created() {
         this.$store.subscribe((mutation, state) => {
             if (mutation.type === 'setItemsConstructor') {
-                this.updateSizes();
-            }
-            if (mutation.type === 'updateElementSize') {
                 this.updateSizes();
             }
             if (mutation.type === 'setSelectedSide') {
@@ -483,7 +482,7 @@ export default {
           const item = this.createTextField();
           this.$store.commit('setSelectedElement', item);
           this.$store.commit("addItemToConstructor", item);
-          eventBus.$emit('updateElementSize');
+          eventBus.$emit(UPDATE_ELEMENT_SIZE);
       },
       addImgField(file) {
           const item = this.createImgField(file);
@@ -535,23 +534,12 @@ export default {
       updateSizes() {
         setTimeout(() => {
             const index     = this.items.indexOf(this.selectedElement);
-            // Text justify test
             const tSpans    = document.querySelectorAll(`#group-${index} g > text`);
-            // const tSpans    = document.querySelectorAll(`#group-${index} text tspan`);
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
             const maxWidth  = Math.max(...widths);
 
             this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
             this.selectedElement.width    = maxWidth;
-
-            // if (this.selectedElement.textAnchor === TextAlignment.JUSTIFIED) {
-            //     const maxLengthLine = Math.max(...this.selectedElement.text.map(x => x.text.length));
-            //     const widthPerLetter = maxWidth / maxLengthLine;
-            //     this.selectedElement.text.map(x => {
-            //         x.letterSpacing = (this.selectedElement.width - x.text.length * widthPerLetter) / x.text.length - 1;
-            //         return x;
-            //     });
-            // }
         });
       },
       moveUp() {
@@ -582,8 +570,7 @@ export default {
 
       removeActiveItem() {
           if (this.selectedElement) {
-              this.items.splice(this.items.indexOf(this.selectedElement), 1);
-              this.$store.commit("setItemsConstructor", this.items);
+              this.$store.commit(CONSTRUCTOR_DELETE_ITEM, this.selectedElement);
           }
       },
 
@@ -600,7 +587,7 @@ export default {
       this.width = svgBounds.width;
       this.height = svgBounds.height;
 
-      eventBus.$on('updateElementSize', () => {
+      eventBus.$on(UPDATE_ELEMENT_SIZE, () => {
           this.updateSizes();
       });
 

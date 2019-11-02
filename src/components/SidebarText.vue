@@ -10,7 +10,7 @@
             <div class="sidebar-card-header__title">
                 Управление текстом
             </div>
-            <div @click="close" class="sidebar-card-header__close">
+            <div @click="sidebarClose" class="sidebar-card-header__close">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 357 357">
                     <polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
                 </svg>
@@ -93,13 +93,13 @@
         <hr>
 
         <div class="sidebar-text__layer-tools">
-            <div class="sidebar-text__layer-tools-item">
+            <div class="sidebar-text__layer-tools-item" @click="moveLayerUp">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
                     <path d="M369.1,142.9V0H0v369.1h142.9V512H512V142.9H369.1z M178.6,257.4l78.8-78.8h36.5L178.6,293.9V257.4z M178.6,226.6v-48h48  L178.6,226.6z M178.6,324.7l146.1-146.1h38L178.6,362.7V324.7z M178.6,393.5l214.9-214.9h38L178.6,431.5V393.5z M142.9,142.9v190.5  H35.7V35.7h0h297.7v107.2H142.9z M178.6,462.3l283.7-283.7h14v24L202.6,476.3h-24V462.3z M476.3,271.4L273.7,476.3h-40.3  l242.9-242.9V271.4z M476.3,302.4v37.7L340.1,476.3h-35.9L476.3,302.4z M476.3,370.9V409l-66.8,67.2h-38.6L476.3,370.9z   M440.2,476.3l36.1-36.3v36.3H440.2z"/>
                 </svg><br>
                 На передний план
             </div>
-            <div class="sidebar-text__layer-tools-item">
+            <div class="sidebar-text__layer-tools-item" @click="moveLayerDown">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path d="M142.9,369.1V512H512V142.9H369.1V0H0v369.1H142.9z M476.3,178.6v297.7H178.6V178.6L476.3,178.6L476.3,178.6z M35.7,35.7  h297.7v107.2H142.9v190.5H35.7L35.7,35.7L35.7,35.7z"/>
                     <rect x="53.9" y="-12.2" transform="matrix(0.7071 0.7071 -0.7071 0.7071 64.7976 -26.8357)" width="21.8" height="154.1"/>
@@ -119,7 +119,7 @@
                 </svg><br>
                 Область печати
             </div>
-            <div class="sidebar-text__layer-tools-item">
+            <div class="sidebar-text__layer-tools-item" @click="duplicateLayer">
                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
                     <path d="M368.64,0H20.48C9.175,0,0,9.175,0,20.48v348.16c0,11.305,9.175,20.48,20.48,20.48h348.16    c11.305,0,20.48-9.175,20.48-20.48V20.48C389.12,9.175,379.945,0,368.64,0z M348.16,348.16H40.96V40.96h307.2V348.16z"/>
                     <path d="M471.04,419.84v51.2h-51.2V512h71.68c11.305,0,20.48-9.175,20.48-20.48v-71.68H471.04z"/>
@@ -130,7 +130,7 @@
                 </svg><br>
                 Дублировать
             </div>
-            <div class="sidebar-text__layer-tools-item">
+            <div class="sidebar-text__layer-tools-item" @click="deleteLayer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-18 0 511 512">
                     <path d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"/>
                 </svg><br>
@@ -145,6 +145,14 @@
     import NumberInput from './NumberInput';
     import {Sidebar, TextAlignment} from '../consts';
     import {eventBus} from '../main';
+    import {
+        CONSTRUCTOR_MOVE_LAYER_UP,
+        CONSTRUCTOR_MOVE_LAYER_DOWN,
+        CONSTRUCTOR_DELETE_ITEM,
+        CONSTRUCTOR_SET_SELECTED_ITEM,
+        CONSTRUCTOR_SET_ITEMS, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_ADD_ITEM
+    } from '../store/mutations.type';
+    import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
 
     export default {
         components: {
@@ -160,8 +168,11 @@
             };
         },
         mounted() {
-            if (this.selectedElement) {
-                this.text = (this.selectedElement.text.join('\n')) || '';
+            this.initText();
+        },
+        watch: {
+            selectedElement() {
+                this.initText();
             }
         },
         computed: {
@@ -185,21 +196,26 @@
             }
         },
         methods: {
+            initText() {
+                if (this.selectedElement) {
+                    this.text = (this.selectedElement.text.join('\n')) || '';
+                }
+            },
             updateInput() {
                 this.selectedElement.text = this.text.split('\n');
                 setTimeout(() => {
-                    this.$store.commit("setItemsConstructor", this.items);
+                    this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
                 })
             },
             fontSelect() {
-                this.$store.commit('setActiveSidebar', Sidebar.FONT);
+                this.$store.commit(SIDEBAR_SET_ACTIVE, Sidebar.FONT);
             },
             setFontBold() {
                 // TODO убрать if (this.selectedElement) {}
                 if (this.selectedElement) {
                     this.selectedElement.bold = !this.selectedElement.bold;
                     setTimeout(() => {
-                        this.$store.commit('updateElementSize');
+                        eventBus.$emit(UPDATE_ELEMENT_SIZE, this.selectedElement);
                     });
                 }
             },
@@ -207,7 +223,7 @@
                 if (this.selectedElement) {
                     this.selectedElement.italic = !this.selectedElement.italic;
                     setTimeout(() => {
-                        this.$store.commit('updateElementSize');
+                        eventBus.$emit(UPDATE_ELEMENT_SIZE, this.selectedElement);
                     });
                 }
             },
@@ -222,13 +238,13 @@
             onFontSizeChanged(fontSize) {
                 if (this.selectedElement) {
                     this.selectedElement.fontSize = fontSize;
-                    eventBus.$emit('updateElementSize');
+                    eventBus.$emit(UPDATE_ELEMENT_SIZE, this.selectedElement);
                 }
             },
             onFontChanged(font) {
                 if (this.selectedElement) {
                     this.selectedElement.font = font;
-                    eventBus.$emit('updateElementSize');
+                    eventBus.$emit(UPDATE_ELEMENT_SIZE, this.selectedElement);
                 }
             },
             onColorChanged(color) {
@@ -236,9 +252,26 @@
                     this.selectedElement.color = color;
                 }
             },
-            close() {
-                this.$store.commit('setSelectedElement', null);
-                this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
+            sidebarClose() {
+                this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
+                this.$store.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
+            },
+            moveLayerUp() {
+                this.$store.commit(CONSTRUCTOR_MOVE_LAYER_UP, this.selectedElement);
+            },
+            moveLayerDown() {
+                this.$store.commit(CONSTRUCTOR_MOVE_LAYER_DOWN, this.selectedElement);
+            },
+            deleteLayer() {
+                this.$store.commit(CONSTRUCTOR_DELETE_ITEM, this.selectedElement);
+                this.$store.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
+            },
+            duplicateLayer() {
+                // deep clone
+                const newItem = JSON.parse(JSON.stringify(this.selectedElement));
+                newItem.x += 10;
+                newItem.y += 10;
+                this.$store.commit(CONSTRUCTOR_ADD_ITEM, newItem);
             }
         }
     };

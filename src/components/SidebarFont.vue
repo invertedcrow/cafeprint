@@ -26,6 +26,7 @@
 <script>
     import {Sidebar} from "../consts";
     import {eventBus} from '../main';
+    import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
 
     export default {
         data() {
@@ -50,7 +51,7 @@
                 this.selectedElement.font = font;
 
                 this.$store.commit('setActiveSidebar', Sidebar.TEXT);
-                eventBus.$emit('updateElementSize');
+                eventBus.$emit(UPDATE_ELEMENT_SIZE);
             }
         }
     }
