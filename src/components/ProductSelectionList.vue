@@ -15,7 +15,7 @@
             <div class="list__item-price">500 uah</div>
           </div>
           <div class="list__item-hover">
-            <button class="baseBtn w-100" @click="onChoose()">Выбрать</button>
+            <button class="baseBtn w-100" @click="onChoose(item.id)">Выбрать</button>
           </div>
         </div>
       </div>
@@ -26,17 +26,19 @@
 <script>
 import { MODALS } from "../consts";
 import { eventBus } from "../main";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import { GET_BASE } from "../store/actions.type";
 
 export default {
   methods: {
-    onChoose() {
+    ...mapActions([GET_BASE]),
+    onChoose(id) {
       // let filter = this.$store.state.filter;
       // this.$store.commit("setPreviewColor", filter.color);
       // this.$store.commit("setPreviewSize", filter.size);
       // this.$store.commit("showFilterPreview", true);
       // TODO: add product to constructor
-
+      this.$store.dispatch(GET_BASE, id);
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
     }
   },

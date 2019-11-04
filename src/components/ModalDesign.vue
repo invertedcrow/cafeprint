@@ -40,13 +40,12 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import DesignSelectionSearch from "./DesignSelectionSearch";
 import DesignSelectionCategories from "./DesignSelectionCategories";
 import DesignSelectionList from "./DesignSelectionList";
 import { MODALS } from "../consts";
 import { eventBus } from "../main";
-import { GET_DESIGN_CATEGORIES } from "../store/actions.type";
 export default {
   components: {
     DesignSelectionSearch,
@@ -57,13 +56,9 @@ export default {
     ...mapGetters(["designList"])
   },
   methods: {
-    ...mapActions([GET_DESIGN_CATEGORIES]),
     onHide() {
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     }
-  },
-  mounted() {
-    this.$store.dispatch(GET_DESIGN_CATEGORIES);
   }
 };
 </script>

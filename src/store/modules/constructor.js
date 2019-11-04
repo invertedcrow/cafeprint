@@ -1,9 +1,14 @@
+import Vue from "vue";
 import {SIDES} from "../../consts";
 import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, PRODUCT_SET_COLOR, PRODUCT_SET_SIZE,
-    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM
+    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE
 } from '../mutations.type';
+
+import {
+    GET_BASE
+} from '../actions.type';
 
 const productDefault = () => ({
     product: '',
@@ -98,9 +103,17 @@ const getters = {
   },
 };
 
-const actions = {};
+const actions = {
+    [GET_BASE]: async (state, id) => {
+        //const base = await Vue.axios.get(`/constructor/bases/${id}`)
+       // console.log(base)
+       // state.commit(CONSTRUCTOR_SET_BASE, base);
+        
+    }
+};
 
 const mutations = {
+    [CONSTRUCTOR_SET_BASE]: (state, base) => state.selectedProduct = base,
     [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, value],
     [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,

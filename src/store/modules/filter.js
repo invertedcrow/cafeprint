@@ -7,9 +7,10 @@ import {
 } from '../mutations.type';
 
 import {
-    GET_BASES,
+    GET_BASES_LIST,
     GET_BASES_CATEGORIES
 } from '../actions.type.js'
+import { async } from 'q';
 
 const getDefaultState = () => ({    
     activeCategory: '', 
@@ -34,15 +35,16 @@ const getters = {
 }
 
 const actions = {
-   [GET_BASES_CATEGORIES]: (state) => {
-  //  const categories = await Vue.axios.get('/constructor/categories')
-   
+   [GET_BASES_CATEGORIES]: async (state) => {
+    // const response = await Vue.axios.get('/constructor/categories')
+    // console.log(response)
     state.commit(FILTER_SET_CATEGORIES, categories)
 },
-   [GET_BASES]: async (state) => {
-   //const response = await Vue.axios.get('/constructor/bases');
+   [GET_BASES_LIST]: async (state) => {
+//    const response = await Vue.axios.get('/constructor/bases');
+//    console.log(response)
    const bases = [
-    { id: 1 },
+    { id: 123,},
     { id: 2 },
     { id: 3 },
     { id: 4 },

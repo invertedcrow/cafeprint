@@ -1,3 +1,4 @@
+import Vue from "vue";
 import {
     DESIGN_SET_CATEGORIES,
     DESIGN_SET_ACTIVE_CATEGORIES,
@@ -35,8 +36,10 @@ const actions = {
     // TODO: fetch data from server
     state.commit(DESIGN_SET_CATEGORIES, categories)   
    },
-   [GET_DESIGN]: (state) => {
+   [GET_DESIGN]: async (state) => {
     // TODO: fetch data from server  
+    //const response = await Vue.axios.get('/constructor/clip-arts')
+    //console.log(response)
     state.commit(DESIGN_SET_LIST, designs) 
    }
 }

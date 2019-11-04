@@ -24,7 +24,7 @@
 import Checkbox from "./Checkbox";
 import { mapMutations, mapGetters, mapActions } from "vuex";
 import { FILTER_SET_ACTIVE_CATEGORY } from "../store/mutations.type";
-import { GET_BASES } from "../store/actions.type";
+import { GET_BASES_LIST } from "../store/actions.type";
 
 export default {
   components: {
@@ -38,10 +38,10 @@ export default {
   props: ["category"],
   methods: {
     ...mapMutations([FILTER_SET_ACTIVE_CATEGORY]),
-    ...mapActions([GET_BASES]),
+    ...mapActions([GET_BASES_LIST]),
     setActiveCategory(item) {
       this.$store.commit(FILTER_SET_ACTIVE_CATEGORY, item);
-      this.$store.dispatch(GET_BASES);
+      this.$store.dispatch(GET_BASES_LIST);
     }
   },
   computed: {
