@@ -105,7 +105,7 @@ const getters = {
 
 const actions = {
     [GET_BASE]: async (state, id) => {
-        //const base = await Vue.axios.get(`/constructor/bases/${id}`)
+        const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
        // console.log(base)
        // state.commit(CONSTRUCTOR_SET_BASE, base);
         

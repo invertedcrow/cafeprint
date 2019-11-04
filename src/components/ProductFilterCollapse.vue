@@ -4,17 +4,19 @@
       <div class="filter__category-arrow d-flex" :class="{open: showCollapse}">
         <img src="../assets/icons/arrow.svg" alt />
       </div>
-      <div class="filter__category-title">{{category.title}}</div>
+      <div class="filter__category-title">{{category.name}}</div>
     </div>
     <b-collapse v-model="showCollapse" class="filter__subCategory">
       <div
         class="filter__subCategory-item d-flex"
-        v-for="(subItem, index) in category.subCategories"
+        v-for="(subItem, index) in category.children"
         :key="index"
-        @click="setActiveCategory(subItem)"
+        @click="setActiveCategory(subItem.id)"
       >
-        <checkbox :checked="subItem == activeCategory" />
-        <p>{{subItem}}</p>
+        <checkbox
+          :checked="subItem.id == filterParams.category_id && category.sex == filterParams.sex"
+        />
+        <p>{{subItem.name}}</p>
       </div>
     </b-collapse>
   </div>
@@ -23,7 +25,6 @@
 <script>
 import Checkbox from "./Checkbox";
 import { mapMutations, mapGetters, mapActions } from "vuex";
-import { FILTER_SET_ACTIVE_CATEGORY } from "../store/mutations.type";
 import { GET_BASES_LIST } from "../store/actions.type";
 
 export default {
@@ -37,15 +38,17 @@ export default {
   },
   props: ["category"],
   methods: {
-    ...mapMutations([FILTER_SET_ACTIVE_CATEGORY]),
     ...mapActions([GET_BASES_LIST]),
-    setActiveCategory(item) {
-      this.$store.commit(FILTER_SET_ACTIVE_CATEGORY, item);
-      this.$store.dispatch(GET_BASES_LIST);
+    setActiveCategory(id) {
+      this.$store.dispatch(GET_BASES_LIST, {
+        category_id: id,
+        sex: this.category.sex,
+        limit: 10
+      });
     }
   },
   computed: {
-    ...mapGetters(["activeCategory"])
+    ...mapGetters(["filterParams"])
   }
 };
 </script>

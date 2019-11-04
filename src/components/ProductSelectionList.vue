@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex h-100">
-    <perfect-scrollbar>
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="list d-flex flex-wrap justify-content-start">
         <div
           class="list__item d-flex flex-column justify-content-between"
@@ -8,11 +8,11 @@
           :key="item.id"
         >
           <div class="list__item-img">
-            <img class="img-fluid" src="../assets/1.webp" alt />
+            <img class="img-fluid" :src="getUrl(item.preview_image)" alt />
           </div>
           <div class="list__item-info">
-            <div class="list__item-title">Mens long Sleeve T-Short By Next level</div>
-            <div class="list__item-price">500 uah</div>
+            <div class="list__item-title">{{item.name}}</div>
+            <div class="list__item-price">{{item.manufacture_price}} uah</div>
           </div>
           <div class="list__item-hover">
             <button class="baseBtn w-100" @click="onChoose(item.id)">Выбрать</button>
@@ -24,14 +24,22 @@
 </template>
 
 <script>
-import { MODALS } from "../consts";
+import { MODALS, API_URL } from "../consts";
 import { eventBus } from "../main";
 import { mapGetters, mapActions } from "vuex";
-import { GET_BASE } from "../store/actions.type";
+import { GET_BASE, GET_BASES_LIST } from "../store/actions.type";
 
 export default {
   methods: {
-    ...mapActions([GET_BASE]),
+    ...mapActions([GET_BASE, GET_BASES_LIST]),
+    onReachEnd() {
+      const params = this.filterParams;
+      if (params.limit == this.bases.length) {
+        params.limit = +params.limit + 10;
+
+        this.$store.dispatch(GET_BASES_LIST, params);
+      }
+    },
     onChoose(id) {
       // let filter = this.$store.state.filter;
       // this.$store.commit("setPreviewColor", filter.color);
@@ -40,10 +48,13 @@ export default {
       // TODO: add product to constructor
       this.$store.dispatch(GET_BASE, id);
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
+    },
+    getUrl(imgURL) {
+      return API_URL + imgURL;
     }
   },
   computed: {
-    ...mapGetters(["bases"])
+    ...mapGetters(["bases", "filterParams"])
   }
 };
 </script>

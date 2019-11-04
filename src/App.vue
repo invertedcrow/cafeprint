@@ -36,7 +36,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch(GET_BASES_CATEGORIES);
-    this.$store.dispatch(GET_BASES_LIST);
+    this.$store.dispatch(GET_BASES_LIST, { limit: 10 });
     this.$store.dispatch(GET_DESIGN_CATEGORIES);
     this.$store.dispatch(GET_DESIGN);
   }
