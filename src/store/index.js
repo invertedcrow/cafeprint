@@ -5,7 +5,7 @@ import constructor from './modules/constructor';
 import upload from './modules/upload';
 import filter from './modules/filter';
 import design from './modules/design';
-import { SIDES, Sidebar } from '../consts';
+import { Sidebar } from '../consts';
 
 Vue.use(Vuex);
 

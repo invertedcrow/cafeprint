@@ -9,8 +9,8 @@ export const CONSTRUCTOR_SET_BASE           = 'setBase';
 
 export const SIDEBAR_SET_ACTIVE             = 'setActiveSidebar';
 
-export const PRODUCT_SET_COLOR 				= 'setActiveColor';
-export const PRODUCT_SET_SIZE 				= 'setSelectedSize';
+export const CONSTRUCTOR_SET_COLOR 				= 'setActiveColor';
+export const CONSTRUCTOR_SET_SIZE 				= 'setSelectedSize';
 
 export const DESIGN_SET_CATEGORIES          = 'setCategories';
 export const DESIGN_SET_ACTIVE_CATEGORIES   = 'setActiveCategory';

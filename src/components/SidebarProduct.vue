@@ -39,7 +39,7 @@
 
     <div class="sidebar-product__colors">
       <div class="sidebar-product__colors-title">Цвет:</div>
-      <color :colors="colors" :active="base.color" :setActiveColor="setActiveColor" />
+      <color :colors="base.colors" :active="color" :setActiveColor="setActiveColor" />
     </div>
     <hr class="sidebar-product__line-colors-bottom" />
 
@@ -98,36 +98,25 @@
 import Color from "./Color";
 import { Sidebar, MODALS } from "../consts";
 import { eventBus } from "../main";
-
+import { mapGetters, mapMutations } from "vuex";
+import {
+  CONSTRUCTOR_SET_COLOR,
+  SIDEBAR_SET_ACTIVE
+} from "../store/mutations.type";
 export default {
   components: {
     Color
   },
-  data() {
-    return {
-      colors: [
-        "#fff",
-        "#000",
-        "#959595",
-        "#00c2f6",
-        "#fff324",
-        "#00ad5d",
-        "#4758a5",
-        "#ff0000"
-      ]
-    };
-  },
   computed: {
-    base() {
-      return this.$store.state.constructor.base;
-    }
+    ...mapGetters(["base", "color"])
   },
   methods: {
+    ...mapMutations([CONSTRUCTOR_SET_COLOR, SIDEBAR_SET_ACTIVE]),
     setActiveColor(color) {
-      this.$store.commit("setActiveColor", color);
+      this.$store.commit(CONSTRUCTOR_SET_COLOR, color);
     },
     selectSidebarLayers() {
-      this.$store.commit("setActiveSidebar", Sidebar.LAYERS);
+      this.$store.commit(SIDEBAR_SET_ACTIVE, Sidebar.LAYERS);
     },
     showInfoModal() {
       eventBus.$emit("showModal", MODALS.INFO);

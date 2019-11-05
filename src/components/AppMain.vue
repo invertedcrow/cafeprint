@@ -10,22 +10,22 @@
       >
         <rect fill="none" :width="width" :height="height" />
         <image
-          v-bind:xlink:href="selectedSide.image"
+          v-bind:xlink:href="baseImg"
           :x="image.x"
           :y="image.y"
           :width="image.width"
           :height="image.height"
         />
 
-        <g :transform="'translate('+selectedSide.area.x+', '+selectedSide.area.y+')'">
+        <!-- <g :transform="'translate('+side.area.x+', '+side.area.y+')'">
           <rect
             id="editable-area"
             fill="none"
             vector-effect="non-scaling-stroke"
             stroke-width="2"
             :stroke="dragging || rotation || scaling ? '#007bff' : selectedElement ?  'white' : 'none'"
-            :height="selectedSide.area.height"
-            :width="selectedSide.area.width"
+            :height="side.area.height"
+            :width="side.area.width"
           />
           <g>
             <template v-if="dragging && selectedElement">
@@ -33,8 +33,8 @@
                 v-if="lines.centerH"
                 x1="-2000"
                 x2="2000"
-                :y1="selectedSide.area.height / 2"
-                :y2="selectedSide.area.height / 2"
+                :y1="side.area.height / 2"
+                :y2="side.area.height / 2"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
@@ -53,16 +53,16 @@
                 v-if="lines.bottom"
                 x1="-2000"
                 x2="2000"
-                :y1="selectedSide.area.height"
-                :y2="selectedSide.area.height"
+                :y1="side.area.height"
+                :y2="side.area.height"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
               />
               <line
                 v-if="lines.centerV"
-                :x1="selectedSide.area.width/2"
-                :x2="selectedSide.area.width/2"
+                :x1="side.area.width/2"
+                :x2="side.area.width/2"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -81,8 +81,8 @@
               />
               <line
                 v-if="lines.right"
-                :x1="selectedSide.area.width"
-                :x2="selectedSide.area.width"
+                :x1="side.area.width"
+                :x2="side.area.width"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -123,13 +123,7 @@
                     d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
                   />
                 </svg>
-              </g>
-              <!-- <g @click="removeActiveItem()" :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'">
-                        <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
-                        <svg class="ctrl-icon" xmlns="http://www.w3.org/2000/svg" height="17px" viewBox="-18 0 511 512" width="15px" fill="#757575" x="4px" y="3px">
-                            <path d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"/>
-                        </svg>
-              </g>-->
+              </g>              
 
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
@@ -275,7 +269,7 @@
               </g>
             </g>
           </g>
-        </g>
+        </g> -->
       </svg>
     </div>
   </div>
@@ -359,7 +353,7 @@ export default {
         })
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "selectedSide", "base", "selectedLayers"]),
+        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg"]),
         addText() {
             return this.$store.state.addText;
         },
@@ -502,8 +496,8 @@ export default {
                       item.y = event.y - item.drag.my + item.drag.y;
                   }
 
-                  const centerX = (this.selectedSide.area.width) / 2;
-                  const centerY = (this.selectedSide.area.height) / 2;
+                  const centerX = (this.side.area.width) / 2;
+                  const centerY = (this.side.area.height) / 2;
                   const oX = (left + right) / 2;
                   const oY = (top + bottom) / 2;
 
@@ -662,8 +656,8 @@ export default {
                       item.y = event.y - item.drag.my + item.drag.y;
                   }
 
-                  const centerX = (this.selectedSide.area.width) / 2;
-                  const centerY = (this.selectedSide.area.height) / 2;
+                  const centerX = (this.side.area.width) / 2;
+                  const centerY = (this.side.area.height) / 2;
                   // const centerY = (edBounds.height - strokeWidth)/ 2;
                   const oX = (left + right) / 2;
                   const oY = (top + bottom) / 2;
@@ -704,8 +698,8 @@ export default {
                   }
 
                   // const strokeWidth = 4;
-                  // const centerX = (this.selectedSide.area.width - strokeWidth) / 2;
-                  // const centerY = (this.selectedSide.area.height - strokeWidth) / 2;
+                  // const centerX = (this.side.area.width - strokeWidth) / 2;
+                  // const centerY = (this.side.area.height - strokeWidth) / 2;
                   // const oX = (left + right) / 2;
                   // const oY = (top + bottom) / 2;
 
@@ -836,7 +830,7 @@ export default {
       },
       createTextField() {
           return {
-              side: this.selectedSide.key,
+              side: this.side.id,
               type: "text",
               textAnchor: "start",
               x: ((this.items.length + 2) % 20) * 20,
@@ -860,7 +854,7 @@ export default {
       },
       createImgField(file) {
           return {
-              side: this.selectedSide.key,
+              side: this.side.id,
               type: "img",            
               x: ((this.items.length + 2) % 20) * 20,
               y: ((this.items.length + 2) % 20) * 20,             
@@ -939,11 +933,11 @@ export default {
       eventBus.$on('scaleChanged', sign => {
 
 
-        const sideOx = this.selectedSide.area.x + (this.selectedSide.area.width / 2);
+        const sideOx = this.side.area.x + (this.side.area.width / 2);
         const ratioLR = ((this.image.width - 4)  / 2) / sideOx; // 1.028 / 0.972
-        const ratioTB = (this.image.height - (this.selectedSide.area.y + this.selectedSide.area.height)) / this.selectedSide.area.y;
+        const ratioTB = (this.image.height - (this.side.area.y + this.side.area.height)) / this.side.area.y;
 
-        // const t = this.selectedSide.area.x + 
+        // const t = this.side.area.x + 
 
         // w = 210
         // x = 138
@@ -962,7 +956,7 @@ export default {
         
         const scale = 1.5;
 
-        const r = ((this.image.width - this.selectedSide.area.width) / 2) / ((this.image.width - this.selectedSide.area.width * 1.5) / 2);
+        const r = ((this.image.width - this.side.area.width) / 2) / ((this.image.width - this.side.area.width * 1.5) / 2);
         console.log(r);
 
         const distance = 250;
@@ -971,10 +965,10 @@ export default {
           this.image.y = 0;
           this.image.width = 500;
           this.image.height = 500;
-          this.selectedSide.area.x = 138; // 138 -> ||| <- 152
-          this.selectedSide.area.y = 124.966;
-          this.selectedSide.area.width = 210;
-          this.selectedSide.area.height = 300;
+          this.side.area.x = 138; // 138 -> ||| <- 152
+          this.side.area.y = 124.966;
+          this.side.area.width = 210;
+          this.side.area.height = 300;
           // this.items.map(item => {
           //   item.x *= 1.5;
           //   item.y *= 1.5;
@@ -988,21 +982,21 @@ export default {
           this.image.y += (distance * -1) / 2;
           this.image.width += distance;
           this.image.height += distance;
-          this.selectedSide.area.x = this.selectedSide.area.x / scale * r;
-          this.selectedSide.area.y = (this.selectedSide.area.y / scale) * ratioTB;
-          this.selectedSide.area.width *= scale;
-          this.selectedSide.area.height *= scale;
+          this.side.area.x = this.side.area.x / scale * r;
+          this.side.area.y = (this.side.area.y / scale) * ratioTB;
+          this.side.area.width *= scale;
+          this.side.area.height *= scale;
 
-          // const sideOx = this.selectedSide.area.width / 2;
-          const sideOy = this.selectedSide.area.height / 2;
-          const oX = this.selectedSide.area.x + (this.selectedSide.area.width / 2);
-          const oY = this.selectedSide.area.y + (this.selectedSide.area.height / 2);
-          const newW = this.selectedSide.area.width * scale;
-          const newH = this.selectedSide.area.height * scale;
+          // const sideOx = this.side.area.width / 2;
+          const sideOy = this.side.area.height / 2;
+          const oX = this.side.area.x + (this.side.area.width / 2);
+          const oY = this.side.area.y + (this.side.area.height / 2);
+          const newW = this.side.area.width * scale;
+          const newH = this.side.area.height * scale;
 
           // console.log(oX);
 
-          console.log(this.selectedSide.area.x);
+          console.log(this.side.area.x);
           this.items.map(item => {
             item.x = (item.x / scale) * ratioLR;
             item.y = (item.y / scale) * ratioTB;
