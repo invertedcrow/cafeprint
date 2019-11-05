@@ -124,8 +124,9 @@ const getters = {
     }    
   },
   selectedElement: (state) => state.selectedElement,
-  activeSize: (state) => state.base.size,
-  side: (state) => state.base.sides.find(x => x.id === state.side.id),  
+  size: (state) => state.size,
+  side: (state) => state.side,  
+  description: (state) => state.base.description,
   selectedLayers: (state) => state.items.filter(item => item.selected),      
   items: (state) => state.items.filter(x => x.side === state.side),  
   renderSides: (state) => {
@@ -151,8 +152,9 @@ const actions = {
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
        
         state.commit(CONSTRUCTOR_SET_BASE, base.data);
-        state.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.data.sides[0])
-        state.commit(CONSTRUCTOR_SET_COLOR, base.data.colors[0])
+        state.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.data.sides[0]);
+        state.commit(CONSTRUCTOR_SET_COLOR, base.data.colors[0]);
+        state.commit(CONSTRUCTOR_SET_SIZE, base.data.sizes[0])
         console.log(state.state)
         
     }

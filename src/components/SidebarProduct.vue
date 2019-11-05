@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-product">
     <div class="sidebar-product__sizes">
-      <span class="sidebar-product__sizes-item">размер M</span>
+      <span class="sidebar-product__sizes-item" v-if="size">размер {{size.name}}</span>
       <span class="sidebar-product__sizes-current">Текущий размер принта - A4</span>
     </div>
     <hr />
@@ -108,7 +108,7 @@ export default {
     Color
   },
   computed: {
-    ...mapGetters(["base", "color"])
+    ...mapGetters(["base", "color", "size"])
   },
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_COLOR, SIDEBAR_SET_ACTIVE]),
@@ -170,12 +170,11 @@ export default {
       font-weight: bold;
       cursor: pointer;
       &:not(:last-child) {
-        margin-right: 5px;
+        margin-right: 23px;
       }
     }
     &-current {
       color: #9aa2af;
-      margin-left: 18px;
     }
   }
 
