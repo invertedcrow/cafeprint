@@ -33,22 +33,22 @@
         <div class="table__body d-flex flex-column justify-content-between">
           <div
             class="table__body-item"
-            :class="{active: activeSize && item.id == activeSize.id}"
-            v-for="item in sizes"
+            :class="{active: size && item.id == size.id}"
+            v-for="item in base.sizes"
             :key="item.id"
             @click="setSelectedSize(item)"
           >
             <div class="wrapper-item d-flex justify-content-between">
-              <div class="size">{{item.s}}</div>
-              <div class="length">{{item.a}}</div>
-              <div class="length">{{item.b}}</div>
+              <div class="size">{{item.name}}</div>
+              <div class="length">{{item.width}}</div>
+              <div class="length">{{item.height}}</div>
             </div>
           </div>
         </div>
         <p>* возможна погрешность 2 см</p>
       </div>
       <div class="sizes__content-img d-flex flex-column justify-content-start">
-        <img src="../assets/temp-size.png" alt />
+        <img :src="imgUrl" alt />
       </div>
     </div>
   </div>
@@ -58,31 +58,23 @@
 import { MODALS } from "../consts";
 import { eventBus } from "../main";
 import { mapMutations, mapGetters } from "vuex";
-
+import { CONSTRUCTOR_SET_SIZE } from "../store/mutations.type";
+import { API_URL } from "../consts";
 export default {
-  data() {
-    return {
-      sizes: [
-        { id: 1, s: "XS", a: 45, b: 70 },
-        { id: 2, s: "S", a: 49, b: 72 },
-        { id: 3, s: "M", a: 52, b: 74 },
-        { id: 4, s: "L", a: 56, b: 76 },
-        { id: 5, s: "XL", a: 60, b: 77 },
-        { id: 6, s: "XXL", a: 63, b: 78 },
-        { id: 7, s: "3XL", a: 67, b: 80 },
-        { id: 8, s: "4XL", a: 72, b: 83 },
-        { id: 9, s: "5XL", a: 76, b: 85 }
-      ]
-    };
-  },
   methods: {
-    ...mapMutations(["setSelectedSize"]),
+    ...mapMutations([CONSTRUCTOR_SET_SIZE]),
     onHide() {
       eventBus.$emit("hideModal", MODALS.SIZES);
+    },
+    setSelectedSize(size) {
+      this.$store.commit(CONSTRUCTOR_SET_SIZE, size);
     }
   },
   computed: {
-    ...mapGetters(["activeSize"])
+    ...mapGetters(["size", "base"]),
+    imgUrl() {
+      return API_URL + "/" + this.base.size_image;
+    }
   }
 };
 </script>

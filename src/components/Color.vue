@@ -2,11 +2,12 @@
   <div class="color-list">
     <div
       class="color-list__item"
-      v-for="color in colors"
-      :key="color"
+      v-for="(color, index) in colors"
+      :key="index"
       @click="setActiveColor(color)"
-      :style="{backgroundColor: color }"
-      :class="{active: active === color}"
+      :style="{backgroundColor: `#${color.color}` }"
+      :class="{active: active.id === color.id}"
+      :title="color.colorname"
     ></div>
     <button
       v-if="isColorPicker"

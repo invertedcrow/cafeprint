@@ -7,11 +7,6 @@ const CONSTRUCTOR_HANDLE_ROTATE     = 1;
 const CONSTRUCTOR_HANDLE_REMOVE     = 2;
 const CONSTRUCTOR_HANDLE_SCALE      = 3;
 
-const SIDE_FRONT    = 1;
-const SIDE_BACK     = 2;
-const SIDE_RIGHT    = 3;
-const SIDE_LEFT     = 4;
-
 const SIDEBAR_PRODUCT   = 'product';
 const SIDEBAR_TEXT      = 'text';
 const SIDEBAR_FONT      = 'font';
@@ -37,12 +32,7 @@ export const CONSTRUCTOR_HANDLES = {
     SCALE:  CONSTRUCTOR_HANDLE_SCALE
 };
 
-export const SIDES = {
-    FRONT:  SIDE_FRONT,
-    BACK:   SIDE_BACK,
-    RIGHT:  SIDE_RIGHT,
-    LEFT:   SIDE_LEFT
-};
+
 
 export const MODALS = {
     PRODUCTS:   MODAL_PRODUCTS,

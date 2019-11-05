@@ -8,7 +8,8 @@ import {
 
 import {
     GET_BASES_LIST,
-    GET_BASES_CATEGORIES
+    GET_BASES_CATEGORIES,
+    GET_BASE
 } from '../actions.type.js';
 
 const getDefaultState = () => ({    
@@ -55,9 +56,14 @@ const actions = {
     state.commit(FILTER_SET_CATEGORIES, categories)
 },
    [GET_BASES_LIST]: async (state, params) => {
-    const bases = await Vue.axios.get('/constructor-new/bases', {params}); 
+    const bases = await Vue.axios.get('/constructor-new/bases', {params});
+    if(params.init) {
+        state.dispatch(GET_BASE, bases.data[0].id)
+        delete params.init
+    }
     state.commit(FILTER_SET_PARAMS, params);  
     state.commit(FILTER_SET_BASES, bases.data);
+
    },
 }
 

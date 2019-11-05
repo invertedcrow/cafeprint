@@ -1,11 +1,11 @@
 <template>
   <div class="sides d-flex justify-content-center">
-    <div v-for="(side) in renderSides" :key="side.key" @click="setActiveSide(side)">
-      <div class="sides__item d-flex flex-column" :class="{active: side.key == selectedSide.key }">
+    <div v-for="(side) in renderSides" :key="side.id" @click="setActiveSide(side)">
+      <div class="sides__item d-flex flex-column" :class="{active: side.id == side.id }">
         <svg :viewBox="'0 0 500 500'" width="100%" height="100%">
           <rect fill="none" width="500" height="500" />
           <image v-bind:xlink:href="side.image" style="width: 100%" />
-          <g :transform="'translate('+side.area.x+', '+side.area.y+')'">
+          <!-- <g :transform="'translate('+side.area.x+', '+side.area.y+')'">
             <rect
               fill="none"
               vector-effect="non-scaling-stroke"
@@ -51,7 +51,7 @@
                 :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
               >{{text}}</text>
             </g>
-          </g>
+          </g>-->
         </svg>
       </div>
     </div>
@@ -60,8 +60,11 @@
 
 <script>
 import { TextAlignment } from "../consts";
-import { mapGetters } from "vuex";
-
+import { mapGetters, mapMutations } from "vuex";
+import {
+  CONSTRUCTOR_SET_SELECTED_SIDE,
+  CONSTRUCTOR_SET_SELECTED_ITEM
+} from "../store/mutations.type";
 export default {
   data() {
     return {
@@ -69,13 +72,17 @@ export default {
     };
   },
   methods: {
+    ...mapMutations([
+      CONSTRUCTOR_SET_SELECTED_SIDE,
+      CONSTRUCTOR_SET_SELECTED_ITEM
+    ]),
     setActiveSide(side) {
-      this.$store.commit("setSelectedSide", side.key);
-      this.$store.commit("setSelectedElement", null);
+      this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
+      this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
     }
   },
   computed: {
-    ...mapGetters(["selectedSide", "renderSides"])
+    ...mapGetters(["side", "renderSides"])
   }
 };
 </script>
@@ -90,7 +97,7 @@ export default {
     height: 100px;
     border: 1px solid transparent;
     margin: 2px;
-    opacity: 0.11;
+    opacity: 0.4;
     &:hover {
       cursor: pointer;
     }
