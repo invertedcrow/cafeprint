@@ -9,7 +9,7 @@
             :useCustomSlot="true"
             :thumbnailMethod="null"
             :options="dropzoneOptions"
-            @vdropzone-success="(file, response) => addFile(file)"
+            @vdropzone-success="(file, response) => onLoadFile(file)"
           >
             <div class="dropzone__content">Перетащите файлы сюда...</div>
           </vue-dropzone>
@@ -28,6 +28,7 @@
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations } from "vuex";
+import { UPLOAD_ADD_FILE } from "../store/mutations.type";
 export default {
   components: {
     vueDropzone: vue2Dropzone
@@ -43,9 +44,12 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["addFile"]),
+    ...mapMutations([UPLOAD_ADD_FILE]),
     onAddFile() {
       this.$refs.myVueDropzone.$el.click();
+    },
+    onLoadFile(file) {
+      this.$store.commit(UPLOAD_ADD_FILE, file);
     },
     templatePreview() {
       return `     

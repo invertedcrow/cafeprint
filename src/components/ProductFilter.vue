@@ -11,21 +11,15 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import ProductFilterCollapse from "./ProductFilterCollapse";
 
 export default {
   components: {
     ProductFilterCollapse
   },
-  methods: {
-    ...mapActions(["fetchCategories"])
-  },
   computed: {
     ...mapGetters(["categories"])
-  },
-  mounted() {
-    this.fetchCategories("");
   }
 };
 </script>

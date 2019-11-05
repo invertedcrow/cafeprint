@@ -1,21 +1,21 @@
 <template>
   <div class="d-flex h-100">
-    <perfect-scrollbar>
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="list d-flex flex-wrap justify-content-start">
         <div
           class="list__item d-flex flex-column justify-content-between"
-          v-for="item in list"
+          v-for="item in bases"
           :key="item.id"
         >
           <div class="list__item-img">
-            <img class="img-fluid" src="../assets/1.webp" alt />
+            <img class="img-fluid" :src="getUrl(item.preview_image)" alt />
           </div>
           <div class="list__item-info">
-            <div class="list__item-title">Mens long Sleeve T-Short By Next level</div>
-            <div class="list__item-price">500 uah</div>
+            <div class="list__item-title">{{item.name}}</div>
+            <div class="list__item-price">{{item.manufacture_price}} uah</div>
           </div>
           <div class="list__item-hover">
-            <button class="baseBtn w-100" @click="onChoose()">Выбрать</button>
+            <button class="baseBtn w-100" @click="onChoose(item.id)">Выбрать</button>
           </div>
         </div>
       </div>
@@ -24,35 +24,37 @@
 </template>
 
 <script>
-import { MODALS } from "../consts";
+import { MODALS, API_URL } from "../consts";
 import { eventBus } from "../main";
+import { mapGetters, mapActions } from "vuex";
+import { GET_BASE, GET_BASES_LIST } from "../store/actions.type";
 
 export default {
-  data() {
-    return {
-      list: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 }
-      ]
-    };
-  },
   methods: {
-    onChoose() {
+    ...mapActions([GET_BASE, GET_BASES_LIST]),
+    onReachEnd() {
+      const params = this.filterParams;
+      if (params.limit == this.bases.length) {
+        params.limit = +params.limit + 10;
+
+        this.$store.dispatch(GET_BASES_LIST, params);
+      }
+    },
+    onChoose(id) {
       // let filter = this.$store.state.filter;
       // this.$store.commit("setPreviewColor", filter.color);
       // this.$store.commit("setPreviewSize", filter.size);
       // this.$store.commit("showFilterPreview", true);
       // TODO: add product to constructor
-
+      this.$store.dispatch(GET_BASE, id);
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
+    },
+    getUrl(imgURL) {
+      return API_URL + imgURL;
     }
+  },
+  computed: {
+    ...mapGetters(["bases", "filterParams"])
   }
 };
 </script>

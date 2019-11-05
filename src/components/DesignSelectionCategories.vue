@@ -24,6 +24,8 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import Checkbox from "./Checkbox";
+import { GET_DESIGN } from "../store/actions.type";
+import { DESIGN_SET_ACTIVE_CATEGORIES } from "../store/mutations.type";
 
 export default {
   data() {
@@ -35,11 +37,11 @@ export default {
     Checkbox
   },
   methods: {
-    ...mapActions(["fetchDesigns"]),
-    ...mapMutations(["setActiveCategory"]),
+    ...mapActions([GET_DESIGN]),
+    ...mapMutations([DESIGN_SET_ACTIVE_CATEGORIES]),
     onSelect(category) {
-      this.setActiveCategory(category);
-      this.fetchDesigns();
+      this.$store.commit(DESIGN_SET_ACTIVE_CATEGORIES, category);
+      this.$store.dispatch(GET_DESIGN);
     }
   },
   computed: {

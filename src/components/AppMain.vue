@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="constructor" :style="{borderColor: selectedProduct.color}">
+    <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
         :viewBox="'0 0 '+width+' '+height"
@@ -287,7 +287,7 @@ import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
 import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
-import {CONSTRUCTOR_DELETE_ITEM} from "../store/mutations.type";
+import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS} from "../store/mutations.type";
 const defaultProps = {
     hex: "#fff",
     a: 1
@@ -359,7 +359,7 @@ export default {
         })
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "selectedSide", "selectedProduct", "selectedLayers"]),
+        ...mapGetters(["selectedElement", "items", "selectedSide", "base", "selectedLayers"]),
         addText() {
             return this.$store.state.addText;
         },
@@ -420,7 +420,7 @@ export default {
       },
       resetSelected() {
           this.items.forEach(item => item.selected = false);       
-           this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
+          this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
           this.$store.commit('setSelectedElement', null);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },  

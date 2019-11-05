@@ -1,3 +1,15 @@
+import Vue from "vue";
+import {
+    DESIGN_SET_CATEGORIES,
+    DESIGN_SET_ACTIVE_CATEGORIES,
+    DESIGN_SET_LIST,
+    DESIGN_SET_SEARCHTEXT
+} from '../mutations.type';
+import {
+    GET_DESIGN,
+    GET_DESIGN_CATEGORIES
+} from '../actions.type.js';
+
 const getDefaultState = () => ({    
     designActiveCategory: '',
     searchText: '', 
@@ -20,21 +32,23 @@ const getters = {
 }
 
 const actions = {
-   fetchDesignCategories: (state) => {
-    // TODO: fetch data from server  
-    state.commit('setCategories', categories)   
+   [GET_DESIGN_CATEGORIES]: (state) => {
+    // TODO: fetch data from server
+    state.commit(DESIGN_SET_CATEGORIES, categories)   
    },
-   fetchDesigns: (state) => {
+   [GET_DESIGN]: async (state) => {
     // TODO: fetch data from server  
-    state.commit('setDesignList', designs) 
+    //const response = await Vue.axios.get('/constructor/clip-arts')
+    //console.log(response)
+    state.commit(DESIGN_SET_LIST, designs) 
    }
 }
 
 const mutations = {
-    setCategories: (state, categories) => state.designCategories = categories,
-    setDesignList: (state, designs) => state.designs = designs,
-    setSearchText: (state, searchText) => state.searchText = searchText,
-    setActiveCategory: (state, category) => state.designActiveCategory = category
+    [DESIGN_SET_CATEGORIES]: (state, categories) => state.designCategories = categories,
+    [DESIGN_SET_LIST]: (state, designs) => state.designs = designs,
+    [DESIGN_SET_SEARCHTEXT]: (state, searchText) => state.searchText = searchText,
+    [DESIGN_SET_ACTIVE_CATEGORIES]: (state, category) => state.designActiveCategory = category
 }
 
 export default {

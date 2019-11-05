@@ -8,12 +8,42 @@
       :style="{backgroundColor: color }"
       :class="{active: active === color}"
     ></div>
+    <button
+      v-if="isColorPicker"
+      id="popover-color-picker-popover"
+      class="baseBtn secondary color-list__item"
+    >
+      <img src="../assets/icons/colopicker.png" alt />
+    </button>
+
+    <b-popover
+      custom-class="picker-popover"
+      placement="top"
+      target="popover-color-picker-popover"
+      triggers="focus"
+    >
+      <chrome-picker :value="pickerColor" v-model="pickerColor" />
+    </b-popover>
   </div>
 </template>
 
 <script>
+import { Chrome } from "vue-color";
 export default {
-  props: ["colors", "active", "setActiveColor"]
+  data() {
+    return {
+      pickerColor: "#194d33"
+    };
+  },
+  components: {
+    "chrome-picker": Chrome
+  },
+  watch: {
+    pickerColor: function(color) {
+      this.setActiveColor(color.hex8);
+    }
+  },
+  props: ["colors", "active", "setActiveColor", "isColorPicker"]
 };
 </script>
 
@@ -22,6 +52,12 @@ export default {
   padding: 0 4px;
   display: flex;
   flex-wrap: wrap;
+  .baseBtn {
+    &.secondary {
+      border-color: transparent;
+      padding: 0;
+    }
+  }
   &__item {
     width: 23px;
     height: 23px;

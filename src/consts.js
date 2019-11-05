@@ -60,3 +60,7 @@ export const Sidebar = {
     PRICE:      SIDEBAR_PRICE,
     PRODUCT:    SIDEBAR_PRODUCT
 };
+
+export const API_URL = "https://stage.mfest.com.ua";
+//local
+//export const API_URL = "http://127.0.0.1"

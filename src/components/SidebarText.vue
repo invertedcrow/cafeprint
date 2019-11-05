@@ -145,7 +145,12 @@
 
     <div class="sidebar-text__colors">
       <div class="sidebar-text__colors-label">Цвет:</div>
-      <Color :setActiveColor="onColorChanged" :active="selectedElement.color" :colors="colors"></Color>
+      <Color
+        :setActiveColor="onColorChanged"
+        :isColorPicker="true"
+        :active="selectedElement.color"
+        :colors="colors"
+      ></Color>
     </div>
     <hr class="sidebar-text__line-colors-bottom" />
 

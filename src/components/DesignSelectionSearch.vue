@@ -11,6 +11,8 @@
 
 <script>
 import { mapActions, mapMutations } from "vuex";
+import { DESIGN_SET_SEARCHTEXT } from "../store/mutations.type";
+import { GET_DESIGN } from "../store/actions.type";
 export default {
   data() {
     return {
@@ -18,11 +20,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["fetchDesigns"]),
-    ...mapMutations(["setSearchText"]),
+    ...mapActions([GET_DESIGN]),
+    ...mapMutations([DESIGN_SET_SEARCHTEXT]),
     onSearch() {
-      this.setSearchText(this.text);
-      this.fetchDesigns();
+      this.$store.commit(DESIGN_SET_SEARCHTEXT, this.text);
+      this.$store.dispatch(GET_DESIGN);
     }
   }
 };
