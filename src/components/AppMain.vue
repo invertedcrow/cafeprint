@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="constructor" :style="{borderColor: selectedProduct.color}">
+    <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
         :viewBox="'0 0 '+width+' '+height"
@@ -359,7 +359,7 @@ export default {
         })
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "selectedSide", "selectedProduct", "selectedLayers"]),
+        ...mapGetters(["selectedElement", "items", "selectedSide", "base", "selectedLayers"]),
         addText() {
             return this.$store.state.addText;
         },

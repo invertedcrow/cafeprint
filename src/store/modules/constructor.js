@@ -77,20 +77,20 @@ const initialState = () => ({
     selectedElement: null,
     selectedLayers: [],
     selectedSide: SIDES.FRONT,
-    selectedProduct:  productDefault()
+    base:  productDefault()
 });
 
 export const state = initialState;
 
 const getters = {
-  selectedProduct: (state) => state.selectedProduct,
+  base: (state) => state.base,
   selectedElement: (state) => state.selectedElement,
-  activeSize: (state) => state.selectedProduct.size,
-  selectedSide: (state) => state.selectedProduct.sides.find(x => x.key === state.selectedSide),  
+  activeSize: (state) => state.base.size,
+  selectedSide: (state) => state.base.sides.find(x => x.key === state.selectedSide),  
   selectedLayers: (state) => state.items.filter(item => item.selected),      
   items: (state) => state.items.filter(x => x.side === state.selectedSide),  
   renderSides: (state) => {
-    const sides = state.selectedProduct.sides;
+    const sides = state.base.sides;
     const items = state.items;
     if (sides && sides.length) {
         for (let i = 0; i < sides.length; i++) {
@@ -106,20 +106,20 @@ const getters = {
 const actions = {
     [GET_BASE]: async (state, id) => {
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
-       // console.log(base)
-       // state.commit(CONSTRUCTOR_SET_BASE, base);
+        console.log(base)
+        state.commit(CONSTRUCTOR_SET_BASE, base);
         
     }
 };
 
 const mutations = {
-    [CONSTRUCTOR_SET_BASE]: (state, base) => state.selectedProduct = base,
+    [CONSTRUCTOR_SET_BASE]: (state, base) => state.base = base,
     [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, value],
     [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
     [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.selectedSide = value,
-    [PRODUCT_SET_SIZE]: (state, value) => state.selectedProduct.size = value,
-    [PRODUCT_SET_COLOR]: (state, value) => state.selectedProduct.color = value,
+    [PRODUCT_SET_SIZE]: (state, value) => state.base.size = value,
+    [PRODUCT_SET_COLOR]: (state, value) => state.base.color = value,
     [CONSTRUCTOR_DELETE_ITEM] (state, value) {
         const index = state.items.indexOf(value);
         if (index >= 0) {

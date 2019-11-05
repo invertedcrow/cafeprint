@@ -39,7 +39,7 @@
 
     <div class="sidebar-product__colors">
       <div class="sidebar-product__colors-title">Цвет:</div>
-      <color :colors="colors" :active="selectedProduct.color" :setActiveColor="setActiveColor" />
+      <color :colors="colors" :active="base.color" :setActiveColor="setActiveColor" />
     </div>
     <hr class="sidebar-product__line-colors-bottom" />
 
@@ -118,8 +118,8 @@ export default {
     };
   },
   computed: {
-    selectedProduct() {
-      return this.$store.state.constructor.selectedProduct;
+    base() {
+      return this.$store.state.constructor.base;
     }
   },
   methods: {
