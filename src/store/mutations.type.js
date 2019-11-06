@@ -16,6 +16,7 @@ export const DESIGN_SET_CATEGORIES          = 'setCategories';
 export const DESIGN_SET_ACTIVE_CATEGORIES   = 'setActiveCategory';
 export const DESIGN_SET_LIST                = 'setDesignList';
 export const DESIGN_SET_SEARCHTEXT          = 'setSearchText';
+export const DESIGN_SET_FILTER              = 'setDesignFilter';
 
 export const FILTER_SET_CATEGORIES          = 'setFilterCategories';
 export const FILTER_SET_PARAMS              = 'setFilterActiveCategory';

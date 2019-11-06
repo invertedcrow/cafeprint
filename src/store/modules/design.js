@@ -3,52 +3,67 @@ import {
     DESIGN_SET_CATEGORIES,
     DESIGN_SET_ACTIVE_CATEGORIES,
     DESIGN_SET_LIST,
-    DESIGN_SET_SEARCHTEXT
+    DESIGN_SET_SEARCHTEXT,
+    DESIGN_SET_FILTER
 } from '../mutations.type';
 import {
     GET_DESIGN,
-    GET_DESIGN_CATEGORIES
+    GET_DESIGN_CATEGORIES,
+    GET_DESIGN_ITEM
 } from '../actions.type.js';
 
-const getDefaultState = () => ({    
-    designActiveCategory: '',
-    searchText: '', 
+const getDefaultState = () => ({   
     designCategories: [],
-    designs: [] 
+    designs: [],
+    designFilter: {
+        category_ids: "",
+        search: '',
+        limit: 0,
+    }
 });
 
 const state = getDefaultState();
 
-const categories = ["Все принты", "Для него, для нее, для семьи", "Приколы", "Кино, сериалы, мультфильмы", "Супергерои", "Компьютерные игры, приколы", "Музыка", "Отдых, увлечения, спорт", "Я - Украинец"];
-
-const designs = [1,2,3,4,5,6,7,8,9,12,11,13,14,15,16,17]
-
-
 const getters = {
-    designCategories: (state) => state.designCategories,
-    designActiveCategory: (state) => state.designActiveCategory,
-    designSearchText: (state) => state.searchtext,
-    designList: (state) => state.designs
+    category_ids: (state) => {
+
+        if(state.designFilter.category_ids) {
+            return state.designFilter.category_ids.split(",");
+        }
+        return [];
+    },
+    designCategories: (state) => state.designCategories,   
+    designList: (state) => state.designs,
+    designFilter: (state) => state.designFilter
 }
 
 const actions = {
-   [GET_DESIGN_CATEGORIES]: (state) => {
-    // TODO: fetch data from server
-    state.commit(DESIGN_SET_CATEGORIES, categories)   
+   [GET_DESIGN_CATEGORIES]: async (state) => {  
+    const categories = await Vue.axios.get('/constructor-new/clip-art-categories')  
+    state.commit(DESIGN_SET_CATEGORIES, categories.data)   
    },
-   [GET_DESIGN]: async (state) => {
-    // TODO: fetch data from server  
-    //const response = await Vue.axios.get('/constructor/clip-arts')
-    //console.log(response)
-    state.commit(DESIGN_SET_LIST, designs) 
-   }
+   [GET_DESIGN]: async (state, params) => {      
+    if(params.category_ids && typeof params.category_ids != 'string') {
+        params.category_ids = params.category_ids.join(",")
+    }
+   
+    const designs = await Vue.axios.get('/constructor-new/clip-arts', {params})  
+    
+    state.commit(DESIGN_SET_FILTER, params);
+    state.commit(DESIGN_SET_LIST, designs.data || []);
+   },
+   [GET_DESIGN_ITEM]: async (state, id) => {     
+    const img = await Vue.axios.get(`/constructor-new/clip-arts/${id}`)
+    console.log(img);    
+   } 
 }
 
 const mutations = {
     [DESIGN_SET_CATEGORIES]: (state, categories) => state.designCategories = categories,
     [DESIGN_SET_LIST]: (state, designs) => state.designs = designs,
-    [DESIGN_SET_SEARCHTEXT]: (state, searchText) => state.searchText = searchText,
-    [DESIGN_SET_ACTIVE_CATEGORIES]: (state, category) => state.designActiveCategory = category
+    [DESIGN_SET_SEARCHTEXT]: (state, search) => state.designFilter.search = search,
+    [DESIGN_SET_ACTIVE_CATEGORIES]: (state, categories) => state.category_ids = categories,
+    [DESIGN_SET_FILTER]: (state, filter) => state.designFilter = filter
 }
 
 export default {

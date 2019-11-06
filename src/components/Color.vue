@@ -66,6 +66,11 @@ export default {
     margin-right: 12px;
     margin-bottom: 15px;
     position: relative;
+    border: solid 1px whitesmoke;
+    display: flex;
+    img {
+      width: 110%;
+    }
     &.active {
       &:after {
         position: absolute;
@@ -74,8 +79,8 @@ export default {
         border: 1px solid #a5cd75;
         width: 31px;
         height: 31px;
-        top: -4px;
-        left: -4px;
+        top: -5px;
+        left: -5px;
         border-radius: 50%;
       }
     }

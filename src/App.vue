@@ -38,7 +38,11 @@ export default {
     this.$store.dispatch(GET_BASES_CATEGORIES);
     this.$store.dispatch(GET_BASES_LIST, { limit: 10, init: true });
     this.$store.dispatch(GET_DESIGN_CATEGORIES);
-    this.$store.dispatch(GET_DESIGN);
+    this.$store.dispatch(GET_DESIGN, {
+      limit: 16,
+      search: "",
+      category_ids: []
+    });
   }
 };
 </script>

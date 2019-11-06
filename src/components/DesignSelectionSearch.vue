@@ -1,7 +1,12 @@
 <template>
   <div class="search">
-    <b-form @submit="onSearch">
-      <b-form-input class="search__input" v-model="text" placeholder="Поиск"></b-form-input>
+    <b-form @submit.prevent="onSearch()">
+      <b-form-input
+        class="search__input"
+        @change="setSearchText"
+        v-model="text"
+        placeholder="Поиск"
+      ></b-form-input>
       <div type="submit" class="search__btn" @click="onSearch()">
         <img src="../assets/icons/search.svg" alt />
       </div>
@@ -10,9 +15,9 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
-import { DESIGN_SET_SEARCHTEXT } from "../store/mutations.type";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import { GET_DESIGN } from "../store/actions.type";
+import { DESIGN_SET_SEARCHTEXT } from "../store/mutations.type";
 export default {
   data() {
     return {
@@ -23,9 +28,21 @@ export default {
     ...mapActions([GET_DESIGN]),
     ...mapMutations([DESIGN_SET_SEARCHTEXT]),
     onSearch() {
+      this.$store.dispatch(GET_DESIGN, {
+        category_ids: this.category_ids,
+        search: this.text,
+        limit: 16
+      });
+    },
+    setSearchText() {
       this.$store.commit(DESIGN_SET_SEARCHTEXT, this.text);
-      this.$store.dispatch(GET_DESIGN);
     }
+  },
+  computed: {
+    ...mapGetters(["designFilter", "category_ids"])
+  },
+  mount() {
+    this.text = this.designFilter.search;
   }
 };
 </script>

@@ -4,3 +4,4 @@ export const GET_BASE             = "fetchBase";
 
 export const GET_DESIGN_CATEGORIES = "fetchDesignCategories";
 export const GET_DESIGN            = "fetchDesigns";
+export const GET_DESIGN_ITEM       = "getDesignImg";
