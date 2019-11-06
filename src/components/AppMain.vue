@@ -292,6 +292,8 @@ const defaultProps = {
     a: 1
 };
 
+const SCALE = 1.5;
+
 export default {
     data() {
         return {
@@ -320,12 +322,17 @@ export default {
             dragging: false,
             rotation: false,
             scaling: false,
+            scale: 0,
 
             image: {
               x: 0,
               y: 0,
               width: 500,
               height: 500
+            },
+            prevState: {
+                side: null,
+                image: null
             },
             lines: {
                 top: false,
@@ -975,6 +982,35 @@ export default {
           }
           return event.preventDefault();
       },
+      resetScale() {
+          if (!this.prevState.image || !this.prevState.side) {
+              return;
+          }
+
+          this.image.x                      = this.prevState.image.x;
+          this.image.y                      = this.prevState.image.y;
+          this.image.width                  = this.prevState.image.width;
+          this.image.height                 = this.prevState.image.height;
+
+          this.selectedSide.area.x          = this.prevState.side.x;
+          this.selectedSide.area.y          = this.prevState.side.y;
+          this.selectedSide.area.width      = this.prevState.side.width;
+          this.selectedSide.area.height     = this.prevState.side.height;
+
+          this.prevState.image              = null;
+          this.prevState.side               = null;
+
+          this.items.map(item => {
+              item.x        /= SCALE;
+              item.y        /= SCALE;
+              item.fontSize /= SCALE;
+              item.width    /= SCALE;
+              item.height   /= SCALE;
+              return item;
+          });
+
+          this.scale = 0;
+      }
   },
   mounted() {
     console.log('mounted')
@@ -990,80 +1026,52 @@ export default {
       });
 
       eventBus.$on('scaleChanged', sign => {
-
-
-        const sideOx = this.sideArea.x + (this.sideArea.width / 2);
-        const ratioLR = ((this.image.width - 4)  / 2) / sideOx; // 1.028 / 0.972
-        const ratioTB = (this.image.height - (this.sideArea.y + this.sideArea.height)) / this.sideArea.y;
-
-        // const t = this.sideArea.x + 
-
-        // w = 210
-        // x = 138
-        // scale = 1.5
-        // nW = 315
-        // nX = 92.5
-
-        // 138 / 1.5 * (((side.width - image.width) / 2) / (side.width * 1.5 - image.width * 1.5) / 2))
-
-        // console.log(ratioLR);
-        // console.log(sideOx);
-        // console.log(this.image.width  / 2);
-        // бол на мен
-
-        // console.log(ratioTB);
-        
-        const scale = 1.5;
-
-        const r = ((this.image.width - this.sideArea.width) / 2) / ((this.image.width - this.sideArea.width * 1.5) / 2);
-        console.log(r);
-
-        const distance = 250;
         if (sign === '-') {
-          this.image.x = 0;
-          this.image.y = 0;
-          this.image.width = 500;
-          this.image.height = 500;
-          this.sideArea.x = 138; // 138 -> ||| <- 152
-          this.sideArea.y = 124.966;
-          this.sideArea.width = 210;
-          this.sideArea.height = 300;
-          // this.items.map(item => {
-          //   item.x *= 1.5;
-          //   item.y *= 1.5;
-          //   item.width /= 1.5;
-          //   item.height /= 1.5;
-          //   return item;
-          // });
+            if (this.scale !== SCALE) {
+                return;
+            }
+
+            this.resetScale();
         } else {
-          this.image.x *= 0.670289;
-          // this.image.x += (distance * -1) / 2;
-          this.image.y += (distance * -1) / 2;
-          this.image.width += distance;
-          this.image.height += distance;
-          this.sideArea.x = this.sideArea.x / scale * r;
-          this.sideArea.y = (this.sideArea.y / scale) * ratioTB;
-          this.sideArea.width *= scale;
-          this.sideArea.height *= scale;
+            if (this.scale !== 0) {
+                return;
+            }
 
-          // const sideOx = this.sideArea.width / 2;
-          const sideOy = this.sideArea.height / 2;
-          const oX = this.sideArea.x + (this.sideArea.width / 2);
-          const oY = this.sideArea.y + (this.sideArea.height / 2);
-          const newW = this.sideArea.width * scale;
-          const newH = this.sideArea.height * scale;
+            this.prevState.image    = {x: this.image.x, y: this.image.y, height: this.image.height, width: this.image.width};
+            this.prevState.side     = {x: this.selectedSide.area.x, y: this.selectedSide.area.y, height: this.selectedSide.area.height, width: this.selectedSide.area.width};
 
-          // console.log(oX);
+            this.selectedSide.area.width    *= SCALE;
+            this.selectedSide.area.height   *= SCALE;
 
-          this.items.map(item => {
-            item.x = (item.x / scale) * ratioLR;
-            item.y = (item.y / scale) * ratioTB;
-            item.width *= scale;
-            item.height *= scale;            
-            return item;
-          });                       
+            const freeCenterX                    = (this.width - this.selectedSide.area.width) / 2;
+            const freeCenterY                    = (this.height - this.selectedSide.area.height) / 2;
+
+            const prevAreaX = this.selectedSide.area.x;
+            const prevAreaY = this.selectedSide.area.y;
+
+            this.selectedSide.area.x    *= freeCenterX / this.selectedSide.area.x;
+            this.selectedSide.area.y    *= freeCenterY / this.selectedSide.area.y;
+
+            const areaX = this.selectedSide.area.x;
+            const areaY = this.selectedSide.area.y;
+
+            this.image.height   *= SCALE;
+            this.image.width    *= SCALE;
+            this.image.x        -= prevAreaX * SCALE - areaX ;
+            this.image.y        -= prevAreaY * SCALE - areaY;
+
+            this.items.map(item => {
+                item.width      *= SCALE;
+                item.height     *= SCALE;
+                item.fontSize   *= SCALE;
+                item.x          *= SCALE;
+                item.y          *= SCALE;
+                return item;
+            });
+
+            this.scale = SCALE;
         }
-      })
+      });
 
       this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
