@@ -104,7 +104,7 @@ const initialBase = () => ({
 })
 const initialState = () => ({
     items: [],
-    selectedElement: null,
+    selectedElement: {},
     selectedLayers: [],
     side: {id: 123},
     size: {},
@@ -128,7 +128,7 @@ const getters = {
   side: (state) => state.side,  
   description: (state) => state.base.description,
   selectedLayers: (state) => state.items.filter(item => item.selected),      
-  items: (state) => state.items.filter(x => x.side === state.side),  
+  items: (state) => state.items.filter(x => x.side === state.side.id),  
   renderSides: (state) => {
     const sides = state.base.sides;
     const items = state.items;

@@ -4,11 +4,14 @@
       <svg
         id="editor"
         :viewBox="'0 0 '+width+' '+height"
-        :width="width"
-        :height="height"
+        :width="500"
+        :height="500"
         @mousedown="resetSelected"
       >
-        <rect fill="none" :width="width" :height="height" />
+        <defs>
+          <mask id="editorMask" v-html="side.svg_area" />
+        </defs>
+        <!-- <polygon v-if="sideArea.tag == 'polygon'" id="mainMask" class="area" :points="sideArea.points" /> -->
         <image
           v-bind:xlink:href="baseImg"
           :x="image.x"
@@ -16,25 +19,27 @@
           :width="image.width"
           :height="image.height"
         />
-
-        <!-- <g :transform="'translate('+side.area.x+', '+side.area.y+')'">
+        <g v-html="side.svg_area" />
+        <g :transform="'translate('+sideArea.x+', '+sideArea.y+')'" mask="url(#mainMask)">
           <rect
+            v-if="sideArea.tag == 'rect'"
             id="editable-area"
             fill="none"
             vector-effect="non-scaling-stroke"
             stroke-width="2"
             :stroke="dragging || rotation || scaling ? '#007bff' : selectedElement ?  'white' : 'none'"
-            :height="side.area.height"
-            :width="side.area.width"
+            :height="sideArea.height"
+            :width="sideArea.width"
           />
+          <polygon id="editable-area" v-if="sideArea.tag == 'polygon'" class="area" :points="sideArea.points" />
           <g>
             <template v-if="dragging && selectedElement">
               <line
                 v-if="lines.centerH"
                 x1="-2000"
                 x2="2000"
-                :y1="side.area.height / 2"
-                :y2="side.area.height / 2"
+                :y1="sideArea.height / 2"
+                :y2="sideArea.height / 2"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
@@ -53,16 +58,16 @@
                 v-if="lines.bottom"
                 x1="-2000"
                 x2="2000"
-                :y1="side.area.height"
-                :y2="side.area.height"
+                :y1="sideArea.height"
+                :y2="sideArea.height"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
               />
               <line
                 v-if="lines.centerV"
-                :x1="side.area.width/2"
-                :x2="side.area.width/2"
+                :x1="sideArea.width/2"
+                :x2="sideArea.width/2"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -81,8 +86,8 @@
               />
               <line
                 v-if="lines.right"
-                :x1="side.area.width"
-                :x2="side.area.width"
+                :x1="sideArea.width"
+                :x2="sideArea.width"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -123,7 +128,7 @@
                     d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
                   />
                 </svg>
-              </g>              
+              </g>
 
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
@@ -269,7 +274,7 @@
               </g>
             </g>
           </g>
-        </g> -->
+        </g>
       </svg>
     </div>
   </div>
@@ -281,15 +286,23 @@ import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
 import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
-import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS} from "../store/mutations.type";
+import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM} from "../store/mutations.type";
 const defaultProps = {
     hex: "#fff",
     a: 1
 };
 
+const SCALE = 1.5;
+
 export default {
     data() {
         return {
+            sideArea: {
+              width: 0,
+              height: 0,
+              x: 0,
+              y: 0  
+            },
             TextAlignment,
             CONSTRUCTOR_HANDLES,
             
@@ -309,12 +322,17 @@ export default {
             dragging: false,
             rotation: false,
             scaling: false,
+            scale: 0,
 
             image: {
               x: 0,
               y: 0,
               width: 500,
               height: 500
+            },
+            prevState: {
+                side: null,
+                image: null
             },
             lines: {
                 top: false,
@@ -338,6 +356,49 @@ export default {
                 this.addImgField(val);
                 this.$store.commit("addImg", null);
             }
+        },
+        side: function(val) {
+          // TODO: finish polygon mask 
+          console.log(val)
+
+          let element = new DOMParser().parseFromString(val.svg_area, "text/xml");
+          this.sideArea.tag = element.documentElement.tagName;
+         
+          if(this.sideArea.tag == 'rect') {
+            this.sideArea.width = element.documentElement.getAttribute('width');
+            this.sideArea.height = element.documentElement.getAttribute('height');
+            this.sideArea.x = element.documentElement.getAttribute('x');
+            this.sideArea.y = element.documentElement.getAttribute('y');
+          } else if (this.sideArea.tag == 'polygon') {
+              this.sideArea.points = element.documentElement.getAttribute('points');
+            
+              const arr = this.sideArea.points.split(' ');
+              let arrX = [], arrY = [];
+              arr.forEach((item) => {
+                let temp = item.split(',')
+                arrX.push(temp[0]);
+                arrY.push(temp[1]);
+              })
+              this.sideArea.x = Math.min(arrX);
+              this.sideArea.y = Math.min(arrY);
+              this.sideArea.width = Math.max(arrX) - Math.min(arrX)
+              this.sideArea.height = Math.max(arrY) - Math.min(arrY)
+
+          }
+           
+          console.log()
+           
+          // element.documentElement.removeAttribute('class');
+          // element.documentElement.setAttribute('id', 'editable-area')
+          // element.documentElement.classList.add('area')
+          //console.log(element.)
+          // this.svg.appendChild(this.svg.ownerDocument.importNode(element.documentElement, true))
+
+          // const svg = document.createElement('svg');
+          // svg.innerHTML = val.svg_area;
+          // this.svg.appendChild(svg.firstElementChild);
+          
+
         }
     },
     created() {
@@ -393,7 +454,7 @@ export default {
         }      
     },
   methods: {   
-      ...mapMutations(["setItemsConstructor"]),  
+      ...mapMutations(["setItemsConstructor", CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM]),  
       onChange(val) {
           if (this.onChangeColorListener) {
               this.colors = val;
@@ -415,7 +476,7 @@ export default {
       resetSelected() {
           this.items.forEach(item => item.selected = false);       
           this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
-          this.$store.commit('setSelectedElement', null);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },  
 
@@ -496,8 +557,8 @@ export default {
                       item.y = event.y - item.drag.my + item.drag.y;
                   }
 
-                  const centerX = (this.side.area.width) / 2;
-                  const centerY = (this.side.area.height) / 2;
+                  const centerX = (this.sideArea.width) / 2;
+                  const centerY = (this.sideArea.height) / 2;
                   const oX = (left + right) / 2;
                   const oY = (top + bottom) / 2;
 
@@ -570,7 +631,7 @@ export default {
       onMouseDown(eDown, item, handle) {        
           eDown.stopPropagation();
 
-          this.$store.commit('setSelectedElement', item);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
           }
@@ -656,8 +717,8 @@ export default {
                       item.y = event.y - item.drag.my + item.drag.y;
                   }
 
-                  const centerX = (this.side.area.width) / 2;
-                  const centerY = (this.side.area.height) / 2;
+                  const centerX = (this.sideArea.width) / 2;
+                  const centerY = (this.sideArea.height) / 2;
                   // const centerY = (edBounds.height - strokeWidth)/ 2;
                   const oX = (left + right) / 2;
                   const oY = (top + bottom) / 2;
@@ -698,8 +759,8 @@ export default {
                   }
 
                   // const strokeWidth = 4;
-                  // const centerX = (this.side.area.width - strokeWidth) / 2;
-                  // const centerY = (this.side.area.height - strokeWidth) / 2;
+                  // const centerX = (this.sideArea.width - strokeWidth) / 2;
+                  // const centerY = (this.sideArea.height - strokeWidth) / 2;
                   // const oX = (left + right) / 2;
                   // const oY = (top + bottom) / 2;
 
@@ -818,15 +879,15 @@ export default {
       },
 
       addTextField() {
-          const item = this.createTextField();
-          this.$store.commit('setSelectedElement', item);
-          this.$store.commit("addItemToConstructor", item);
+          const item = this.createTextField();        
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
+          this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
           eventBus.$emit(UPDATE_ELEMENT_SIZE);
       },
       addImgField(file) {
           const item = this.createImgField(file);
-          this.$store.commit('setSelectedElement', item);
-          this.$store.commit("addItemToConstructor", item);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
+          this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
       },
       createTextField() {
           return {
@@ -870,14 +931,16 @@ export default {
               selected: false,
           };
       },
-      updateSizes() {
+      updateSizes() {        
         setTimeout(() => {
             const index     = this.items.indexOf(this.selectedElement);
             const tSpans    = document.querySelectorAll(`#group-${index} g > text`);
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
             const maxWidth  = Math.max(...widths);
-
-            this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
+              if(this.selectedElement && this.selectedElement.fontSize) {
+                  this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
+              }
+          
             this.selectedElement.width    = maxWidth;
         });
       },
@@ -919,8 +982,40 @@ export default {
           }
           return event.preventDefault();
       },
+      resetScale() {
+          if (!this.prevState.image || !this.prevState.side) {
+              return;
+          }
+
+          this.image.x                      = this.prevState.image.x;
+          this.image.y                      = this.prevState.image.y;
+          this.image.width                  = this.prevState.image.width;
+          this.image.height                 = this.prevState.image.height;
+
+          this.selectedSide.area.x          = this.prevState.side.x;
+          this.selectedSide.area.y          = this.prevState.side.y;
+          this.selectedSide.area.width      = this.prevState.side.width;
+          this.selectedSide.area.height     = this.prevState.side.height;
+
+          this.prevState.image              = null;
+          this.prevState.side               = null;
+
+          this.items.map(item => {
+              item.x        /= SCALE;
+              item.y        /= SCALE;
+              item.fontSize /= SCALE;
+              item.width    /= SCALE;
+              item.height   /= SCALE;
+              return item;
+          });
+
+          this.scale = 0;
+      }
   },
   mounted() {
+    console.log('mounted')
+    console.log(this.side.svg_area)
+     
       this.svg = document.querySelector('#editor');
       const svgBounds = this.svg.getBoundingClientRect();
       this.width = svgBounds.width;
@@ -931,81 +1026,52 @@ export default {
       });
 
       eventBus.$on('scaleChanged', sign => {
-
-
-        const sideOx = this.side.area.x + (this.side.area.width / 2);
-        const ratioLR = ((this.image.width - 4)  / 2) / sideOx; // 1.028 / 0.972
-        const ratioTB = (this.image.height - (this.side.area.y + this.side.area.height)) / this.side.area.y;
-
-        // const t = this.side.area.x + 
-
-        // w = 210
-        // x = 138
-        // scale = 1.5
-        // nW = 315
-        // nX = 92.5
-
-        // 138 / 1.5 * (((side.width - image.width) / 2) / (side.width * 1.5 - image.width * 1.5) / 2))
-
-        // console.log(ratioLR);
-        // console.log(sideOx);
-        // console.log(this.image.width  / 2);
-        // бол на мен
-
-        // console.log(ratioTB);
-        
-        const scale = 1.5;
-
-        const r = ((this.image.width - this.side.area.width) / 2) / ((this.image.width - this.side.area.width * 1.5) / 2);
-        console.log(r);
-
-        const distance = 250;
         if (sign === '-') {
-          this.image.x = 0;
-          this.image.y = 0;
-          this.image.width = 500;
-          this.image.height = 500;
-          this.side.area.x = 138; // 138 -> ||| <- 152
-          this.side.area.y = 124.966;
-          this.side.area.width = 210;
-          this.side.area.height = 300;
-          // this.items.map(item => {
-          //   item.x *= 1.5;
-          //   item.y *= 1.5;
-          //   item.width /= 1.5;
-          //   item.height /= 1.5;
-          //   return item;
-          // });
+            if (this.scale !== SCALE) {
+                return;
+            }
+
+            this.resetScale();
         } else {
-          this.image.x *= 0.670289;
-          // this.image.x += (distance * -1) / 2;
-          this.image.y += (distance * -1) / 2;
-          this.image.width += distance;
-          this.image.height += distance;
-          this.side.area.x = this.side.area.x / scale * r;
-          this.side.area.y = (this.side.area.y / scale) * ratioTB;
-          this.side.area.width *= scale;
-          this.side.area.height *= scale;
+            if (this.scale !== 0) {
+                return;
+            }
 
-          // const sideOx = this.side.area.width / 2;
-          const sideOy = this.side.area.height / 2;
-          const oX = this.side.area.x + (this.side.area.width / 2);
-          const oY = this.side.area.y + (this.side.area.height / 2);
-          const newW = this.side.area.width * scale;
-          const newH = this.side.area.height * scale;
+            this.prevState.image    = {x: this.image.x, y: this.image.y, height: this.image.height, width: this.image.width};
+            this.prevState.side     = {x: this.selectedSide.area.x, y: this.selectedSide.area.y, height: this.selectedSide.area.height, width: this.selectedSide.area.width};
 
-          // console.log(oX);
+            this.selectedSide.area.width    *= SCALE;
+            this.selectedSide.area.height   *= SCALE;
 
-          console.log(this.side.area.x);
-          this.items.map(item => {
-            item.x = (item.x / scale) * ratioLR;
-            item.y = (item.y / scale) * ratioTB;
-            item.width *= scale;
-            item.height *= scale;            
-            return item;
-          });                       
+            const freeCenterX                    = (this.width - this.selectedSide.area.width) / 2;
+            const freeCenterY                    = (this.height - this.selectedSide.area.height) / 2;
+
+            const prevAreaX = this.selectedSide.area.x;
+            const prevAreaY = this.selectedSide.area.y;
+
+            this.selectedSide.area.x    *= freeCenterX / this.selectedSide.area.x;
+            this.selectedSide.area.y    *= freeCenterY / this.selectedSide.area.y;
+
+            const areaX = this.selectedSide.area.x;
+            const areaY = this.selectedSide.area.y;
+
+            this.image.height   *= SCALE;
+            this.image.width    *= SCALE;
+            this.image.x        -= prevAreaX * SCALE - areaX ;
+            this.image.y        -= prevAreaY * SCALE - areaY;
+
+            this.items.map(item => {
+                item.width      *= SCALE;
+                item.height     *= SCALE;
+                item.fontSize   *= SCALE;
+                item.x          *= SCALE;
+                item.y          *= SCALE;
+                return item;
+            });
+
+            this.scale = SCALE;
         }
-      })
+      });
 
       this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
