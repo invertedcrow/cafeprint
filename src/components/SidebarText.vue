@@ -145,12 +145,12 @@
 
     <div class="sidebar-text__colors">
       <div class="sidebar-text__colors-label">Цвет:</div>
-      <Color
+      <color
         :setActiveColor="onColorChanged"
         :isColorPicker="true"
         :active="selectedElement.color"
         :colors="colors"
-      ></Color>
+      ></color>
     </div>
     <hr class="sidebar-text__line-colors-bottom" />
 
@@ -276,7 +276,13 @@ export default {
   data() {
     return {
       TextAlignment,
-      colors: ["tomato", "green", "gold", "gray", "#fff"],
+      colors: [
+        { color: "FD0302", id: 1 },
+        { color: "FBFF00", id: 2 },
+        { color: "ffffff", id: 3 },
+        { color: "000000", id: 4 },
+        { color: "00BF60", id: 5 }
+      ],
       text: "",
       innerFontSize: 14
     };
@@ -362,6 +368,9 @@ export default {
       }
     },
     onColorChanged(color) {
+      if (typeof color == "object") {
+        color = "#" + color.color;
+      }
       if (this.selectedElement) {
         this.selectedElement.color = color;
       }

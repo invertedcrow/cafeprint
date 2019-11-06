@@ -1,18 +1,18 @@
 <template>
-  <div class="d-flex flex-column h-100">
-    <perfect-scrollbar>
+  <div class="d-flex h-100 w-100">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="design d-flex flex-wrap">
         <div
           class="design__item d-flex flex-column align-items-center justify-content-between"
           v-for="item in list"
-          :key="item"
+          :key="item.id"
         >
           <div class="design__item-img d-flex justify-content-center align-items-center">
-            <img src="../assets/3.png" alt />
+            <img :src="imgUrl(item)" />
           </div>
-          <div class="design__item-title" :title="'long long long very lon name'">Rick and morty art</div>
+          <div class="design__item-title" :title="'long long long very lon name'">{{item.name}}</div>
           <div class="design__item-hover">
-            <button class="baseBtn w-100" @click="select()">Добавить</button>
+            <button class="baseBtn w-100" @click="select(item)">Добавить</button>
           </div>
         </div>
       </div>
@@ -21,17 +21,36 @@
 </template>
 
 <script>
-import { MODALS } from "../consts";
+import { MODALS, API_URL } from "../consts";
 import { eventBus } from "../main";
+import { mapGetters, mapMutations, mapActions } from "vuex";
+import { GET_DESIGN } from "../store/actions.type";
+import { GET_DESIGN_ITEM } from "../store/actions.type";
 
 export default {
   props: ["list"],
   methods: {
-    select() {
+    ...mapMutations(["addImg"]),
+    ...mapActions([GET_DESIGN_ITEM]),
+    select(img) {
       // TODO: add design to state
-
+      this.addImg(img.preview_print);
+      this.$store.dispatch(GET_DESIGN_ITEM, img.id);
       eventBus.$emit("hideModal", MODALS.DESIGNS);
+    },
+    imgUrl(item) {
+      return API_URL + "/" + item.preview_print;
+    },
+    onReachEnd() {
+      let filter = { ...this.designFilter };
+      if (filter.limit == this.designList.length) {
+        filter.limit = +filter.limit + 10;
+        this.$store.dispatch(GET_DESIGN, filter);
+      }
     }
+  },
+  computed: {
+    ...mapGetters(["designFilter", "designList"])
   }
 };
 </script>
@@ -60,7 +79,7 @@ export default {
     &-img {
       width: 100%;
       height: 100%;
-      max-height: 125px;
+      height: 125px;
       margin-bottom: 20px;
       img {
         max-width: 100%;

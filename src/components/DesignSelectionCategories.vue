@@ -6,23 +6,29 @@
         <img src="../assets/icons/arrow.svg" alt />
       </div>
     </div>
-
-    <b-collapse id="collapse-4" v-model="showCollapse">
-      <div
-        class="categories__item d-flex align-items-center"
-        v-for="(item, index) in designCategories"
-        :key="index"
-        @click="onSelect(item)"
-      >
-        <checkbox :checked="item == designActiveCategory" />
-        <p>{{item}}</p>
-      </div>
-    </b-collapse>
+    <perfect-scrollbar>
+      <b-collapse id="collapse-4" v-model="showCollapse">
+        <div v-for="(item, index) in categories" :key="index">
+          <div v-if="item.children">
+            <design-category-collapse :category="item" />
+          </div>
+          <div
+            v-else
+            class="categories__item d-flex align-items-center"
+            @click="setActiveCategory(item)"
+          >
+            <checkbox :checked="isActive(item.id)" />
+            <p>{{item.name}}</p>
+          </div>
+        </div>
+      </b-collapse>
+    </perfect-scrollbar>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import DesignCategoryCollapse from "./DesignCategoryCollapse";
 import Checkbox from "./Checkbox";
 import { GET_DESIGN } from "../store/actions.type";
 import { DESIGN_SET_ACTIVE_CATEGORIES } from "../store/mutations.type";
@@ -34,18 +40,51 @@ export default {
     };
   },
   components: {
-    Checkbox
+    Checkbox,
+    DesignCategoryCollapse
   },
   methods: {
     ...mapActions([GET_DESIGN]),
     ...mapMutations([DESIGN_SET_ACTIVE_CATEGORIES]),
-    onSelect(category) {
-      this.$store.commit(DESIGN_SET_ACTIVE_CATEGORIES, category);
-      this.$store.dispatch(GET_DESIGN);
+    setActiveCategory(item) {
+      item.active = item.active ? false : true;
+      let arr = [];
+      console.log(this.category_ids);
+      if (this.category_ids) {
+        arr = this.category_ids;
+      }
+
+      if (item.active) {
+        arr.push(item.id);
+      } else {
+        if (arr.length) {
+          arr = arr.filter(el => el != item.id);
+        }
+      }
+
+      this.$store.dispatch(GET_DESIGN, {
+        category_ids: arr,
+        search: this.designFilter.search,
+        limit: 16
+      });
+    },
+    isActive(id) {
+      if (this.category_ids) {
+        return this.category_ids.indexOf(id) > -1;
+      }
+      return false;
     }
   },
   computed: {
-    ...mapGetters(["designCategories", "designActiveCategory"])
+    ...mapGetters(["designCategories", "designFilter", "category_ids"]),
+    categories() {
+      const cat = [];
+      const arr = Object.keys(this.designCategories);
+      arr.forEach(key =>
+        cat.push(...Object.values(this.designCategories[key].children))
+      );
+      return cat;
+    }
   },
   mounted() {
     this.$nextTick(() => {
