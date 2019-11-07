@@ -33,8 +33,6 @@ export default {
     ...mapMutations(["addImg"]),
     ...mapActions([GET_DESIGN_ITEM]),
     select(img) {
-      // TODO: add design to state
-      this.addImg(img.preview_print);
       this.$store.dispatch(GET_DESIGN_ITEM, img.id);
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     },

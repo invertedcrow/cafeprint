@@ -14,7 +14,7 @@
         @click="setActiveCategory(subItem.id)"
       >
         <checkbox
-          :checked="subItem.id == filterParams.category_id && category.sex == filterParams.sex"
+          :checked="subItem.id == filterParams.category_ids && category.sex == filterParams.sex"
         />
         <p>{{subItem.name}}</p>
       </div>
@@ -41,7 +41,7 @@ export default {
     ...mapActions([GET_BASES_LIST]),
     setActiveCategory(id) {
       this.$store.dispatch(GET_BASES_LIST, {
-        category_id: id,
+        category_ids: id,
         sex: this.category.sex,
         limit: 10
       });

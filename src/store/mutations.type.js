@@ -6,7 +6,7 @@ export const CONSTRUCTOR_MOVE_LAYER_UP		= 'moveLayerUp';
 export const CONSTRUCTOR_MOVE_LAYER_DOWN	= 'moveLayerDown';
 export const CONSTRUCTOR_DELETE_ITEM        = 'deleteConstructorItem';
 export const CONSTRUCTOR_SET_BASE           = 'setBase';
-
+export const CONSTRUCTOR_SET_FONTS          = 'setFonts';
 export const SIDEBAR_SET_ACTIVE             = 'setActiveSidebar';
 
 export const CONSTRUCTOR_SET_COLOR 				= 'setActiveColor';

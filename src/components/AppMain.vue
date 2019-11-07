@@ -182,7 +182,7 @@
                   :x="getTextXPosition(item)"
                   :y="'0.9em'"
                   :dy="index + 'em'"
-                  :font-family="item.font"
+                  :font-family="item.font.name"
                   :font-size="item.fontSize"
                   :text-anchor="item.textAnchor"
                   :font-weight="item.bold ? 'bold' : 'normal'"
