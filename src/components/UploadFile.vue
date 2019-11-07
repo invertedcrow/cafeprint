@@ -9,6 +9,7 @@
             :useCustomSlot="true"
             :thumbnailMethod="null"
             :options="dropzoneOptions"
+            @vdropzone-sending="sendingEvent"
             @vdropzone-success="(file, response) => onLoadFile(file)"
           >
             <div class="dropzone__content">Перетащите файлы сюда...</div>
@@ -29,6 +30,8 @@ import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations } from "vuex";
 import { UPLOAD_ADD_FILE } from "../store/mutations.type";
+import { API_URL } from "../consts";
+
 export default {
   components: {
     vueDropzone: vue2Dropzone
@@ -37,7 +40,7 @@ export default {
     return {
       length: 0,
       dropzoneOptions: {
-        url: "https://httpbin.org/post",
+        url: `${API_URL}/constructor-new/temp-files`,
         thumbnailMethod: "contain",
         previewTemplate: this.templatePreview()
       }
@@ -45,6 +48,11 @@ export default {
   },
   methods: {
     ...mapMutations([UPLOAD_ADD_FILE]),
+    sendingEvent(file, xhr, formData) {
+      console.log("SEND");
+      console.log(file);
+      formData.append("file", file.dataURL);
+    },
     onAddFile() {
       this.$refs.myVueDropzone.$el.click();
     },

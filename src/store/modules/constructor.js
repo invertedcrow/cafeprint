@@ -76,7 +76,7 @@ const getters = {
     if (sides && sides.length) {
         for (let i = 0; i < sides.length; i++) {
             sides[i].items = items.filter(
-            layer => layer.side.id == sides[i].id
+            layer => layer.side == sides[i].id
           );
           const sideImg = state.base.images.find(item => item.sidemainblank_id == sides[i].id && item.colormainblank_id == state.baseColor.id);
             if(sideImg) {
@@ -91,12 +91,24 @@ const getters = {
 const actions = {
     [GET_BASE]: async (state, id) => {
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
+             
+        if(state.state.items.length) {
+            let items = [...state.state.items];        
+            let sides = base.data.sides;
+            items.forEach((item) => {
+            const side = sides.find((i) => i.name == item.sideName);               
+            if(side) {
+                item.side = side.id;
+            }
+            })
+            state.commit(CONSTRUCTOR_SET_ITEMS, items)
+        }
        
+        
         state.commit(CONSTRUCTOR_SET_BASE, base.data);
         state.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.data.sides[0]);
         state.commit(CONSTRUCTOR_SET_COLOR, base.data.colors[0]);
         state.commit(CONSTRUCTOR_SET_SIZE, base.data.sizes[0])
-        console.log(state.state)
         
     },
     [GET_FONTS]: async (state) => {
@@ -109,7 +121,7 @@ const actions = {
 const mutations = {
     [CONSTRUCTOR_SET_BASE]: (state, base) => state.base = base,
     [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, value],
-    [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
+    [CONSTRUCTOR_SET_ITEMS]: (state, value) =>state.items = value,
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
     [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.side = value,
     [CONSTRUCTOR_SET_SIZE]: (state, value) => state.size = value,

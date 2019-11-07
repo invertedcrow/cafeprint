@@ -54,7 +54,6 @@ const actions = {
    },
    [GET_DESIGN_ITEM]: async (state, id) => {     
     const img = await Vue.axios.get(`/constructor-new/clip-arts/${id}`)
-    console.log(img);    
     state.commit('addImg', img.data.url)
    } 
 }

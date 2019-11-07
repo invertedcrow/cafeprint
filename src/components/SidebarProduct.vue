@@ -1,7 +1,11 @@
 <template>
   <div class="sidebar-product">
     <div class="sidebar-product__sizes">
-      <span class="sidebar-product__sizes-item" v-if="size">размер {{size.name}}</span>
+      <span
+        class="sidebar-product__sizes-item"
+        @click="showSizesModal()"
+        v-if="size"
+      >размер {{size.name}}</span>
       <span class="sidebar-product__sizes-current">Текущий размер принта - A4</span>
     </div>
     <hr />

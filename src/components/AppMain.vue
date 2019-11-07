@@ -638,7 +638,7 @@ export default {
 
       onMouseDown(eDown, item, handle) {        
           eDown.stopPropagation();
-
+          console.log(this.$store.state)
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
@@ -900,9 +900,10 @@ export default {
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
       },
-      createTextField() {
+      createTextField() {       
           return {
               side: this.side.id,
+              sideName: this.side.name,
               type: "text",
               textAnchor: "start",
               x: ((this.items.length + 2) % 20) * 20,
@@ -927,6 +928,7 @@ export default {
       createImgField(file) {
           return {
               side: this.side.id,
+              sideName: this.side.name,
               type: "img",            
               x: ((this.items.length + 2) % 20) * 20,
               y: ((this.items.length + 2) % 20) * 20,             
