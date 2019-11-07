@@ -7,3 +7,5 @@ export const GET_DESIGN            = "fetchDesigns";
 export const GET_DESIGN_ITEM       = "getDesignImg";
 
 export const GET_FONTS             = "getFonts";
+
+export const GET_PRICE             = "getPrice"
