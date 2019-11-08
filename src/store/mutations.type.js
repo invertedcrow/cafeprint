@@ -24,3 +24,7 @@ export const FILTER_SET_PARAMS              = 'setFilterActiveCategory';
 export const FILTER_SET_BASES               = 'setFilterBases'; 
 export const UPLOAD_ADD_FILE                = 'addFile';
 export const UPLOAD_REMOVE_FILE             = 'removeFile';
+
+export const PRICE_SET_SIZES_LIST           = 'setPriceList';
+export const PRICE_SET_ITEM                 = 'setItemPriceList';    
+export const PRICE_RESET                    = 'resetPricelist';

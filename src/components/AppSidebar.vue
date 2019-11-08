@@ -25,7 +25,12 @@
       </div>
     </template>
 
-    <button @click="onGetPriceClicked" class="get-price">Узнать стоимость</button>
+    <button
+      v-if="activeSidebar === Sidebar.PRICE"
+      @click="onAddToCart"
+      class="get-price"
+    >Добавить в корзину</button>
+    <button v-else @click="onGetPriceClicked" class="get-price">Узнать стоимость</button>
   </div>
 </template>
 
@@ -39,6 +44,7 @@ import SidebarArticle from "./SidebarArticle";
 import SidebarLayers from "./SidebarLayers";
 import { mapGetters } from "vuex";
 import { GET_PRICE } from "../store/actions.type";
+import { PRICE_SET_ITEM, PRICE_RESET } from "../store/mutations.type";
 
 export default {
   components: {
@@ -56,27 +62,28 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["base", "color", "size", "printSize"]),
+    ...mapGetters(["base", "color", "size", "printSize", "baseSizes"]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
     }
   },
   methods: {
     onGetPriceClicked() {
-      console.log("get price");
-
-      let item = [
-        { size_id: this.size.id },
-        { printSizeId: this.printSize.id }
-      ];
-
+      let items = [];
+      this.baseSizes.forEach(item => {
+        items.push({ size_id: item.id, printSizeId: this.printSize.id });
+      });
+      if (this.activeSidebar !== Sidebar.PRICE) {
+        this.$store.commit(PRICE_RESET, "");
+      }
       const params = {
         id: this.base.id,
         color_id: this.color.id,
-        full: 0,
-        items: [[item]]
+        full: this.printSize.id ? 0 : 1,
+        items
       };
-      console.log(params);
+      this.size.quantity = 1;
+      this.$store.commit(PRICE_SET_ITEM, this.size);
       this.$store.dispatch(GET_PRICE, params);
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     }

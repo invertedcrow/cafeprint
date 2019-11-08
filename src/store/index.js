@@ -5,6 +5,7 @@ import constructor from './modules/constructor';
 import upload from './modules/upload';
 import filter from './modules/filter';
 import design from './modules/design';
+import price from './modules/price';
 import { Sidebar } from '../consts';
 
 Vue.use(Vuex);
@@ -14,7 +15,8 @@ export default new Vuex.Store({
         constructor,
         upload,
         filter,
-        design
+        design,
+        price
     },
     state: {
         activeSidebar: Sidebar.PRODUCT,

@@ -2,17 +2,16 @@ import Vue from "vue";
 import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
-    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS,
-    CONSTRUCTOR_SET_PRINT_SIZE
+    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM
 } from '../mutations.type';
 
 import {
     GET_BASE,
-    GET_FONTS,
-    GET_PRICE
+    GET_FONTS
 } from '../actions.type';
 
-import { API_URL } from '../../consts';
+import { API_URL, Sidebar } from '../../consts';
 
 const initialBase = () => ({
     addPriceGroups: [],
@@ -69,6 +68,7 @@ const getters = {
   },
   selectedElement: (state) => state.selectedElement,
   size: (state) => state.size,
+  baseSizes: (state) => state.base.sizes,
   printSize: (state) => state.printSize,
   side: (state) => state.side,  
   description: (state) => state.base.description,
@@ -113,17 +113,15 @@ const actions = {
         state.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.data.sides[0]);
         state.commit(CONSTRUCTOR_SET_COLOR, base.data.colors[0]);
         state.commit(CONSTRUCTOR_SET_SIZE, base.data.sizes[0])
-        
+        state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
+        state.commit('setActiveSidebar', Sidebar.PRODUCT);
+
     },
     [GET_FONTS]: async (state) => {
         const fonts = await Vue.axios.get('/constructor-new/fonts');
  
         state.commit(CONSTRUCTOR_SET_FONTS, fonts.data)
-    },
-    [GET_PRICE]: async (state, params) => {
-        const price = await Vue.axios.get('/constructor-new/cart/price', {params} );
-        console.log(price);
-    }
+    }   
 };
 
 const mutations = {

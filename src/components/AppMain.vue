@@ -182,6 +182,7 @@
                   :x="getTextXPosition(item)"
                   :y="'0.9em'"
                   :dy="index + 'em'"
+                  :opacity="base.layers_opacity"
                   :font-family="item.font.name"
                   :font-size="item.fontSize"
                   :text-anchor="item.textAnchor"
@@ -197,6 +198,7 @@
                 :xlink:href="imgUrl(item.url)"
                 :x="0"
                 :y="0"
+                :opacity="base.layers_opacity"
                 :height="item.height"
                 :width="item.width"
               />
@@ -352,11 +354,14 @@ export default {
         };
     },
     watch: {
-        size: function(val) {          
+        size: function(val) {   
           if(this.currSize) {
-            let x_dif = +this.currSize.width/+val.width;
-            let y_dif = +this.currSize.height/+val.height;            
-            this.resizeAllLayers(x_dif, y_dif);
+             let diff = Math.min(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
+            if(+this.currSize.width > +val.width) {
+                diff = Math.max(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
+            }
+           
+            this.resizeAllLayers(diff);
           }
           this.currSize = val
         },
@@ -461,8 +466,7 @@ export default {
         return API_URL + "/" + url
       },
        checkPrintSize() {
-         console.log(this.$store.state)
-          let printSize = null;         
+          let printSize = {name: ''};         
           const printsSizes = this.base.printSizes;
           const items = this.items;
         
@@ -490,8 +494,7 @@ export default {
         })   
         
         const realItemsWidth = itemsParams.width/this.sideArea.width*this.side.real_width;
-        const realItemsHeight = itemsParams.height/this.sideArea.height*this.side.real_height;
-      
+        const realItemsHeight = itemsParams.height/this.sideArea.height*this.side.real_height; 
         printsSizes.forEach((size) => {
           if(realItemsHeight <= size.real_height &&  realItemsWidth <= size.real_width) {
             printSize = size;
@@ -499,24 +502,21 @@ export default {
         })
         this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, printSize)
       },
-      resizeAllLayers(x_dif, y_dif) {
+      resizeAllLayers(diff) {       
           let arr = [...this.items]
-          arr.forEach((item) => {
+          arr.forEach((item) => {             
+              const diff_before = (item.width - 500)/2
+              item.width = +item.width*diff;
+              item.height = +item.height*diff;
+               const diff_current = (item.width - 500)/2
+              item.x = item.x + diff_before - diff_current;
+              item.y = item.y + diff_before - diff_current;
+            
+          
             if(item.type == 'text') {
-              item.width = +item.width*x_dif;
-              item.height = +item.height*y_dif;
-              item.x = item.x*x_dif;
-              item.y = item.y*y_dif;
-              item.fontSize = Math.floor(+item.height);
-              
+              item.fontSize = Math.floor(+item.height);              
             }
-            if(item.type == 'img') {
-              item.width = +item.width*x_dif;
-              item.height = +item.height*y_dif;
-              item.x = item.x*x_dif;
-              item.y = item.y*y_dif;
-             
-            }
+            
           });
         
           this.$store.commit(CONSTRUCTOR_SET_ITEMS, arr)
