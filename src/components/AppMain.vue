@@ -166,7 +166,7 @@
               </g>
             </g>
           </g>
-          <g v-for="(item, index) in items" :key="index">
+          <g v-for="(item, index) in sideItems" :key="index">
             <g
               ref="groupEls"
               :id="'group-'+index"
@@ -175,7 +175,7 @@
             >
               <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent" />
 
-              <g>
+              <g v-if="item.type=='text'">
                 <text
                   v-bind:key="index"
                   v-for="(text, index) in item.text"
@@ -422,6 +422,9 @@ export default {
     },
     computed: {
         ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size"]),
+        sideItems() {        
+          return this.filterBySide(this.items)
+        },
         addText() {
             return this.$store.state.addText;
         },
@@ -464,6 +467,9 @@ export default {
       ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM]),  
       imgUrl(url) {
         return API_URL + "/" + url
+      },
+      filterBySide(items) {
+         return items.filter(x => x.side === this.side.id) || []
       },
        checkPrintSize() {
           let printSize = {name: ''};         
@@ -965,8 +971,8 @@ export default {
               sideName: this.side.name,
               type: "text",
               textAnchor: "start",
-              x: ((this.items.length + 2) % 20) * 20,
-              y: ((this.items.length + 2) % 20) * 20,
+              x: ((this.sideItems.length + 2) % 20) * 20,
+              y: ((this.sideItems.length + 2) % 20) * 20,
               text: ["Your text here"],
               width: 124,
               height: 25,
@@ -989,8 +995,8 @@ export default {
               side: this.side.id,
               sideName: this.side.name,
               type: "img",            
-              x: ((this.items.length + 2) % 20) * 20,
-              y: ((this.items.length + 2) % 20) * 20,             
+              x: ((this.sideItems.length + 2) % 20) * 20,
+              y: ((this.sideItems.length + 2) % 20) * 20,             
               width: 150,//file.width/file.height * 200,
               url: file,
               height: 150,//200,

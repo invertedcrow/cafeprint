@@ -73,7 +73,7 @@ const getters = {
   side: (state) => state.side,  
   description: (state) => state.base.description,
   selectedLayers: (state) => state.items.filter(item => item.selected),      
-  items: (state) => state.items.filter(x => x.side === state.side.id),  
+  items: (state) => state.items, 
   renderSides: (state) => {
     const sides = state.base.sides;
     const items = state.items;
