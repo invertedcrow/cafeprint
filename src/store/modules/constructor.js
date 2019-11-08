@@ -2,76 +2,16 @@ import Vue from "vue";
 import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
-    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE
+    CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM
 } from '../mutations.type';
 
 import {
-    GET_BASE
+    GET_BASE,
+    GET_FONTS
 } from '../actions.type';
 
-import { API_URL } from '../../consts';
-
- //const productDefault = () => ({})
-//     product: '',
-//     color: '',
-//     size: '',
-//     side: '',
-//     id: '',
-//     sides: [
-//         {
-//             items: [],
-//             key: SIDES.FRONT,
-//             title: 'Front',
-//             area: {
-//                 x: 138,
-//                 y: 124.966,
-//                 width: 210,
-//                 height: 300
-//             },
-//             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=50,height=50,version=1564376579.png',
-//             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/1/appearances/2,width=800,height=800,version=1564376579.png'
-//         },
-//         {
-//             items: [],
-//             key: SIDES.BACK,
-//             title: 'Back',
-//             area: {
-//                 x: 138,
-//                 y: 124.966,
-//                 width: 210,
-//                 height: 300
-//             },
-//             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=50,height=50,version=1564376579.png',
-//             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/2/appearances/2,width=800,height=800,version=1564376579.png'
-//         },
-//         {
-//             items: [],
-//             key: SIDES.LEFT,
-//             title: 'Left',
-//             area: {
-//                 x: 138,
-//                 y: 200.966,
-//                 width: 210,
-//                 height: 150
-//             },
-//             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=50,height=50,version=1564376579.png',
-//             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/3/appearances/2,width=800,height=800,version=1564376579.png'
-//         },
-//         {
-//             items: [],
-//             key: SIDES.RIGHT,
-//             title: 'Right',
-//             area: {
-//                 x: 138,
-//                 y: 200,
-//                 width: 210,
-//                 height: 150
-//             },
-//             preview: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=50,height=50,version=1564376579.png',
-//             image: '//image.spreadshirtmedia.com/image-server/v1/productTypes/812/views/4/appearances/2,width=800,height=800,version=1564376579.png'
-//         }
-//     ]
-// });
+import { API_URL, Sidebar } from '../../consts';
 
 const initialBase = () => ({
     addPriceGroups: [],
@@ -108,7 +48,9 @@ const initialState = () => ({
     selectedLayers: [],
     side: {id: 123},
     size: {},
+    printSize: {},
     baseColor: {},    
+    fonts: [],
     base:  initialBase()
 });
 
@@ -117,6 +59,7 @@ export const state = initialState;
 const getters = {
   base: (state) => state.base,
   color: (state) => state.baseColor,
+  fonts: (state) =>  state.fonts,
   baseImg: (state) => {
     const currentImg = state.base.images.find(item => item.sidemainblank_id == state.side.id && item.colormainblank_id == state.baseColor.id);
     if(currentImg) {
@@ -125,17 +68,19 @@ const getters = {
   },
   selectedElement: (state) => state.selectedElement,
   size: (state) => state.size,
+  baseSizes: (state) => state.base.sizes,
+  printSize: (state) => state.printSize,
   side: (state) => state.side,  
   description: (state) => state.base.description,
   selectedLayers: (state) => state.items.filter(item => item.selected),      
-  items: (state) => state.items.filter(x => x.side === state.side.id),  
+  items: (state) => state.items, 
   renderSides: (state) => {
     const sides = state.base.sides;
     const items = state.items;
     if (sides && sides.length) {
         for (let i = 0; i < sides.length; i++) {
             sides[i].items = items.filter(
-            layer => layer.side.id == sides[i].id
+            layer => layer.side == sides[i].id
           );
           const sideImg = state.base.images.find(item => item.sidemainblank_id == sides[i].id && item.colormainblank_id == state.baseColor.id);
             if(sideImg) {
@@ -150,20 +95,39 @@ const getters = {
 const actions = {
     [GET_BASE]: async (state, id) => {
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
+             
+        if(state.state.items.length) {
+            let items = [...state.state.items];        
+            let sides = base.data.sides;
+            items.forEach((item) => {
+            const side = sides.find((i) => i.name == item.sideName);               
+            if(side) {
+                item.side = side.id;
+            }
+            })
+            state.commit(CONSTRUCTOR_SET_ITEMS, items)
+        }
        
+        
         state.commit(CONSTRUCTOR_SET_BASE, base.data);
         state.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.data.sides[0]);
         state.commit(CONSTRUCTOR_SET_COLOR, base.data.colors[0]);
         state.commit(CONSTRUCTOR_SET_SIZE, base.data.sizes[0])
-        console.log(state.state)
-        
-    }
+        state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
+        state.commit('setActiveSidebar', Sidebar.PRODUCT);
+
+    },
+    [GET_FONTS]: async (state) => {
+        const fonts = await Vue.axios.get('/constructor-new/fonts');
+ 
+        state.commit(CONSTRUCTOR_SET_FONTS, fonts.data)
+    }   
 };
 
 const mutations = {
     [CONSTRUCTOR_SET_BASE]: (state, base) => state.base = base,
     [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, value],
-    [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
+    [CONSTRUCTOR_SET_ITEMS]: (state, value) =>state.items = value,
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
     [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.side = value,
     [CONSTRUCTOR_SET_SIZE]: (state, value) => state.size = value,
@@ -217,6 +181,8 @@ const mutations = {
             ];       
         }       
     },
+    [CONSTRUCTOR_SET_FONTS]: (state, value) => state.fonts = value,
+    [CONSTRUCTOR_SET_PRINT_SIZE]: (state, value) => state.printSize = value,
 };
 
 export default {

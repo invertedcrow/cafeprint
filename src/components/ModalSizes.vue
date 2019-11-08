@@ -68,6 +68,7 @@ export default {
     },
     setSelectedSize(size) {
       this.$store.commit(CONSTRUCTOR_SET_SIZE, size);
+      eventBus.$emit("hideModal", MODALS.SIZES);
     }
   },
   computed: {

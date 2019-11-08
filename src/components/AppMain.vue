@@ -166,7 +166,7 @@
               </g>
             </g>
           </g>
-          <g v-for="(item, index) in items" :key="index">
+          <g v-for="(item, index) in sideItems" :key="index">
             <g
               ref="groupEls"
               :id="'group-'+index"
@@ -175,14 +175,15 @@
             >
               <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent" />
 
-              <g>
+              <g v-if="item.type=='text'">
                 <text
                   v-bind:key="index"
                   v-for="(text, index) in item.text"
                   :x="getTextXPosition(item)"
                   :y="'0.9em'"
                   :dy="index + 'em'"
-                  :font-family="item.font"
+                  :opacity="base.layers_opacity"
+                  :font-family="item.font.name"
                   :font-size="item.fontSize"
                   :text-anchor="item.textAnchor"
                   :font-weight="item.bold ? 'bold' : 'normal'"
@@ -197,6 +198,7 @@
                 :xlink:href="imgUrl(item.url)"
                 :x="0"
                 :y="0"
+                :opacity="base.layers_opacity"
                 :height="item.height"
                 :width="item.width"
               />
@@ -292,7 +294,7 @@ import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar, API_URL} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
 import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
-import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM} from "../store/mutations.type";
+import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM, CONSTRUCTOR_SET_PRINT_SIZE} from "../store/mutations.type";
 const defaultProps = {
     hex: "#fff",
     a: 1
@@ -309,6 +311,7 @@ export default {
               x: 0,
               y: 0  
             },
+            currSize: null,
             TextAlignment,
             CONSTRUCTOR_HANDLES,
             
@@ -351,6 +354,17 @@ export default {
         };
     },
     watch: {
+        size: function(val) {   
+          if(this.currSize) {
+             let diff = Math.min(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
+            if(+this.currSize.width > +val.width) {
+                diff = Math.max(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
+            }
+           
+            this.resizeAllLayers(diff);
+          }
+          this.currSize = val
+        },
         addText: function (val) {
             if (val) {
                 this.addTextField();
@@ -365,7 +379,7 @@ export default {
         },
         side: function(val) {
           // TODO: finish polygon mask 
-          console.log(val)
+          
 
           let element = new DOMParser().parseFromString(val.svg_area, "text/xml");
           this.sideArea.tag = element.documentElement.tagName;
@@ -391,24 +405,12 @@ export default {
               this.sideArea.height = Math.max(...arrY) - Math.min(...arrY)
 
           }
-           
-           
-          // element.documentElement.removeAttribute('class');
-          // element.documentElement.setAttribute('id', 'editable-area')
-          // element.documentElement.classList.add('area')
-          //console.log(element.)
-          // this.svg.appendChild(this.svg.ownerDocument.importNode(element.documentElement, true))
-
-          // const svg = document.createElement('svg');
-          // svg.innerHTML = val.svg_area;
-          // this.svg.appendChild(svg.firstElementChild);
-          
 
         }
     },
     created() {
         this.$store.subscribe((mutation, state) => {
-            if (mutation.type === 'setItemsConstructor') {
+            if (mutation.type === CONSTRUCTOR_SET_ITEMS) {
                 this.updateSizes();
             }
             if (mutation.type === 'setSelectedSide') {
@@ -419,7 +421,10 @@ export default {
         })
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg"]),
+        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size"]),
+        sideItems() {        
+          return this.filterBySide(this.items)
+        },
         addText() {
             return this.$store.state.addText;
         },
@@ -459,9 +464,68 @@ export default {
         }      
     },
   methods: {   
-      ...mapMutations(["setItemsConstructor", CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM]),  
+      ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM]),  
       imgUrl(url) {
         return API_URL + "/" + url
+      },
+      filterBySide(items) {
+         return items.filter(x => x.side === this.side.id) || []
+      },
+       checkPrintSize() {
+          let printSize = {name: ''};         
+          const printsSizes = this.base.printSizes;
+          const items = this.items;
+        
+          if(!items.length) {
+              return null
+          }       
+
+          let arrX = items.map(item => item.x)
+          let arrY = items.map(item => item.y)    
+          let arrW = items.map(item => item.width)
+          let arrH = items.map(item => item.height)           
+          const itemsParams = {
+            x: Math.min(...arrX),
+            y: Math.min(...arrY),
+            width: Math.max(...arrW),
+            height: Math.max(...arrH),
+          };
+        
+        items.forEach((item, i) => {  
+            if(item.x > itemsParams.x && (item.x - itemsParams.x + item.width) > itemsParams.width) {
+                itemsParams.width = +item.x - +itemsParams.x + +item.width              
+            }                 
+            if(item.y > itemsParams.y && (item.y - itemsParams.y + item.height) > itemsParams.height) {
+                itemsParams.height = item.y - itemsParams.y + item.height                }
+        })   
+        
+        const realItemsWidth = itemsParams.width/this.sideArea.width*this.side.real_width;
+        const realItemsHeight = itemsParams.height/this.sideArea.height*this.side.real_height; 
+        printsSizes.forEach((size) => {
+          if(realItemsHeight <= size.real_height &&  realItemsWidth <= size.real_width) {
+            printSize = size;
+          }
+        })
+        this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, printSize)
+      },
+      resizeAllLayers(diff) {       
+          let arr = [...this.items]
+          arr.forEach((item) => {             
+              const diff_before = (item.width - 500)/2
+              item.width = +item.width*diff;
+              item.height = +item.height*diff;
+               const diff_current = (item.width - 500)/2
+              item.x = item.x + diff_before - diff_current;
+              item.y = item.y + diff_before - diff_current;
+            
+          
+            if(item.type == 'text') {
+              item.fontSize = Math.floor(+item.height);              
+            }
+            
+          });
+        
+          this.$store.commit(CONSTRUCTOR_SET_ITEMS, arr)
       },
       onChange(val) {
           if (this.onChangeColorListener) {
@@ -620,7 +684,7 @@ export default {
                   distance = (distance - centerToDot) * 1.95;
                  
                  
-                console.log(distance)
+              
                   const ratio   = item.drag.h / item.drag.w;        
                   item.width    = item.drag.w + item.drag.w*distance/100,
                   item.height   = item.drag.h + item.drag.h*distance/100,
@@ -637,8 +701,9 @@ export default {
 
 
       onMouseDown(eDown, item, handle) {        
+               
           eDown.stopPropagation();
-
+          
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
@@ -900,13 +965,14 @@ export default {
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
       },
-      createTextField() {
+      createTextField() {       
           return {
               side: this.side.id,
+              sideName: this.side.name,
               type: "text",
               textAnchor: "start",
-              x: ((this.items.length + 2) % 20) * 20,
-              y: ((this.items.length + 2) % 20) * 20,
+              x: ((this.sideItems.length + 2) % 20) * 20,
+              y: ((this.sideItems.length + 2) % 20) * 20,
               text: ["Your text here"],
               width: 124,
               height: 25,
@@ -927,9 +993,10 @@ export default {
       createImgField(file) {
           return {
               side: this.side.id,
+              sideName: this.side.name,
               type: "img",            
-              x: ((this.items.length + 2) % 20) * 20,
-              y: ((this.items.length + 2) % 20) * 20,             
+              x: ((this.sideItems.length + 2) % 20) * 20,
+              y: ((this.sideItems.length + 2) % 20) * 20,             
               width: 150,//file.width/file.height * 200,
               url: file,
               height: 150,//200,
@@ -951,8 +1018,10 @@ export default {
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
               }
-          
-            this.selectedElement.width    = maxWidth;
+            if(this.selectedElement) {
+               this.selectedElement.width    = maxWidth;
+            }
+           
         });
       },
       moveUp() {
@@ -1023,10 +1092,8 @@ export default {
           this.scale = 0;
       }
   },
-  mounted() {
-    console.log('mounted')
-    console.log(this.side.svg_area)
-     
+  mounted() {   
+      this.currSize = this.size
       this.svg = document.querySelector('#editor');
       const svgBounds = this.svg.getBoundingClientRect();
       this.width = svgBounds.width;
@@ -1086,6 +1153,7 @@ export default {
 
       this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
+      window.addEventListener("mousemove", this.checkPrintSize)
   }
 };
 var swapArrayElements = function (arr, indexA, indexB) {

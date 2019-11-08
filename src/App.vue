@@ -17,7 +17,8 @@ import {
   GET_BASES_CATEGORIES,
   GET_BASES_LIST,
   GET_DESIGN_CATEGORIES,
-  GET_DESIGN
+  GET_DESIGN,
+  GET_FONTS
 } from "./store/actions.type";
 
 export default {
@@ -31,7 +32,8 @@ export default {
       GET_BASES_CATEGORIES,
       GET_BASES_LIST,
       GET_DESIGN_CATEGORIES,
-      GET_DESIGN
+      GET_DESIGN,
+      GET_FONTS
     ])
   },
   mounted() {
@@ -43,6 +45,7 @@ export default {
       search: "",
       category_ids: []
     });
+    this.$store.dispatch(GET_FONTS);
   }
 };
 </script>

@@ -1,8 +1,12 @@
 <template>
   <div class="sidebar-product">
     <div class="sidebar-product__sizes">
-      <span class="sidebar-product__sizes-item" v-if="size">размер {{size.name}}</span>
-      <span class="sidebar-product__sizes-current">Текущий размер принта - A4</span>
+      <span
+        class="sidebar-product__sizes-item"
+        @click="showSizesModal()"
+        v-if="size"
+      >размер {{size.name}}</span>
+      <span class="sidebar-product__sizes-current">Текущий размер принта - {{printSize.name}}</span>
     </div>
     <hr />
 
@@ -108,7 +112,7 @@ export default {
     Color
   },
   computed: {
-    ...mapGetters(["base", "color", "size"])
+    ...mapGetters(["base", "color", "size", "printSize"])
   },
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_COLOR, SIDEBAR_SET_ACTIVE]),
