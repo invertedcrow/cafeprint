@@ -3,7 +3,7 @@
     <perfect-scrollbar>
       <div class="d-flex flex-wrap">
         <div class="list__item" v-for="(item, index) in getAllFiles" :key="index">
-          <div class="list__item-remove">
+          <!-- <div class="list__item-remove">
             <svg
               width="25"
               height="25"
@@ -16,13 +16,13 @@
                 d="M24.11 9.39L22.7 7.97l-6.63 6.63-6.62-6.63-1.41 1.42 6.62 6.62-6.62 6.63 1.41 1.41 6.62-6.62 6.63 6.62 1.41-1.41-6.62-6.63 6.62-6.62z"
               />
             </svg>
-          </div>
+          </div>-->
           <div class="list__item-preview">
             <img :src="item.dataURL" alt />
           </div>
           <div class="list__item-about">
             <div class="list__item-name">{{item.name}}</div>
-            <b-button class="baseBtn secondary" @click="onSelectImg(item)">Добавить</b-button>
+            <button class="baseBtn secondary" @click="onSelectImg(item)">Добавить</button>
           </div>
         </div>
       </div>

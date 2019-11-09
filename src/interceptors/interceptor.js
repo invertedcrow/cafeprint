@@ -19,8 +19,7 @@ export default function setup() {
       //   username: username,
       //   password: password
       // }
-      config.url = `${API_URL}${config.url}`;
-      console.log(config)
+      config.url = `${API_URL}${config.url}`;     
       return config;
     },
     function(err) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="constructor-sidebar">
     <template v-if="activeSidebar === Sidebar.PRODUCT">
       <sidebar-product />
     </template>
@@ -92,7 +92,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sidebar {
+.constructor-sidebar {
   margin-top: 50px;
 }
 button.get-price {
