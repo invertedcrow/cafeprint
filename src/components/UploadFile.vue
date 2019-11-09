@@ -42,21 +42,23 @@ export default {
       dropzoneOptions: {
         url: `${API_URL}/constructor-new/temp-files`,
         thumbnailMethod: "contain",
-        previewTemplate: this.templatePreview()
+        previewTemplate: this.templatePreview(),
+        uploadMultiple: true,
+        parallelUploads: 20
       }
     };
   },
   methods: {
     ...mapMutations([UPLOAD_ADD_FILE]),
     sendingEvent(file, xhr, formData) {
-      console.log("SEND");
-      console.log(file);
-      formData.append("file", file.dataURL);
+      console.log("sendingEvent");
     },
     onAddFile() {
       this.$refs.myVueDropzone.$el.click();
     },
     onLoadFile(file) {
+      console.log("ON LOAD FILE");
+      console.log(file);
       this.$store.commit(UPLOAD_ADD_FILE, file);
     },
     templatePreview() {
