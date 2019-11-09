@@ -33,7 +33,7 @@ export default {
     ...mapMutations(["addImg"]),
     ...mapActions([GET_DESIGN_ITEM]),
     select(img) {
-      this.$store.dispatch(GET_DESIGN_ITEM, img.id);
+      this.$store.dispatch(GET_DESIGN_ITEM, img);
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     },
     imgUrl(item) {
