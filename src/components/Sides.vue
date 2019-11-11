@@ -31,6 +31,7 @@
                 v-bind:xlink:href="imgUrl(item.url)"
                 :x="0"
                 :y="0"
+                :opacity="item.layers_opacity"
                 :height="item.height"
                 :width="item.width"
               />
@@ -40,6 +41,7 @@
                 :x="0"
                 :y="item.fontSize"
                 :height="item.height"
+                :opacity="item.layers_opacity"
                 :width="item.width"
                 :dy="index + 'em'"
                 :font-family="item.font"

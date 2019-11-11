@@ -8,4 +8,6 @@ export const GET_DESIGN_ITEM       = "getDesignImg";
 
 export const GET_FONTS             = "getFonts";
 
-export const GET_PRICE             = "getPrice"
+export const GET_PRICE             = "getPrice";
+
+export const SAVE_SIDES_ELEMS_SAVE = "saveToProfile";
