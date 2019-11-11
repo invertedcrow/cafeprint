@@ -101,9 +101,9 @@
               </div>
               <div v-if="layer.type === 'img'" class="d-flex justify-content-start">
                 <div class="sidebar-layers__side-layer__icon">
-                  <img :src="layer.file.dataURL" />
+                  <img :src="layer.url" />
                 </div>
-                <div class="sidebar-layers__side-layer__text">{{layer.file.name}}</div>
+                <div class="sidebar-layers__side-layer__text">{{layer.name}}</div>
               </div>
 
               <div class="sidebar-layers__side-layer__tools">

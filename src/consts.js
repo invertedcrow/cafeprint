@@ -53,4 +53,4 @@ export const Sidebar = {
 
 //export const API_URL = "https://stage.mfest.com.ua";
 //local
-export const API_URL = "http://localhost"
+export const API_URL = ""

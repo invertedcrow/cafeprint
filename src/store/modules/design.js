@@ -52,9 +52,10 @@ const actions = {
     state.commit(DESIGN_SET_FILTER, params);
     state.commit(DESIGN_SET_LIST, designs.data || []);
    },
-   [GET_DESIGN_ITEM]: async (state, id) => {     
-    const img = await Vue.axios.get(`/constructor-new/clip-arts/${id}`)
-    state.commit('addImg', img.data.url)
+   [GET_DESIGN_ITEM]: async (state, design) => {     
+    const img = await Vue.axios.get(`/constructor-new/clip-arts/${design.id}`)
+    img.data.name = design.name;
+    state.commit('addImg', img.data)
    } 
 }
 

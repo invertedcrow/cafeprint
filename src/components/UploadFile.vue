@@ -9,8 +9,7 @@
             :useCustomSlot="true"
             :thumbnailMethod="null"
             :options="dropzoneOptions"
-            @vdropzone-sending="sendingEvent"
-            @vdropzone-success="(file, response) => onLoadFile(file)"
+            @vdropzone-complete-multiple="onLoadFile"
           >
             <div class="dropzone__content">Перетащите файлы сюда...</div>
           </vue-dropzone>
@@ -50,16 +49,16 @@ export default {
   },
   methods: {
     ...mapMutations([UPLOAD_ADD_FILE]),
-    sendingEvent(file, xhr, formData) {
-      console.log("sendingEvent");
-    },
     onAddFile() {
       this.$refs.myVueDropzone.$el.click();
     },
-    onLoadFile(file) {
-      console.log("ON LOAD FILE");
-      console.log(file);
-      this.$store.commit(UPLOAD_ADD_FILE, file);
+    onLoadFile(response) {
+      const res = JSON.parse(response[0].xhr.response);
+      response.forEach((item, i) => {
+        let name = item.name.slice(0, item.name.indexOf("."));
+        let img = { url: res[i], name };
+        this.$store.commit(UPLOAD_ADD_FILE, img);
+      });
     },
     templatePreview() {
       return `     
@@ -71,21 +70,7 @@ export default {
           <div class="dz-error-message"><span data-dz-errormessage></span></div>
           <div class="dz-success-mark"><i class="fa fa-check"></i></div>
           <div class="dz-error-mark"><i class="fa fa-close"></i></div>
-           <div class="dz-filename"><span data-dz-name></span></div>
-           <div data-dz-remove class="remove">
-            <svg
-              width="25"
-              height="25"
-              viewBox="0 0 28 28"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="'#ababab'"
-              style="cursor: pointer"
-            >
-              <path
-                d="M24.11 9.39L22.7 7.97l-6.63 6.63-6.62-6.63-1.41 1.42 6.62 6.62-6.62 6.63 1.41 1.41 6.62-6.62 6.63 6.62 1.41-1.41-6.62-6.63 6.62-6.62z"
-              />
-            </svg>
-          </div>
+           <div class="dz-filename"><span data-dz-name></span></div>          
         </div>
         <div class="">
             <select class="form-control" title="" name="image_type">
@@ -96,6 +81,22 @@ export default {
     }
   }
 };
+// remove btn template
+//  <div data-dz-remove class="remove">
+//             <svg
+//               width="25"
+//               height="25"
+//               viewBox="0 0 28 28"
+//               xmlns="http://www.w3.org/2000/svg"
+//               fill="'#ababab'"
+//               style="cursor: pointer"
+//             >
+//               <path
+//                 d="M24.11 9.39L22.7 7.97l-6.63 6.63-6.62-6.63-1.41 1.42 6.62 6.62-6.62 6.63 1.41 1.41 6.62-6.62 6.63 6.62 1.41-1.41-6.62-6.63 6.62-6.62z"
+//               />
+//             </svg>
+//           </div>
+//
 </script>
 
 <style lang="scss" scoped>

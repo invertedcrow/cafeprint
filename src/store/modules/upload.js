@@ -14,8 +14,8 @@ const actions = {
 
 const mutations = {
     [UPLOAD_ADD_FILE]: (state, file) => state.items = [...state.items, file],
-    [UPLOAD_REMOVE_FILE]: (state, value) => {
-        // TODO: add mutation to remove files from state
+    [UPLOAD_REMOVE_FILE]: (state, index) => {
+        state.items = [...state.items.slice(0, index), ...state.items.slice(index + 1)]
     }
 }
 
