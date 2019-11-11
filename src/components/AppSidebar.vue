@@ -31,6 +31,7 @@
       class="get-price"
     >Добавить в корзину</button>
     <button v-else @click="onGetPriceClicked" class="get-price">Узнать стоимость</button>
+    <!-- <button @click="onSave()" class="get-price">Сохранить себе</button> -->
   </div>
 </template>
 
@@ -86,6 +87,12 @@ export default {
       this.$store.commit(PRICE_SET_ITEM, this.size);
       this.$store.dispatch(GET_PRICE, params);
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
+    },
+    onSave() {
+      console.log("SAVE");
+      console.log(this.$store);
+      let sides = document.querySelectorAll("#sidesContainer svg");
+      console.log(sides);
     }
   }
 };
@@ -96,7 +103,8 @@ export default {
   margin-top: 50px;
 }
 button.get-price {
-  padding: 8px 30px;
+  width: 200px;
+  padding: 8px;
   border-radius: 30px;
   background-color: #72b425;
   color: #fff;
@@ -104,6 +112,9 @@ button.get-price {
   &:focus,
   &:active {
     outline: none;
+  }
+  &:last-child {
+    margin-top: 10px;
   }
 }
 </style>

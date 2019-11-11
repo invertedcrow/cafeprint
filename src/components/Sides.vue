@@ -1,5 +1,5 @@
 <template>
-  <div class="sides d-flex justify-content-center">
+  <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
       <div class="sides__item d-flex flex-column" :class="{active: side.id == side.id }">
         <svg :viewBox="'0 0 500 500'" width="100%" height="100%">

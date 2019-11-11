@@ -1165,7 +1165,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
 </script>
 
 <style lang="scss" scoped>
-.constructor {
+//.constructor {
   /*border: dashed 1px gray;*/
   /*margin-right: 150px;*/
   /*width: 500px;*/
@@ -1177,7 +1177,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
   /*justify-content: center;*/
   /*height: 85vh;*/
   /*width: 100vw;*/
-}
+//}
 
 #editor {
   width: 500px;
