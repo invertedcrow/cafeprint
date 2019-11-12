@@ -1,5 +1,5 @@
 <template>
-  <div class="app-menu d-flex flex-column">
+  <div class="app-menu">
     <div class="app-menu__item">
       <b-button @click="showModalProducts()" class="btn-circle">
         <div class="app-menu__item-name">
@@ -70,11 +70,14 @@ export default {
 
 <style lang="scss" scoped>
 .app-menu {
-  //border: grey 1px solid;
-  //background-color: #fff;
-  /*position: absolute;*/
-  /*left: 20px;*/
-  /*top: 10px;*/
+  display: flex;
+  flex-direction: column;
+  @media screen and (max-width: 992px) {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 50px;
+  }
   &__item {
     margin: 10px 0;
     position: relative;
@@ -93,6 +96,9 @@ export default {
 
   .btn-circle:hover + .hint {
     max-width: 500px;
+    @media screen and (max-width: 992px) {
+      display: none;
+    }
   }
 
   .hint {

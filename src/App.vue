@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-container>
+    <b-container class="constructor-container">
       <editor />
     </b-container>
     <modals />
@@ -51,11 +51,7 @@ export default {
 </script>
 
 <style>
-.main-container {
-  /*min-height: 900px;*/
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.constructor-container {
+  max-width: 1440px;
 }
 </style>

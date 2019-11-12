@@ -168,6 +168,9 @@ export default {
 <style lang="scss" scoped>
 .constructor-sidebar {
   margin-top: 50px;
+  @media screen and (max-width: 992px) {
+    margin-top: 0;
+  }
 }
 button.get-price {
   width: 200px;
