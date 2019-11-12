@@ -26,11 +26,32 @@
     </template>
 
     <button
-      v-if="activeSidebar === Sidebar.PRICE"
+      v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length"
       @click="onAddToCart"
       class="get-price"
     >Добавить в корзину</button>
-    <button v-else @click="onGetPriceClicked" class="get-price">Узнать стоимость</button>
+    <button
+      v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
+      @click="onGetPriceClicked"
+      class="get-price"
+    >Узнать стоимость</button>
+    <button id="popover-select-side" class="get-price" v-if="this.sidesElems.length">Сохранить себе</button>
+
+    <b-popover
+      ref="popover"
+      custom-class="sides-popover"
+      placement="top"
+      target="popover-select-side"
+      triggers="focus"
+      title="Выберите сторону которую отображать на превью"
+    >
+      <div
+        class="baseBtn secondary"
+        v-for="(item, index) in renderSides"
+        :key="index"
+        @click="onSave(item)"
+      >{{item.name}}</div>
+    </b-popover>
   </div>
 </template>
 
@@ -42,9 +63,18 @@ import SidebarPrice from "./SidebarPrice";
 import { TextAlignment, Sidebar } from "../consts";
 import SidebarArticle from "./SidebarArticle";
 import SidebarLayers from "./SidebarLayers";
-import { mapGetters } from "vuex";
-import { GET_PRICE } from "../store/actions.type";
-import { PRICE_SET_ITEM, PRICE_RESET } from "../store/mutations.type";
+import { mapGetters, mapActions } from "vuex";
+import {
+  GET_PRICE,
+  SAVE_SIDES_ELEMS_SAVE,
+  SAVE_TO_CART
+} from "../store/actions.type";
+import {
+  PRICE_SET_ITEM,
+  PRICE_RESET,
+  SAVE_SET_SIDES_LIST
+} from "../store/mutations.type";
+import { eventBus } from "../main";
 
 export default {
   components: {
@@ -58,16 +88,28 @@ export default {
   data() {
     return {
       TextAlignment,
-      Sidebar
+      Sidebar,
+      show: true
     };
   },
   computed: {
-    ...mapGetters(["base", "color", "size", "printSize", "baseSizes"]),
+    ...mapGetters([
+      "base",
+      "color",
+      "size",
+      "printSize",
+      "baseSizes",
+      "renderSides",
+      "sidesElems",
+      "sizesList",
+      "color"
+    ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
     }
   },
   methods: {
+    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
     onGetPriceClicked() {
       let items = [];
       this.baseSizes.forEach(item => {
@@ -86,6 +128,38 @@ export default {
       this.$store.commit(PRICE_SET_ITEM, this.size);
       this.$store.dispatch(GET_PRICE, params);
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
+    },
+    onSave(item) {
+      const params = {
+        mainblank_id: item.mainblank_id,
+        preview_side_id: item.id,
+        sides: this.sidesElems
+      };
+      this.$refs.popover.$emit("close");
+      this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
+    },
+    onAddToCart() {
+      const items = [];
+      this.sizesList.forEach((size, i) => {
+        let item = {};
+        let print_sizes = [];
+        this.base.sides.forEach(side => {
+          print_sizes = [side.id, this.printSize.id];
+        });
+        if (size.quantity) {
+          item = {
+            color_id: this.color.id,
+            size_id: size.id,
+            count: size.quantity,
+            is_service: 0,
+            svg: this.sidesElems,
+            print_sizes,
+            feature: this.base.features
+          };
+          items.push(item);
+        }
+      });
+      this.$store.dispatch(SAVE_TO_CART, { items });
     }
   }
 };
@@ -96,7 +170,8 @@ export default {
   margin-top: 50px;
 }
 button.get-price {
-  padding: 8px 30px;
+  width: 200px;
+  padding: 8px;
   border-radius: 30px;
   background-color: #72b425;
   color: #fff;
@@ -104,6 +179,9 @@ button.get-price {
   &:focus,
   &:active {
     outline: none;
+  }
+  &:last-child {
+    margin-top: 10px;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="sides d-flex justify-content-center">
+  <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
       <div class="sides__item d-flex flex-column" :class="{active: side.id == side.id }">
         <svg :viewBox="'0 0 500 500'" width="100%" height="100%">
@@ -31,6 +31,7 @@
                 v-bind:xlink:href="imgUrl(item.url)"
                 :x="0"
                 :y="0"
+                :opacity="item.layers_opacity"
                 :height="item.height"
                 :width="item.width"
               />
@@ -40,6 +41,7 @@
                 :x="0"
                 :y="item.fontSize"
                 :height="item.height"
+                :opacity="item.layers_opacity"
                 :width="item.width"
                 :dy="index + 'em'"
                 :font-family="item.font"
@@ -63,7 +65,8 @@ import { TextAlignment } from "../consts";
 import { mapGetters, mapMutations } from "vuex";
 import {
   CONSTRUCTOR_SET_SELECTED_SIDE,
-  CONSTRUCTOR_SET_SELECTED_ITEM
+  CONSTRUCTOR_SET_SELECTED_ITEM,
+  SAVE_SET_SIDES_LIST
 } from "../store/mutations.type";
 import { API_URL } from "../consts";
 
@@ -77,7 +80,8 @@ export default {
   methods: {
     ...mapMutations([
       CONSTRUCTOR_SET_SELECTED_SIDE,
-      CONSTRUCTOR_SET_SELECTED_ITEM
+      CONSTRUCTOR_SET_SELECTED_ITEM,
+      SAVE_SET_SIDES_LIST
     ]),
     setActiveSide(side) {
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
@@ -124,6 +128,14 @@ export default {
             item.area.height = Math.max(...arrY) - Math.min(...arrY);
           }
         });
+      }
+      let sides = [];
+      let elems = document.querySelectorAll(".sides__item");
+      if (elems.length) {
+        sides = this.sides.map((item, i) => {
+          return [item.id, elems[i].innerHTML];
+        });
+        this.$store.commit(SAVE_SET_SIDES_LIST, sides);
       }
     }
   }

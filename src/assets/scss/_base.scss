@@ -56,7 +56,36 @@ $baseColor: #72B425;
 }
 
 .picker-popover {
+    .arrow {
+        top: auto;
+        bottom: calc(-.5rem + -1px);
+    }
     .popover-body {
       padding: 0;
-    }
+     
+    }  
+   
   }
+.sides-popover {
+    .popover-header {
+        background-color: $baseColor;
+        color: #fff;
+    }
+    .arrow {
+        top: auto;
+        bottom: calc(-.5rem + -1px);
+    }
+    .popover-body {
+        padding: 10px 5px;
+        display: flex;    
+        justify-content: center;  
+       
+      } 
+    .baseBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 5px;
+        width: 100px;
+    }
+}
