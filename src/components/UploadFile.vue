@@ -43,7 +43,8 @@ export default {
         thumbnailMethod: "contain",
         previewTemplate: this.templatePreview(),
         uploadMultiple: true,
-        parallelUploads: 20
+        parallelUploads: 5,
+        acceptedFiles: ".png, .jpg, .jpeg, .svg"
       }
     };
   },
@@ -54,7 +55,6 @@ export default {
     },
     onLoadFile(response) {
       const res = JSON.parse(response[0].xhr.response);
-      console.log(response);
       response.forEach((item, i) => {
         let name = item.name.slice(0, item.name.indexOf("."));
         let img = { url: res[i], name, height: item.height, width: item.width };

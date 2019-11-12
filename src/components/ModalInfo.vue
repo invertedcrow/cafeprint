@@ -23,7 +23,7 @@
         </svg>
       </div>
     </div>
-    <div class="info__text" v-if="description">{{description}}</div>
+    <div class="info__text" v-if="description" v-html="description"></div>
     <div v-else>Информация не добавлена</div>
     <!-- <div class="divider"></div>
     <div class="modal-head">
