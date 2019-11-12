@@ -99,7 +99,9 @@ export default {
     top: 45%;
     height: 100px;
   }
-
+  @media screen and (max-width: 992px) {
+    max-height: calc(100vh - 150px);
+  }
   @media screen and (max-width: 768px) {
     flex-direction: column;
     max-height: 800px;

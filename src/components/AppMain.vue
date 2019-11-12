@@ -1,9 +1,9 @@
 <template>
-  <div class="main">
+  <div class="main d-flex justify-content-center">
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
-        :viewBox="'0 0 '+width+' '+height"
+        :viewBox="'0 0 500 500'"
         :width="500"
         :height="500"
         @mousedown="resetSelected"
@@ -1180,6 +1180,9 @@ var swapArrayElements = function (arr, indexA, indexB) {
   @media screen and (max-width: 1200px) {
     width: 100%;
     height: auto;
+  }
+  @media screen and (max-width: 768px) {
+    width: 90%;
   }
 }
 

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <b-container class="constructor-container">
-      <editor />
-    </b-container>
+    <editor />
     <modals />
   </div>
 </template>
