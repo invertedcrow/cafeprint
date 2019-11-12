@@ -90,6 +90,7 @@ const getters = {
       }
     return sides
   },
+  sidesList: (state) => state.base.sides
 };
 
 const actions = {

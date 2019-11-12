@@ -83,6 +83,9 @@ export default {
     position: relative;
     width: 100%;
   }
+  @media screen and (max-width: 992px) {
+    max-height: calc(100vh - 150px);
+  }
   @media screen and (max-width: 768px) {
     flex-direction: column;
     max-height: 1200px;

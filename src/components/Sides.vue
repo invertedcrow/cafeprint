@@ -1,7 +1,7 @@
 <template>
   <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
-      <div class="sides__item d-flex flex-column" :class="{active: side.id == side.id }">
+      <div class="sides__item d-flex flex-column" :class="{active: side.id == active() }">
         <svg :viewBox="'0 0 500 500'" width="100%" height="100%">
           <rect fill="none" width="500" height="500" />
           <image v-bind:xlink:href="side.image" style="width: 100%" />
@@ -89,6 +89,9 @@ export default {
     },
     imgUrl(url) {
       return API_URL + "/" + url;
+    },
+    active() {
+      return this.side.id;
     }
   },
   computed: {

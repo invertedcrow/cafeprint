@@ -25,11 +25,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.scale-wrapper {
-  @media screen and (max-width: 1200px) {
-    display: none;
-  }
-}
 .plus {
   margin-bottom: 10px;
 }

@@ -1,8 +1,11 @@
 <template>
-  <div class="categories d-flex flex-column">
-    <div @click="showCollapse = !showCollapse" class="categories__title justify-content-between">
+  <div class="design-categories d-flex flex-column">
+    <div
+      @click="showCollapse = !showCollapse"
+      class="design-categories__title justify-content-between"
+    >
       <div>Выберите категории</div>
-      <div class="categories__arrow d-flex" :class="{open: showCollapse}">
+      <div class="design-categories__arrow d-flex" :class="{open: showCollapse}">
         <img src="../assets/icons/arrow.svg" alt />
       </div>
     </div>
@@ -14,7 +17,7 @@
           </div>
           <div
             v-else
-            class="categories__item d-flex align-items-center"
+            class="design-categories__item d-flex align-items-center"
             @click="setActiveCategory(item)"
           >
             <checkbox :checked="isActive(item.id)" />
@@ -97,7 +100,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.categories {
+.design-categories {
   padding-top: 30px;
   height: 100%;
   overflow: hidden;

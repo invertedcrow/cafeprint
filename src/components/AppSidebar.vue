@@ -174,6 +174,9 @@ export default {
   @media screen and (max-width: 992px) {
     margin-top: 0;
   }
+  @media screen and (max-width: 768px) {
+    margin-top: 50px;
+  }
 }
 button.get-price {
   width: 200px;
