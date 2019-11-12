@@ -34,17 +34,18 @@
     <button id="popover-select-side" class="get-price">Сохранить себе</button>
 
     <b-popover
-      custom-class="picker-popover"
+      ref="popover"
+      custom-class="sides-popover"
       placement="top"
       target="popover-select-side"
       triggers="focus"
+      title="Выберите сторону которую отображать на превью"
     >
       <div
         class="baseBtn secondary"
         v-for="(item, index) in renderSides"
         :key="index"
         @click="onSave(item)"
-        title="'Выберите сторону которую отображать на превью'"
       >{{item.name}}</div>
     </b-popover>
   </div>
@@ -79,7 +80,8 @@ export default {
   data() {
     return {
       TextAlignment,
-      Sidebar
+      Sidebar,
+      show: true
     };
   },
   computed: {
@@ -133,6 +135,7 @@ export default {
         sides
       };
       console.log(params);
+      this.$refs.popover.$emit("close");
       this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
     }
   }

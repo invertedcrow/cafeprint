@@ -997,7 +997,7 @@ export default {
               type: "img",            
               x: ((this.sideItems.length + 2) % 20) * 20,
               y: ((this.sideItems.length + 2) % 20) * 20,             
-              width: 150,//file.width/file.height * 200,
+              width: file.width ? file.width/file.height * 150 : 150,
               url: file.url,
               name: file.name,
               height: 150,//200,
