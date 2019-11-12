@@ -35,7 +35,11 @@
       @click="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
-    <button id="popover-select-side" class="get-price" v-if="this.sidesElems.length">Сохранить себе</button>
+    <button
+      id="popover-select-side"
+      class="get-price"
+      v-show="this.sidesElems.length"
+    >Сохранить себе</button>
 
     <b-popover
       ref="popover"
@@ -88,8 +92,7 @@ export default {
   data() {
     return {
       TextAlignment,
-      Sidebar,
-      show: true
+      Sidebar
     };
   },
   computed: {
@@ -144,7 +147,7 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          print_sizes = [side.id, this.printSize.id];
+          print_sizes = [{ sideId: side.id, print_size_id: this.printSize.id }];
         });
         if (size.quantity) {
           item = {

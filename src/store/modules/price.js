@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { GET_PRICE } from '../actions.type';
 import { PRICE_SET_SIZES_LIST, PRICE_SET_ITEM, PRICE_RESET } from '../mutations.type'
+import qs  from 'qs';
 
 const initialState = () => ({
     sizesList: [], 
@@ -27,7 +28,7 @@ const getters = {
 
 const actions = {
     [GET_PRICE]: async (state, params) => {             
-        const query = createQueryParams(params);
+        const query =  qs.stringify(params);
         const price = await Vue.axios.get('/constructor-new/cart/price?' + query);  
         let prices = price.data.items;               
         let list = state.state.sizesList.slice();       
@@ -56,17 +57,4 @@ const mutations = {
 
 export default {
     state, getters, actions, mutations
-}
-
-
-
-function createQueryParams(params) {
-    let query = `id=${params.id}&color_id=${params.color_id}&full=${params.full}`
-    if(params.items.length) {
-        params.items.forEach((item, i) => {
-            let paramsItem = `&items[${i}][size_id]=${item.size_id}&items[${i}][printSizeId]=${item.printSizeId}`;
-            query += paramsItem;
-        })
-    }
-    return query
 }

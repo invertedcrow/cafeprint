@@ -133,7 +133,7 @@ export default {
       let elems = document.querySelectorAll(".sides__item");
       if (elems.length) {
         sides = this.sides.map((item, i) => {
-          return [item.id, elems[i].innerHTML];
+          return { sideId: item.id, svg: elems[i].innerHTML };
         });
         this.$store.commit(SAVE_SET_SIDES_LIST, sides);
       }
