@@ -29,4 +29,4 @@ export const PRICE_SET_SIZES_LIST           = 'setPriceList';
 export const PRICE_SET_ITEM                 = 'setItemPriceList';    
 export const PRICE_RESET                    = 'resetPricelist';
 
-export const PRICE_SET_SIDES_LIST           = 'setSidesElementsList';
+export const SAVE_SET_SIDES_LIST           = 'setSidesElementsList';

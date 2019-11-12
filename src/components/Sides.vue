@@ -65,7 +65,8 @@ import { TextAlignment } from "../consts";
 import { mapGetters, mapMutations } from "vuex";
 import {
   CONSTRUCTOR_SET_SELECTED_SIDE,
-  CONSTRUCTOR_SET_SELECTED_ITEM
+  CONSTRUCTOR_SET_SELECTED_ITEM,
+  SAVE_SET_SIDES_LIST
 } from "../store/mutations.type";
 import { API_URL } from "../consts";
 
@@ -79,7 +80,8 @@ export default {
   methods: {
     ...mapMutations([
       CONSTRUCTOR_SET_SELECTED_SIDE,
-      CONSTRUCTOR_SET_SELECTED_ITEM
+      CONSTRUCTOR_SET_SELECTED_ITEM,
+      SAVE_SET_SIDES_LIST
     ]),
     setActiveSide(side) {
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
@@ -126,6 +128,14 @@ export default {
             item.area.height = Math.max(...arrY) - Math.min(...arrY);
           }
         });
+      }
+      let sides = [];
+      let elems = document.querySelectorAll(".sides__item");
+      if (elems.length) {
+        sides = this.sides.map((item, i) => {
+          return [item.id, elems[i].innerHTML];
+        });
+        this.$store.commit(SAVE_SET_SIDES_LIST, sides);
       }
     }
   }

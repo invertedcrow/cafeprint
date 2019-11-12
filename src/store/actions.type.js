@@ -11,3 +11,4 @@ export const GET_FONTS             = "getFonts";
 export const GET_PRICE             = "getPrice";
 
 export const SAVE_SIDES_ELEMS_SAVE = "saveToProfile";
+export const SAVE_TO_CART          = "saveToCart";

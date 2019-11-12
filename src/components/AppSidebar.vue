@@ -26,12 +26,16 @@
     </template>
 
     <button
-      v-if="activeSidebar === Sidebar.PRICE"
+      v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length"
       @click="onAddToCart"
       class="get-price"
     >Добавить в корзину</button>
-    <button v-else @click="onGetPriceClicked" class="get-price">Узнать стоимость</button>
-    <button id="popover-select-side" class="get-price">Сохранить себе</button>
+    <button
+      v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
+      @click="onGetPriceClicked"
+      class="get-price"
+    >Узнать стоимость</button>
+    <button id="popover-select-side" class="get-price" v-if="this.sidesElems.length">Сохранить себе</button>
 
     <b-popover
       ref="popover"
@@ -60,11 +64,15 @@ import { TextAlignment, Sidebar } from "../consts";
 import SidebarArticle from "./SidebarArticle";
 import SidebarLayers from "./SidebarLayers";
 import { mapGetters, mapActions } from "vuex";
-import { GET_PRICE, SAVE_SIDES_ELEMS_SAVE } from "../store/actions.type";
+import {
+  GET_PRICE,
+  SAVE_SIDES_ELEMS_SAVE,
+  SAVE_TO_CART
+} from "../store/actions.type";
 import {
   PRICE_SET_ITEM,
   PRICE_RESET,
-  PRICE_SET_SIDES_LIST
+  SAVE_SET_SIDES_LIST
 } from "../store/mutations.type";
 import { eventBus } from "../main";
 
@@ -91,14 +99,17 @@ export default {
       "size",
       "printSize",
       "baseSizes",
-      "renderSides"
+      "renderSides",
+      "sidesElems",
+      "sizesList",
+      "color"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
     }
   },
   methods: {
-    ...mapActions([SAVE_SIDES_ELEMS_SAVE]),
+    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
     onGetPriceClicked() {
       let items = [];
       this.baseSizes.forEach(item => {
@@ -119,24 +130,36 @@ export default {
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
     onSave(item) {
-      console.log("SAVE");
-      console.log(this.$store.state);
-      let sides = [];
-      let elems = document.querySelectorAll(".sides__item");
-      sides = this.renderSides.map((item, i) => {
-        return {
-          svg: elems[i].innerHTML,
-          sideId: item.id
-        };
-      });
       const params = {
         mainblank_id: item.mainblank_id,
         preview_side_id: item.id,
-        sides
+        sides: this.sidesElems
       };
-      console.log(params);
       this.$refs.popover.$emit("close");
       this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
+    },
+    onAddToCart() {
+      const items = [];
+      this.sizesList.forEach((size, i) => {
+        let item = {};
+        let print_sizes = [];
+        this.base.sides.forEach(side => {
+          print_sizes = [side.id, this.printSize.id];
+        });
+        if (size.quantity) {
+          item = {
+            color_id: this.color.id,
+            size_id: size.id,
+            count: size.quantity,
+            is_service: 0,
+            svg: this.sidesElems,
+            print_sizes,
+            feature: this.base.features
+          };
+          items.push(item);
+        }
+      });
+      this.$store.dispatch(SAVE_TO_CART, { items });
     }
   }
 };
