@@ -166,6 +166,7 @@
               </g>
             </g>
           </g>
+          <svg :x="0" :y="sideArea.y" viewBox="0 0 500 500" width="500" height="500">
           <g v-for="(item, index) in sideItems" :key="index">
             <g
               ref="groupEls"
@@ -174,8 +175,14 @@
               @mousedown="onMouseDown($event,item)"
             >
               <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent" />
-
-              <g v-if="item.type=='text'">
+              <svg
+                    :height="item.height"
+                    :width="item.width"
+                    :x="0"
+                    :y="0"
+                    :opacity="item.layers_opacity"
+                  >
+              <template v-if="item.type=='text'">
                 <text
                   v-bind:key="index"
                   v-for="(text, index) in item.text"
@@ -191,7 +198,7 @@
                   :fill="item.color"
                   :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
                 >{{text}}</text>
-              </g>
+              </template>
 
               <image
                 v-if="item.type=='img'"
@@ -202,7 +209,7 @@
                 :height="item.height"
                 :width="item.width"
               />
-
+            </svg>
               <g v-if="selectedElement === item && !selectedLayers.length">
                 <rect :x="0" :y="0" :width="item.width" :height="item.height" class="ctrl-bounds" />
                 <g fill="#fff" font-size="40px">
@@ -282,6 +289,7 @@
               </g>
             </g>
           </g>
+          </svg>
         </g>
       </svg>
     </div>

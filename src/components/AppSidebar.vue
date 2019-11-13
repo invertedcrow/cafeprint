@@ -114,14 +114,16 @@ export default {
   methods: {
     ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
     onGetPriceClicked() {
-      console.log(this.$store.state);
       let items = [];
+
       this.baseSizes.forEach(size => {
+        let printSizes = [];
         this.base.sides.forEach(item => {
           if (item.printSize) {
-            items.push({ size_id: size.id, printSizeId: item.printSize.id });
+            printSizes.push(item.printSize.id);
           }
         });
+        items.push({ size_id: size.id, printSizes });
       });
 
       if (this.activeSidebar !== Sidebar.PRICE) {

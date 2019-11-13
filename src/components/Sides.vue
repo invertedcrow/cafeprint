@@ -16,8 +16,8 @@
                   <svg
                     :height="item.height"
                     :width="item.width"
-                    :x="item.x"
-                    :y="item.y"
+                    :x="0"
+                    :y="0"
                     :opacity="item.layers_opacity"
                   >
                     <image
@@ -30,7 +30,7 @@
                       :height="item.height"
                       :width="item.width"
                       :x="0"
-                      :y="0"
+                      :y="item.height/2"
                       v-bind:key="index"
                       v-for="(text, index) in item.text"
                       :dy="index + 'em'"
