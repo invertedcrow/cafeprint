@@ -8,7 +8,7 @@ export const CONSTRUCTOR_DELETE_ITEM        = 'deleteConstructorItem';
 export const CONSTRUCTOR_SET_BASE           = 'setBase';
 export const CONSTRUCTOR_SET_FONTS          = 'setFonts';
 export const SIDEBAR_SET_ACTIVE             = 'setActiveSidebar';
-
+export const CONSTRUCTOR_SET_MAX_PRINT_SIZE = 'setMaxPrintSize';
 export const CONSTRUCTOR_SET_COLOR 			= 'setActiveColor';
 export const CONSTRUCTOR_SET_SIZE 			= 'setSelectedSize';
 export const CONSTRUCTOR_SET_PRINT_SIZE 	= 'setPrintSize';

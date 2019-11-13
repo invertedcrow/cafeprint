@@ -3,7 +3,7 @@ import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
-    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE
 } from '../mutations.type';
 
 import {
@@ -51,6 +51,7 @@ const initialState = () => ({
     printSize: {},
     baseColor: {},    
     fonts: [],
+    maxPrintSize: null,
     base:  initialBase()
 });
 
@@ -90,7 +91,8 @@ const getters = {
       }
     return sides
   },
-  sidesList: (state) => state.base.sides
+  sidesList: (state) => state.base.sides,
+  maxPrintSize: (state) => state.maxPrintSize
 };
 
 const actions = {
@@ -116,7 +118,7 @@ const actions = {
         state.commit(CONSTRUCTOR_SET_SIZE, base.data.sizes[0])
         state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
         state.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
-
+        state.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.data.printSizes)
     },
     [GET_FONTS]: async (state) => {
         const fonts = await Vue.axios.get('/constructor-new/fonts');
@@ -191,7 +193,10 @@ const mutations = {
         }
         state.base.sides = [...state.base.sides.slice(0, index), side, ...state.base.sides.slice(index + 1)] 
         state.side = side;       
-    }
+    },
+    [CONSTRUCTOR_SET_MAX_PRINT_SIZE]: (state, sizes) => {        
+        state.maxPrintSize = sizes[0]
+    },
 };
 
 export default {
