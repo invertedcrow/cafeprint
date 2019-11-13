@@ -506,7 +506,7 @@ export default {
             printSize = size;
           }
         })
-        this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, printSize)
+        this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {printSize, sideId: this.side.id})
       },
       resizeAllLayers(diff) {       
           let arr = [...this.items]
@@ -683,7 +683,9 @@ export default {
                 
                   distance = (distance - centerToDot) * 1.95;
                  
-                 
+                  if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500) {
+                    return
+                  }
               
                   const ratio   = item.drag.h / item.drag.w;        
                   item.width    = item.drag.w + item.drag.w*distance/100,
@@ -929,7 +931,10 @@ export default {
 
                   // TODO Не знаю почему 1.95, но оно неплохо работает
                   distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
-
+                  console.log(item.drag.w + distance , item.drag.h + distance * ratio)
+                  if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500) {
+                    return
+                  }
                   const ratio   = item.drag.h / item.drag.w;
                   item.width    = item.drag.w + distance;
                   item.height   = item.drag.h + distance * ratio;

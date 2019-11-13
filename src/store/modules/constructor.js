@@ -183,7 +183,15 @@ const mutations = {
         }       
     },
     [CONSTRUCTOR_SET_FONTS]: (state, value) => state.fonts = value,
-    [CONSTRUCTOR_SET_PRINT_SIZE]: (state, value) => state.printSize = value,
+    [CONSTRUCTOR_SET_PRINT_SIZE]: (state, value) => {
+        let index = state.base.sides.findIndex(item => item.id == value.sideId);
+        let side = {...state.base.sides[index]};       
+        if(side) {
+            side.printSize = value.printSize
+        }
+        state.base.sides = [...state.base.sides.slice(0, index), side, ...state.base.sides.slice(index + 1)] 
+        state.side = side;       
+    }
 };
 
 export default {

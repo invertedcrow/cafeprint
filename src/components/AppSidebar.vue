@@ -114,6 +114,7 @@ export default {
   methods: {
     ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
     onGetPriceClicked() {
+      console.log(this.$store.state);
       let items = [];
       this.baseSizes.forEach(item => {
         items.push({ size_id: item.id, printSizeId: this.printSize.id });
@@ -147,7 +148,12 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          print_sizes = [{ sideId: side.id, print_size_id: this.printSize.id }];
+          if (side.printSize.id) {
+            print_sizes.push({
+              sideId: side.id,
+              print_size_id: side.printSize.id
+            });
+          }
         });
         if (size.quantity) {
           item = {
