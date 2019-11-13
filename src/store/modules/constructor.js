@@ -3,7 +3,7 @@ import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
-    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE
 } from '../mutations.type';
 
 import {
@@ -115,7 +115,7 @@ const actions = {
         state.commit(CONSTRUCTOR_SET_COLOR, base.data.colors[0]);
         state.commit(CONSTRUCTOR_SET_SIZE, base.data.sizes[0])
         state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
-        state.commit('setActiveSidebar', Sidebar.PRODUCT);
+        state.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
 
     },
     [GET_FONTS]: async (state) => {

@@ -474,7 +474,7 @@ export default {
        checkPrintSize() {
           let printSize = {name: ''};         
           const printsSizes = this.base.printSizes;
-          const items = this.items;
+          const items = this.sideItems;
         
           if(!items.length) {
               return null
@@ -710,8 +710,8 @@ export default {
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
           }
+          const selectedElementIndex  = this.sideItems.indexOf(item);
 
-          const selectedElementIndex  = this.items.indexOf(item);
           const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);
 
           const edBounds              = this.editableAreaEl.getBoundingClientRect();
@@ -931,7 +931,7 @@ export default {
 
                   // TODO Не знаю почему 1.95, но оно неплохо работает
                   distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
-                  console.log(item.drag.w + distance , item.drag.h + distance * ratio)
+                  
                   if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500) {
                     return
                   }
@@ -970,7 +970,7 @@ export default {
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
       },
-      createTextField() {       
+      createTextField() {   
           return {
               side: this.side.id,
               sideName: this.side.name,
@@ -1019,11 +1019,12 @@ export default {
         setTimeout(() => {
             const index     = this.items.indexOf(this.selectedElement);
             const tSpans    = document.querySelectorAll(`#group-${index} g > text`);
-            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());
-            const maxWidth  = Math.max(...widths);
+            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());           
+            const maxWidth  = widths.length ? Math.max(...widths) : 132;
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
               }
+           
             if(this.selectedElement) {
                this.selectedElement.width    = maxWidth;
             }

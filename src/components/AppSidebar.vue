@@ -116,16 +116,21 @@ export default {
     onGetPriceClicked() {
       console.log(this.$store.state);
       let items = [];
-      this.baseSizes.forEach(item => {
-        items.push({ size_id: item.id, printSizeId: this.printSize.id });
+      this.baseSizes.forEach(size => {
+        this.base.sides.forEach(item => {
+          if (item.printSize) {
+            items.push({ size_id: size.id, printSizeId: item.printSize.id });
+          }
+        });
       });
+
       if (this.activeSidebar !== Sidebar.PRICE) {
         this.$store.commit(PRICE_RESET, "");
       }
       const params = {
         id: this.base.id,
         color_id: this.color.id,
-        full: this.printSize.id ? 0 : 1,
+        full: 0,
         items
       };
       this.size.quantity = 1;
@@ -148,7 +153,7 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          if (side.printSize.id) {
+          if (side.printSize) {
             print_sizes.push({
               sideId: side.id,
               print_size_id: side.printSize.id
