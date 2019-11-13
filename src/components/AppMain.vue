@@ -166,7 +166,7 @@
               </g>
             </g>
           </g>
-          <svg :x="0" :y="sideArea.y" viewBox="0 0 500 500" width="500" height="500">
+          <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
           <g v-for="(item, index) in sideItems" :key="index">
             <g
               ref="groupEls"
