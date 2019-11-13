@@ -30,6 +30,7 @@ const actions = {
     [GET_PRICE]: async (state, params) => {             
         const query =  qs.stringify(params);
         const price = await Vue.axios.get('/constructor-new/cart/price?' + query);  
+        console.log(price)
         let prices = price.data.items;               
         let list = state.state.sizesList.slice();       
         list.forEach(item => {

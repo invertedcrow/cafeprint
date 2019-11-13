@@ -117,13 +117,13 @@ export default {
       let items = [];
 
       this.baseSizes.forEach(size => {
-        let printSizes = [];
+        let sides = [];
         this.base.sides.forEach(item => {
           if (item.printSize) {
-            printSizes.push(item.printSize.id);
+            sides.push({ side_id: item.id, print_size_id: item.printSize.id });
           }
         });
-        items.push({ size_id: size.id, printSizes });
+        items.push({ size_id: size.id, sides });
       });
 
       if (this.activeSidebar !== Sidebar.PRICE) {
