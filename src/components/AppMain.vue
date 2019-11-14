@@ -1145,7 +1145,7 @@ export default {
           this.updateSizes();
       });
 
-      eventBus.$on('scaleChanged', sign => {
+      eventBus.$on('scaleChanged', sign => {       
         if (sign === '-') {
             if (this.scale !== SCALE) {
                 return;

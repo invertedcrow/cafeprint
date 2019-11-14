@@ -109,8 +109,7 @@ const actions = {
             }
             })
             state.commit(CONSTRUCTOR_SET_ITEMS, items)
-        }
-       
+        }      
         
         state.commit(CONSTRUCTOR_SET_BASE, base.data);
         state.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.data.sides[0]);

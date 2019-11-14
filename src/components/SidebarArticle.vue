@@ -14,7 +14,7 @@
           />
         </svg>
       </div>
-      <div class="sidebar-card-header__title">Подробности об артикуле</div>
+      <div class="sidebar-card-header__title">Подробности о товаре</div>
       <div @click="close()" class="sidebar-card-header__close">
         <svg
           version="1.1"

@@ -57,8 +57,11 @@ export default {
       const res = JSON.parse(response[0].xhr.response);
       response.forEach((item, i) => {
         let name = item.name.slice(0, item.name.indexOf("."));
-        let img = { url: res[i], name, height: item.height, width: item.width };
-        this.$store.commit(UPLOAD_ADD_FILE, img);
+        if(res[i]) {
+          let img = { url: res[i], name, height: item.height, width: item.width };
+          this.$store.commit(UPLOAD_ADD_FILE, img);
+        }
+       
       });
     },
     templatePreview() {
