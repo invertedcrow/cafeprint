@@ -6,7 +6,7 @@
       :key="index"
       @click="setActiveColor(color)"
       :style="{backgroundColor: `#${color.color}` }"
-      :class="{active: active.id === color.id}"
+      :class="{active: active && active.id === color.id}"
       :title="color.colorname"
     ></div>
     <button

@@ -8,7 +8,7 @@ export const CONSTRUCTOR_DELETE_ITEM        = 'deleteConstructorItem';
 export const CONSTRUCTOR_SET_BASE           = 'setBase';
 export const CONSTRUCTOR_SET_FONTS          = 'setFonts';
 export const SIDEBAR_SET_ACTIVE             = 'setActiveSidebar';
-
+export const CONSTRUCTOR_SET_MAX_PRINT_SIZE = 'setMaxPrintSize';
 export const CONSTRUCTOR_SET_COLOR 			= 'setActiveColor';
 export const CONSTRUCTOR_SET_SIZE 			= 'setSelectedSize';
 export const CONSTRUCTOR_SET_PRINT_SIZE 	= 'setPrintSize';
@@ -28,5 +28,6 @@ export const UPLOAD_REMOVE_FILE             = 'removeFile';
 export const PRICE_SET_SIZES_LIST           = 'setPriceList';
 export const PRICE_SET_ITEM                 = 'setItemPriceList';    
 export const PRICE_RESET                    = 'resetPricelist';
+export const PRICE_ARTICLE_SET              = 'setPriceArticle';
 
 export const SAVE_SET_SIDES_LIST           = 'setSidesElementsList';

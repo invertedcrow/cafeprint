@@ -6,7 +6,9 @@
         @click="showSizesModal()"
         v-if="size"
       >размер {{size.name}}</span>
-      <span class="sidebar-product__sizes-current">Текущий размер принта - {{printSize.name}}</span>
+      <span
+        class="sidebar-product__sizes-current"
+      >Текущий размер принта - {{side.printSize ? side.printSize.name : '' }}</span>
     </div>
     <hr />
 
@@ -114,7 +116,7 @@ export default {
     Color
   },
   computed: {
-    ...mapGetters(["base", "color", "size", "printSize"])
+    ...mapGetters(["base", "color", "size", "printSize", "side"])
   },
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_COLOR, SIDEBAR_SET_ACTIVE]),

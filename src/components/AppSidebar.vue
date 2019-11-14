@@ -115,16 +115,24 @@ export default {
     ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
     onGetPriceClicked() {
       let items = [];
-      this.baseSizes.forEach(item => {
-        items.push({ size_id: item.id, printSizeId: this.printSize.id });
+
+      this.baseSizes.forEach(size => {
+        let sides = [];
+        this.base.sides.forEach(item => {
+          if (item.printSize) {
+            sides.push({ side_id: item.id, print_size_id: item.printSize.id });
+          }
+        });
+        items.push({ size_id: size.id, sides });
       });
+
       if (this.activeSidebar !== Sidebar.PRICE) {
         this.$store.commit(PRICE_RESET, "");
       }
       const params = {
         id: this.base.id,
         color_id: this.color.id,
-        full: this.printSize.id ? 0 : 1,
+        full: 0,
         items
       };
       this.size.quantity = 1;
@@ -147,7 +155,12 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          print_sizes = [{ sideId: side.id, print_size_id: this.printSize.id }];
+          if (side.printSize) {
+            print_sizes.push({
+              sideId: side.id,
+              print_size_id: side.printSize.id
+            });
+          }
         });
         if (size.quantity) {
           item = {

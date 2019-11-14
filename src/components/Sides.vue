@@ -2,57 +2,50 @@
   <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
       <div class="sides__item d-flex flex-column" :class="{active: side.id == active() }">
-        <svg :viewBox="'0 0 500 500'" width="100%" height="100%">
-          <rect fill="none" width="500" height="500" />
+        <svg :viewBox="'0 0 500 500'" width="500" height="500">
+          <defs>
+            <mask id="mainMask" v-html="side.area.svg_area" maskUnits="userSpaceOnUse" />
+          </defs>
           <image v-bind:xlink:href="side.image" style="width: 100%" />
-          <g :transform="'translate('+side.area.x+', '+side.area.y+')'">
-            <rect
-              fill="none"
-              vector-effect="non-scaling-stroke"
-              :height="side.area.height"
-              :width="side.area.width"
-            />
-            <g
-              v-for="(item, index) in side.items"
-              ref="groupEls"
-              :key="index"
-              :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
-              width="0"
-            >
-              <rect
-                x="0"
-                y="0"
-                :width="side.area.width"
-                :height="side.area.height"
-                fill="transparent"
-              />
-              <image
-                v-if="item.type=='img'"
-                v-bind:xlink:href="imgUrl(item.url)"
-                :x="0"
-                :y="0"
-                :opacity="item.layers_opacity"
-                :height="item.height"
-                :width="item.width"
-              />
-              <text
-                v-bind:key="index"
-                v-for="(text, index) in item.text"
-                :x="0"
-                :y="item.fontSize"
-                :height="item.height"
-                :opacity="item.layers_opacity"
-                :width="item.width"
-                :dy="index + 'em'"
-                :font-family="item.font"
-                :font-size="item.fontSize"
-                :text-anchor="item.textAnchor"
-                :font-weight="item.bold ? 'bold' : 'normal'"
-                :font-style="item.italic ? 'italic' : 'normal'"
-                :fill="item.color"
-                :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
-              >{{text}}</text>
-            </g>
+          <g id="containerGroupMain">
+            <svg :x="side.area.x" :y="side.area.y" viewBox="0 0 500 500" width="500" height="500">
+              <g v-for="(item, index) in side.items" ref="groupEls" :key="index">
+                <g
+                  :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
+                >
+                  <svg
+                    :height="item.height"
+                    :width="item.width"
+                    :x="0"
+                    :y="0"
+                    :opacity="base.layers_opacity"
+                  >
+                    <image
+                      v-if="item.type=='img'"
+                      v-bind:xlink:href="imgUrl(item.url)"
+                      :height="item.height"
+                      :width="item.width"
+                    />
+                    <text
+                      :height="item.height"
+                      :width="item.width"
+                      :x="0"
+                      :y="item.height/2"
+                      v-bind:key="index"
+                      v-for="(text, index) in item.text"
+                      :dy="index + 'em'"
+                      :font-family="item.font"
+                      :font-size="item.fontSize"
+                      :text-anchor="item.textAnchor"
+                      :font-weight="item.bold ? 'bold' : 'normal'"
+                      :font-style="item.italic ? 'italic' : 'normal'"
+                      :fill="item.color"
+                      :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
+                    >{{text}}</text>
+                  </svg>
+                </g>
+              </g>
+            </svg>
           </g>
         </svg>
       </div>
@@ -95,7 +88,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["side", "renderSides"])
+    ...mapGetters(["side", "renderSides", "base"])
   },
   watch: {
     renderSides: function(val) {
@@ -162,6 +155,9 @@ export default {
     &.active {
       border: 1px solid #ebebeb;
       opacity: 1;
+    }
+    svg {
+      width: 100%;
     }
   }
 }
