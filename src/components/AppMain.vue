@@ -1,5 +1,5 @@
 <template>
-  <div class="main d-flex justify-content-center">
+  <div :style="{width: `${scaleWidth}%`, marginLeft: `${scaleMargin}%`}" class="main d-flex justify-content-center">
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
@@ -343,8 +343,8 @@ export default {
             dragging: false,
             rotation: false,
             scaling: false,
-            scale: 0,
-
+            scaleWidth: 100,
+            scaleMargin: 0,
             image: {
               x: 0,
               y: 0,
@@ -430,7 +430,7 @@ export default {
                     this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
                 });
             }
-        })
+        })        
     },
     computed: {
         ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize"]),
@@ -1103,36 +1103,7 @@ export default {
               this.removeActiveItem();
           }
           return event.preventDefault();
-      },
-      resetScale() {
-          if (!this.prevState.image || !this.prevState.side) {
-              return;
-          }
-
-          this.image.x                      = this.prevState.image.x;
-          this.image.y                      = this.prevState.image.y;
-          this.image.width                  = this.prevState.image.width;
-          this.image.height                 = this.prevState.image.height;
-
-          this.selectedSide.area.x          = this.prevState.side.x;
-          this.selectedSide.area.y          = this.prevState.side.y;
-          this.selectedSide.area.width      = this.prevState.side.width;
-          this.selectedSide.area.height     = this.prevState.side.height;
-
-          this.prevState.image              = null;
-          this.prevState.side               = null;
-
-          this.items.map(item => {
-              item.x        /= SCALE;
-              item.y        /= SCALE;
-              item.fontSize /= SCALE;
-              item.width    /= SCALE;
-              item.height   /= SCALE;
-              return item;
-          });
-
-          this.scale = 0;
-      }
+      },     
   },
   mounted() {   
       this.currSize = this.size
@@ -1145,51 +1116,17 @@ export default {
           this.updateSizes();
       });
 
-      eventBus.$on('scaleChanged', sign => {       
+      eventBus.$on('scaleChanged', sign => {   
         if (sign === '-') {
-            if (this.scale !== SCALE) {
-                return;
-            }
-
-            this.resetScale();
+           if(this.scaleWidth > 100) {
+             this.scaleWidth -= 20;
+             this.scaleMargin += 10
+           }
         } else {
-            if (this.scale !== 0) {
-                return;
-            }
-
-            this.prevState.image    = {x: this.image.x, y: this.image.y, height: this.image.height, width: this.image.width};
-            this.prevState.side     = {x: this.selectedSide.area.x, y: this.selectedSide.area.y, height: this.selectedSide.area.height, width: this.selectedSide.area.width};
-
-            this.selectedSide.area.width    *= SCALE;
-            this.selectedSide.area.height   *= SCALE;
-
-            const freeCenterX                    = (this.width - this.selectedSide.area.width) / 2;
-            const freeCenterY                    = (this.height - this.selectedSide.area.height) / 2;
-
-            const prevAreaX = this.selectedSide.area.x;
-            const prevAreaY = this.selectedSide.area.y;
-
-            this.selectedSide.area.x    *= freeCenterX / this.selectedSide.area.x;
-            this.selectedSide.area.y    *= freeCenterY / this.selectedSide.area.y;
-
-            const areaX = this.selectedSide.area.x;
-            const areaY = this.selectedSide.area.y;
-
-            this.image.height   *= SCALE;
-            this.image.width    *= SCALE;
-            this.image.x        -= prevAreaX * SCALE - areaX ;
-            this.image.y        -= prevAreaY * SCALE - areaY;
-
-            this.items.map(item => {
-                item.width      *= SCALE;
-                item.height     *= SCALE;
-                item.fontSize   *= SCALE;
-                item.x          *= SCALE;
-                item.y          *= SCALE;
-                return item;
-            });
-
-            this.scale = SCALE;
+            if(this.scaleWidth < 200) {
+             this.scaleWidth += 20;
+              this.scaleMargin -= 10
+           }
         }
       });
 
@@ -1206,18 +1143,13 @@ var swapArrayElements = function (arr, indexA, indexB) {
 </script>
 
 <style lang="scss" scoped>
-.constructor {
-  /*border: dashed 1px gray;*/
-  /*margin-right: 150px;*/
-  width: 500px;
-  height: 500px;
-
-  /*display: flex;*/
-  /*flex: 1 1 auto;*/
-  /*align-items: center;*/
-  /*justify-content: center;*/
-  /*height: 85vh;*/
-  /*width: 100vw;*/
+.main {
+  transition: all 0.3s ease-out;
+}
+.constructor { 
+  width: 100%;
+  height: 100%;
+ 
   @media screen and (max-width: 1200px) {
     width: 100%;
     height: auto;
