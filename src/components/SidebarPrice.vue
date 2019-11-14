@@ -70,7 +70,10 @@
       <hr />
 
       <div class="sidebar-price__info">
-        <div class="sidebar-price__info-item">Минимальная стоимость изделия: {{productMinPrice}} UAH</div>
+        <div
+          v-if="productMinPrice"
+          class="sidebar-price__info-item"
+        >Минимальная стоимость изделия: {{productMinPrice.item_total}} UAH</div>
         <div class="sidebar-price__info-discount">скидка от 10 единиц -10%</div>
         <button @click="onDetailsClicked" class="sidebar-price__info-details">Подробнее</button>
       </div>

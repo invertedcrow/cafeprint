@@ -35,58 +35,62 @@
     <div class="sidebar-article__item-price">
       <div class="sidebar-article__group-title">Стоимость изделия</div>
       <div class="sidebar-article__item-price__item">
-        <div
-          class="sidebar-article__item-price__item-name"
-        >Мужская футболка возможно название длинное</div>
-        <div class="sidebar-article__item-price__item-price">150 UAH</div>
+        <div class="sidebar-article__item-price__item-name">{{base.name}}</div>
+        <div class="sidebar-article__item-price__item-price">{{article.base_price}} UAH</div>
       </div>
     </div>
     <hr />
 
     <div class="sidebar-article__prints">
       <div class="sidebar-article__group-title sidebar-article__prints-label">Стоимость принтов</div>
-      <template v-for="(side, index) in sides">
-        <div :key="index" v-if="filteredItems(side.id).length">
-          <div class="sidebar-article__prints-side-name">{{side.label}}</div>
+      <template v-for="(side, index) in renderSides">
+        <div :key="index" v-if="side.items.length">
+          <div class="sidebar-article__prints-side-name">{{side.name}}</div>
           <ul class="sidebar-article__prints-list">
-            <li :key="index" v-for="(el, index) in filteredItems(side.id)">
-              <div v-if="el.type === 'text'">
-                <span class="sidebar-article__prints-list__text-mark">
+            <li :key="index" v-for="(el, index) in side.items">
+              <div v-if="el.type === 'text'" class="d-flex justify-content-start">
+                <div class="sidebar-article__prints-list__icon">
                   <span>T</span>
-                </span>
-                <span class="sidebar-article__prints-list__text">{{el.text}}</span>
+                </div>
+                <span class="sidebar-article__prints-list__text">{{el.text.join(' ') }}</span>
               </div>
-              <img v-if="el.type === 'image'" :src="el.image" />
-
+              <div v-if="el.type === 'img'" class="d-flex justify-content-start">
+                <div class="sidebar-article__prints-list__icon">
+                  <img :src="el.url" />
+                </div>
+                <div class="sidebar-article__prints-list__text">{{el.name}}</div>
+              </div>
               <div class="sidebar-article__prints-list__price">
                 <span v-if="el.price > 0">{{el.price}} UAH</span>
-                <span
-                  class="sidebar-article__prints-list__price-free"
-                  v-if="el.price === 0"
-                >Бесплатно</span>
+                <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span>
               </div>
             </li>
           </ul>
+          <div class="sidebar-article__printing__item">
+            <div class="sidebar-article__printing__item-name">Размер печати {{side.printSize.name}}</div>
+            <div class="sidebar-article__printing__item-price">{{printPrice(side)}} UAH</div>
+          </div>
         </div>
       </template>
     </div>
-
-    <div class="sidebar-article__printing">
+    <!-- 
+    <div class="sidebar-article__printing"> 
       <div class="sidebar-article__group-title sidebar-article__printing-label">Стоимость печати</div>
       <div class="sidebar-article__printing__item">
         <div class="sidebar-article__printing__item-name">Размер печати А4</div>
         <div class="sidebar-article__printing__item-price">150 UAH</div>
       </div>
-    </div>
+    </div>-->
     <hr />
 
-    <div class="sidebar-article__group-title">Стоимость изделия: 350 UAH</div>
+    <div class="sidebar-article__group-title">Стоимость изделия: {{productMinPrice.item_total}} UAH</div>
   </div>
 </template>
 
 <script>
 import { Sidebar } from "../consts";
 import { eventBus } from "../main";
+import { mapGetters } from "vuex";
 
 export default {
   name: "SidebarArticle",
@@ -97,6 +101,10 @@ export default {
     };
   },
   methods: {
+    printPrice(side) {
+      return this.article.sizes[this.productMinPrice.id].sides[side.id]
+        .print_price;
+    },
     back() {
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
@@ -106,6 +114,15 @@ export default {
     close() {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
     }
+  },
+  computed: {
+    ...mapGetters([
+      "article",
+      "base",
+      "renderSides",
+      "sizesList",
+      "productMinPrice"
+    ])
   }
 };
 </script>
@@ -135,7 +152,7 @@ export default {
     &__item {
       display: flex;
       justify-content: space-between;
-
+      margin-top: 15px;
       &-name {
         font-size: 14px;
         color: $font-gray;
@@ -169,10 +186,6 @@ export default {
         /*padding: 10px 0;*/
         height: 60px;
         border-bottom: 1px solid #ebebeb;
-        img {
-          max-width: 200px;
-          max-height: 35px;
-        }
       }
 
       &__price {
@@ -195,6 +208,33 @@ export default {
           position: absolute;
           top: -8px;
         }
+      }
+
+      &__icon {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+        img {
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+      &__text {
+        width: 100%;
+        height: 35px;
+        overflow: hidden;
+        line-height: 1.3;
+        padding-right: 10px;
+        font-family: "MuseoSansCyrl", sans-serif;
+        font-weight: 300;
+        font-size: 14px;
+        word-break: break-word;
+        display: flex;
+        align-items: center;
       }
     }
   }

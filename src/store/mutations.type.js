@@ -28,5 +28,6 @@ export const UPLOAD_REMOVE_FILE             = 'removeFile';
 export const PRICE_SET_SIZES_LIST           = 'setPriceList';
 export const PRICE_SET_ITEM                 = 'setItemPriceList';    
 export const PRICE_RESET                    = 'resetPricelist';
+export const PRICE_ARTICLE_SET              = 'setPriceArticle';
 
 export const SAVE_SET_SIDES_LIST           = 'setSidesElementsList';

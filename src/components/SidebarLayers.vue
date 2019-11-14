@@ -40,7 +40,7 @@
       <div class="sidebar-layers__layers">
         <div :key="index" v-for="(side, index) in renderSides">
           <div class="sidebar-layers__side-head">
-            <div class="sidebar-layers__side-head__title">{{side.title}}</div>
+            <div class="sidebar-layers__side-head__title">{{side.name}}</div>
             <!-- <div class="sidebar-layers__side-head__tools">
               <svg
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -296,6 +296,8 @@ export default {
         font-weight: 300;
         font-size: 14px;
         word-break: break-word;
+        display: flex;
+        align-items: center;
       }
       &__tools {
         flex-shrink: 0;

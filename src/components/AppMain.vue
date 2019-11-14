@@ -180,7 +180,7 @@
                   :width="item.width"
                   :x="0"
                   :y="0"
-                  :opacity="item.layers_opacity"
+                  :opacity="base.layers_opacity"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -188,8 +188,7 @@
                       v-for="(text, index) in item.text"
                       :x="getTextXPosition(item)"
                       :y="'0.9em'"
-                      :dy="index + 'em'"
-                      :opacity="base.layers_opacity"
+                      :dy="index + 'em'"                     
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
@@ -204,8 +203,7 @@
                     v-if="item.type=='img'"
                     :xlink:href="imgUrl(item.url)"
                     :x="0"
-                    :y="0"
-                    :opacity="base.layers_opacity"
+                    :y="0"                    
                     :height="item.height"
                     :width="item.width"
                   />

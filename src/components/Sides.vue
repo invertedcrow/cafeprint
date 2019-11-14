@@ -18,7 +18,7 @@
                     :width="item.width"
                     :x="0"
                     :y="0"
-                    :opacity="item.layers_opacity"
+                    :opacity="base.layers_opacity"
                   >
                     <image
                       v-if="item.type=='img'"
@@ -88,7 +88,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["side", "renderSides"])
+    ...mapGetters(["side", "renderSides", "base"])
   },
   watch: {
     renderSides: function(val) {

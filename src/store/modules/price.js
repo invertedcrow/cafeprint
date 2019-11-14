@@ -1,10 +1,11 @@
 import Vue from "vue";
 import { GET_PRICE } from '../actions.type';
-import { PRICE_SET_SIZES_LIST, PRICE_SET_ITEM, PRICE_RESET } from '../mutations.type'
+import { PRICE_SET_SIZES_LIST, PRICE_SET_ITEM, PRICE_RESET, PRICE_ARTICLE_SET } from '../mutations.type'
 import qs  from 'qs';
 
 const initialState = () => ({
     sizesList: [], 
+    article: null
 })
 
 const state =  initialState();
@@ -23,24 +24,34 @@ const getters = {
         })
         return total
     },
-    productMinPrice: (state) => Math.min(...state.sizesList.map(item => item.item_total))
+    productMinPrice: (state) => {
+        let minSize = state.sizesList.find(item => item.quantity);
+        if(minSize) {
+              state.sizesList.forEach(item => {
+            if (minSize.item_total > item.total_item && item.quantity) {
+                minSize  = item.item_total;                
+            }
+        })
+        return minSize; 
+        }
+     
+    },
+    article: (state) => state.article
 }
 
 const actions = {
-    [GET_PRICE]: async (state, params) => {             
+    [GET_PRICE]: async (state, params) => {    
+                
         const query =  qs.stringify(params);
         const price = await Vue.axios.get('/constructor-new/cart/price?' + query);  
-        console.log(price)
-        let prices = price.data.items;               
+       // TODO: fix handle. response changed
+        let prices = price.data.totals[params.id];               
         let list = state.state.sizesList.slice();       
         list.forEach(item => {
-            let sizePrice = prices.find(price => price.size_id == item.id);
-            if(sizePrice) {
-                item.item_total = +sizePrice.item_total
-            }            
+            item.item_total = +prices[item.id]
         })
-        state.commit(PRICE_SET_SIZES_LIST, list)
-        
+        state.commit(PRICE_SET_SIZES_LIST, list);
+        state.commit(PRICE_ARTICLE_SET, price.data[params.id]);
     }
 }
 
@@ -53,7 +64,8 @@ const mutations = {
         state.sizesList = arr;
        
     },    
-    [PRICE_RESET]: (state) => state.sizesList = [...state.sizesList.map(item => {item.quantity = 0; return item})]
+    [PRICE_RESET]: (state) => state.sizesList = [...state.sizesList.map(item => {item.quantity = 0; return item})],
+    [PRICE_ARTICLE_SET]: (state, article) => state.article = article, 
 }
 
 export default {
