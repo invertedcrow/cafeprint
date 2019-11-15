@@ -861,7 +861,9 @@ export default {
                       item.x = centerX - (right - left) + (item.drag.x - item.drag.left);
                       this.lines.centerV = true;
                   }
-
+                  
+                  item.y = item.y/(this.scaleWidth/100);
+                  item.x = item.x/(this.scaleWidth/100);                 
                   // const strokeWidth = 4;
                   // const centerX = (this.sideArea.width - strokeWidth) / 2;
                   // const centerY = (this.sideArea.height - strokeWidth) / 2;
@@ -937,12 +939,12 @@ export default {
                   // }
 
                   // # Вариант 3 - Без границ
-                  // item.x = Math.round(
-                  //     Math.min(Math.max(event.x - item.drag.mx + item.drag.x, 0), this.selectedArea.width - item.width)
-                  // );
-                  // item.y = Math.round(
-                  //     Math.min(Math.max(event.y - item.drag.my + item.drag.y, 0), this.selectedArea.width - item.height)
-                  // );
+                  item.x = Math.round(
+                      Math.min(Math.max(event.x - item.drag.mx + item.drag.x, 0), this.selectedArea.width - item.width)
+                  );
+                  item.y = Math.round(
+                      Math.min(Math.max(event.y - item.drag.my + item.drag.y, 0), this.selectedArea.width - item.height)
+                  );
               }
               if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
                   const startAngle = item.drag.angle - (Math.atan2(item.drag.my - item.drag.oY, item.drag.mx - item.drag.oX) * (180 / Math.PI));
@@ -1004,6 +1006,7 @@ export default {
           const item = this.createImgField(file);
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
+          this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },
       createTextField() {   
           return {

@@ -29,6 +29,7 @@ export default {
   margin-bottom: 10px;
 }
 .scale-button {
+  margin-top: 5px;
   width: 35px;
   height: 35px;
   display: block;

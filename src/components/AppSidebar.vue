@@ -142,7 +142,7 @@ export default {
     },
     onSave(item) {
       const params = {
-        mainblank_id: item.mainblank_id,
+        mainblankid: item.mainblank_id,
         preview_side_id: item.id,
         sides: this.sidesElems
       };
