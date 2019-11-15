@@ -60,10 +60,11 @@ export default {
       this.emit();
     },
     emit() {
-      this.size.quantity = this.innerValue;
-      this.$store.commit(PRICE_SET_ITEM, this.size);
-      //   this.$emit("input", this.innerValue);
-      //   this.$emit("change", this.innerValue);
+      if (this.size) {
+        this.size.quantity = this.innerValue;
+        this.$emit("input", this.size);
+      }
+      this.$emit("change", this.innerValue);
     }
   },
   created() {

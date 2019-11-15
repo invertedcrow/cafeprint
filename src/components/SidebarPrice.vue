@@ -41,7 +41,7 @@
         <ul class="sidebar-price__sizes-list">
           <li :key="index" v-for="(size, index) in sizesList">
             <span>{{size.name}}</span>
-            <number-input :size="size" :value="size.quantity || 0" :min="0"></number-input>
+            <number-input :size="size" @input="changeQuantity" :value="size.quantity || 0" :min="0"></number-input>
           </li>
         </ul>
       </div>
@@ -91,6 +91,7 @@ import NumberInput from "./NumberInput";
 import { Sidebar, MODALS } from "../consts";
 import { mapGetters } from "vuex";
 import { eventBus } from "../main";
+import { PRICE_SET_ITEM } from "../store/mutations.type";
 
 export default {
   name: "SidebarPrice",
@@ -115,6 +116,9 @@ export default {
     },
     close() {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
+    },
+    changeQuantity(size) {
+      this.$store.commit(PRICE_SET_ITEM, size);
     }
   },
   computed: {

@@ -939,12 +939,12 @@ export default {
                   // }
 
                   // # Вариант 3 - Без границ
-                  item.x = Math.round(
-                      Math.min(Math.max(event.x - item.drag.mx + item.drag.x, 0), this.selectedArea.width - item.width)
-                  );
-                  item.y = Math.round(
-                      Math.min(Math.max(event.y - item.drag.my + item.drag.y, 0), this.selectedArea.width - item.height)
-                  );
+                  // item.x = Math.round(
+                  //     Math.min(Math.max(event.x - item.drag.mx + item.drag.x, 0), this.selectedArea.width - item.width)
+                  // );
+                  // item.y = Math.round(
+                  //     Math.min(Math.max(event.y - item.drag.my + item.drag.y, 0), this.selectedArea.width - item.height)
+                  // );
               }
               if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
                   const startAngle = item.drag.angle - (Math.atan2(item.drag.my - item.drag.oY, item.drag.mx - item.drag.oX) * (180 / Math.PI));
@@ -1054,10 +1054,10 @@ export default {
           };
       },
       updateSizes() {        
-        setTimeout(() => {
+        setTimeout(() => {         
             const index     = this.items.indexOf(this.selectedElement);
-            const tSpans    = document.querySelectorAll(`#group-${index} g > text`);
-            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());           
+            const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           
+            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
             const maxWidth  = widths.length ? Math.max(...widths) : 132;
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;

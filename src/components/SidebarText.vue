@@ -131,7 +131,11 @@
     </div>
     <hr class="mb-0" />
 
-    <div class="sidebar-text__font-select" @click="fontSelect()">
+    <div
+      class="sidebar-text__font-select"
+      @click="fontSelect()"
+      :style="{fontFamily: selectedElement && selectedElement.font ? selectedElement.font.name : '' }"
+    >
       {{selectedElement && selectedElement.font ? selectedElement.font.name : ''}}
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 451.847 451.847">

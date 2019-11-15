@@ -34,7 +34,7 @@
                       v-bind:key="index"
                       v-for="(text, index) in item.text"
                       :dy="index + 'em'"
-                      :font-family="item.font"
+                      :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
                       :font-weight="item.bold ? 'bold' : 'normal'"
