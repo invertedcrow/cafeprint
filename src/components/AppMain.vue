@@ -7,6 +7,7 @@
         :width="500"
         :height="500"
         @mousedown="resetSelected"
+        @touchstart="resetSelected"
       >
         <defs>
           <mask id="mainMask" v-html="side.svg_area" maskUnits="userSpaceOnUse" />
@@ -115,6 +116,7 @@
             <g>
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
+                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
               >
                 <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -139,6 +141,7 @@
 
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
+                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
               >
                 <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -173,6 +176,7 @@
                 :id="'group-'+index"
                 :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
                 @mousedown="onMouseDown($event,item)"
+                @touchstart="onMouseDown($event,item)"
               >
                 <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent" />
                 <svg
@@ -224,6 +228,7 @@
                   <g>
                     <g
                       @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
+                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
                       :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
                     >
                       <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -268,6 +273,7 @@
 
                     <g
                       @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
+                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
                       :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
                     >
                       <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -484,7 +490,10 @@ export default {
          return items.filter(x => x.side === this.side.id) || []
       },
       isReachMax() {
-        return this.allItemsParams.realItemsWidth >= this.maxPrintSize.real_width || this.allItemsParams.realItemsHeight >= this.maxPrintSize.real_height
+        if(this.maxPrintSize) {
+           return this.allItemsParams.realItemsWidth >= this.maxPrintSize.real_width || this.allItemsParams.realItemsHeight >= this.maxPrintSize.real_height;
+        }
+        return false;
       },
        checkPrintSize(e) {
           let printSize = {name: ''};         
@@ -604,6 +613,16 @@ export default {
               this.scaling = false;
               document.onmousemove = null;
           };
+
+          // :TODO added handle touchevents
+
+
+
+
+
+
+
+          
         document.onmousemove = (event) => {  
             
            this.selectedLayers.forEach((item, index) => {                

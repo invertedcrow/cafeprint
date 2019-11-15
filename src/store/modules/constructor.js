@@ -118,6 +118,8 @@ const actions = {
         state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
         state.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
         state.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.data.printSizes)
+
+        console.log(state.state)
     },
     [GET_FONTS]: async (state) => {
         const fonts = await Vue.axios.get('/constructor-new/fonts');
