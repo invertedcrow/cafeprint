@@ -74,7 +74,7 @@
       <hr />
 
       <div class="sidebar-product__layers">
-        <a href="#" @click="selectSidebarLayers">
+        <a href="#" @click.prevent="selectSidebarLayers">
           <svg
             width="20"
             height="20"

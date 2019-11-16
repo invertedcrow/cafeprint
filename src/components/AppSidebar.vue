@@ -32,7 +32,7 @@
     >Добавить в корзину</button>
     <button
       v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
-      @click="onGetPriceClicked"
+      @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
     <button
