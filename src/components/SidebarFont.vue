@@ -32,16 +32,18 @@
       </div>
     </div>
     <div class="sidebar-font__fonts-list">
-      <ul>
-        <li
-          @click="onFontSelected(font)"
-          :key="index"
-          v-for="(font, index) in fonts"
-          :style="{fontFamily: font.name}"
-        >
-          <div>{{font.name}}</div>
-        </li>
-      </ul>
+      <perfect-scrollbar>
+        <ul>
+          <li
+            @click="onFontSelected(font)"
+            :key="index"
+            v-for="(font, index) in fonts"
+            :style="{fontFamily: font.name}"
+          >
+            <div>{{font.name}}</div>
+          </li>
+        </ul>
+      </perfect-scrollbar>
     </div>
   </div>
 </template>
@@ -84,25 +86,28 @@ export default {
   }
 
   &__fonts-list {
-    ul li {
-      margin-left: -20px;
-      margin-right: -20px;
-      padding: 0 20px;
-      cursor: pointer;
-      font-size: 14px;
-      div {
-        padding: 20px 2px;
-        border-bottom: 1px solid #ebebeb;
-      }
-      &:last-child {
+    ul {
+      height: 380px;
+      li {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding: 0 20px;
+        cursor: pointer;
+        font-size: 14px;
         div {
-          border-bottom: 0;
+          padding: 20px 2px;
+          border-bottom: 1px solid #ebebeb;
         }
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-      }
-      &:hover {
-        background-color: #f7f7f7;
+        &:last-child {
+          div {
+            border-bottom: 0;
+          }
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+        }
+        &:hover {
+          background-color: #f7f7f7;
+        }
       }
     }
   }

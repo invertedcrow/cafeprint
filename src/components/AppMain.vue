@@ -1,5 +1,8 @@
 <template>
-  <div :style="{width: `${scaleWidth}%`, marginLeft: `${scaleMargin}%`}" class="main d-flex justify-content-center">
+  <div
+    :style="{width: `${scaleWidth}%`, marginLeft: `${scaleMargin}%`}"
+    class="main d-flex justify-content-center"
+  >
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
@@ -7,6 +10,7 @@
         :width="500"
         :height="500"
         @mousedown="resetSelected"
+        @touchstart="resetSelected"
       >
         <defs>
           <mask id="mainMask" v-html="side.svg_area" maskUnits="userSpaceOnUse" />
@@ -115,6 +119,7 @@
             <g>
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
+                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
               >
                 <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -139,6 +144,7 @@
 
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
+                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
               >
                 <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -173,6 +179,7 @@
                 :id="'group-'+index"
                 :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
                 @mousedown="onMouseDown($event,item)"
+                @touchstart="onMouseDown($event,item)"
               >
                 <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent" />
                 <svg
@@ -188,7 +195,7 @@
                       v-for="(text, index) in item.text"
                       :x="getTextXPosition(item)"
                       :y="'0.9em'"
-                      :dy="index + 'em'"                     
+                      :dy="index + 'em'"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
@@ -203,7 +210,7 @@
                     v-if="item.type=='img'"
                     :xlink:href="imgUrl(item.url)"
                     :x="0"
-                    :y="0"                    
+                    :y="0"
                     :height="item.height"
                     :width="item.width"
                   />
@@ -224,6 +231,7 @@
                   <g>
                     <g
                       @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
+                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
                       :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
                     >
                       <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -247,6 +255,7 @@
                     </g>
                     <g
                       @click="removeActiveItem()"
+                      @touchstart="removeActiveItem()"
                       :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'"
                     >
                       <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -268,6 +277,7 @@
 
                     <g
                       @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
+                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
                       :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
                     >
                       <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
@@ -433,7 +443,7 @@ export default {
         })        
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize"]),
+        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize", "color"]),
         sideItems() {        
           return this.filterBySide(this.items)
         },
@@ -484,9 +494,12 @@ export default {
          return items.filter(x => x.side === this.side.id) || []
       },
       isReachMax() {
-        return this.allItemsParams.realItemsWidth >= this.maxPrintSize.real_width || this.allItemsParams.realItemsHeight >= this.maxPrintSize.real_height
+        if(this.maxPrintSize) {
+           return this.allItemsParams.realItemsWidth >= this.maxPrintSize.real_width || this.allItemsParams.realItemsHeight >= this.maxPrintSize.real_height;
+        }
+        return false;
       },
-       checkPrintSize(e) {
+       checkPrintSize(e) {        
           let printSize = {name: ''};         
           const printsSizes = this.base.printSizes;
           const items = this.sideItems;
@@ -571,13 +584,30 @@ export default {
 
 /// TODO: finish resizing 
 
-      onMouseDownGroup(eDown, items, handle) {
-      
-          eDown.stopPropagation();
+      onMouseDownGroup(eDown, items, handle) {         
+          let isCanMove = true;
+          eDown.stopPropagation(); 
+
+          document.onmouseup = () => {
+              this.dragging = false;
+              this.rotation = false;
+              this.scaling = false;
+              document.onmousemove = null;
+          };
+
+
+          document.ontouchend = () => {
+              this.dragging = false;
+              this.rotation = false;
+              this.scaling = false;
+              document.ontouchmove = null;
+              isCanMove = false;
+          };   
           items.forEach((item, i) => {
-          const selectedElementIndex  = this.items.indexOf(item);
-          const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);
            
+          const selectedElementIndex  = this.sideItems.indexOf(item);
+
+          const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);         
           const edBounds              = this.editableAreaEl.getBoundingClientRect();          
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();          
           const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
@@ -585,8 +615,8 @@ export default {
           item.drag = {
               x:        item.x,
               y:        item.y,
-              mx:       eDown.x,
-              my:       eDown.y,
+              mx:       eDown.touches ? eDown.touches[0].clientX : eDown.x,
+              my:       eDown.touches ? eDown.touches[0].clientY :eDown.y,
               w:        item.width,
               h:        item.height,
               angle:    item.rotate,
@@ -597,14 +627,24 @@ export default {
               top:      elBounds.top - edBounds.top,
               bottom:   elBounds.bottom - edBounds.top
           };
+
+          document.onmousemove = (event) => {
+           
+             if(!isCanMove) return
+            this.handleMoveGroup(event, handle, selectedElementNode, edBounds)
+          }
+          
+          document.ontouchmove = (event) => { 
+            event.x = event.changedTouches[0].clientX;
+            event.y = event.changedTouches[0].clientY;
+            event.clientX = event.changedTouches[0].clientX;
+            event.clientY = event.changedTouches[0].clientY;
+            this.handleMoveGroup(event, handle, selectedElementNode, edBounds)
+          }   
           });
-          document.onmouseup = () => {
-              this.dragging = false;
-              this.rotation = false;
-              this.scaling = false;
-              document.onmousemove = null;
-          };
-        document.onmousemove = (event) => {  
+                 
+      },  
+       handleMoveGroup(event, handle, selectedElementNode, edBounds) {  
             
            this.selectedLayers.forEach((item, index) => {                
               if (!handle) {
@@ -717,16 +757,10 @@ export default {
                   
               }
               })
-          }          
-      },  
-      
-      
-
-
-      onMouseDown(eDown, item, handle) {        
-               
+          },
+      onMouseDown(eDown, item, handle) {       
           eDown.stopPropagation();
-          
+          let isCanMove = true; 
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
@@ -743,8 +777,8 @@ export default {
           item.drag = {
               x:        item.x,
               y:        item.y,
-              mx:       eDown.x,
-              my:       eDown.y,
+              mx:       eDown.touches ? eDown.touches[0].clientX : eDown.x,
+              my:       eDown.touches ? eDown.touches[0].clientY :eDown.y,
               w:        item.width,
               h:        item.height,
               angle:    item.rotate,
@@ -772,7 +806,30 @@ export default {
               this.scaling = false;
               document.onmousemove = null;
           };
-          document.onmousemove = (event) => {
+
+          document.ontouchend = (e) => { 
+              this.dragging = false;
+              this.rotation = false;
+              this.scaling = false;
+              document.ontouchmove = null; 
+              isCanMove = false;
+          };
+
+          document.onmousemove = (event) => {           
+            if(!isCanMove) return
+            this.handleMove(event, item, handle, selectedElementNode, edBounds)
+          }
+          
+          document.ontouchmove = (event) => { 
+            this.checkPrintSize();           
+            event.x = event.changedTouches[0].clientX;
+            event.y = event.changedTouches[0].clientY;
+            event.clientX = event.changedTouches[0].clientX;
+            event.clientY = event.changedTouches[0].clientY;
+            this.handleMove(event, item, handle, selectedElementNode, edBounds)
+          }
+      },
+      handleMove(event, item, handle, selectedElementNode, edBounds) {        
               if (!handle) {
                   this.hideLines();
                   const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
@@ -861,7 +918,9 @@ export default {
                       item.x = centerX - (right - left) + (item.drag.x - item.drag.left);
                       this.lines.centerV = true;
                   }
-
+                  
+                  item.y = item.y/(this.scaleWidth/100);
+                  item.x = item.x/(this.scaleWidth/100);                 
                   // const strokeWidth = 4;
                   // const centerX = (this.sideArea.width - strokeWidth) / 2;
                   // const centerY = (this.sideArea.height - strokeWidth) / 2;
@@ -980,8 +1039,7 @@ export default {
                     item.fontSize = item.height / item.text.length;
                   }
               }
-          }
-      },
+          },
       hideLines() {
           this.lines.left     = false;
           this.lines.right    = false;
@@ -1004,8 +1062,9 @@ export default {
           const item = this.createImgField(file);
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
+          this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },
-      createTextField() {   
+      createTextField() {  
           return {
               side: this.side.id,
               sideName: this.side.name,
@@ -1019,7 +1078,7 @@ export default {
               font: "Arial",
               fontSize: 20,
               node: null,
-              color: this.colors.hex || "#000",
+              color: this.color.color.includes('FFF') ? "#000" : "#fff",
               bold: false,
               italic: false,
               rotate: 0,
@@ -1051,10 +1110,10 @@ export default {
           };
       },
       updateSizes() {        
-        setTimeout(() => {
+        setTimeout(() => {         
             const index     = this.items.indexOf(this.selectedElement);
-            const tSpans    = document.querySelectorAll(`#group-${index} g > text`);
-            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());           
+            const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           
+            const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
             const maxWidth  = widths.length ? Math.max(...widths) : 132;
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
@@ -1133,6 +1192,7 @@ export default {
       this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
       window.addEventListener("keyup", this.onKeyUp);
       window.addEventListener("mousemove", this.checkPrintSize)
+     // window.addEventListener("touchmove", this.checkPrintSize)
   }
 };
 var swapArrayElements = function (arr, indexA, indexB) {
@@ -1146,10 +1206,10 @@ var swapArrayElements = function (arr, indexA, indexB) {
 .main {
   transition: all 0.3s ease-out;
 }
-.constructor { 
+.constructor {
   width: 100%;
   height: 100%;
- 
+
   @media screen and (max-width: 1200px) {
     width: 100%;
     height: auto;
@@ -1160,6 +1220,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
 }
 
 #editor {
+  touch-action: none;
   width: 100%;
   height: 100%;
   /*width: auto;*/

@@ -3,12 +3,13 @@
     <div class="app-menu__item">
       <b-button @click="showModalProducts()" class="btn-circle">
         <div class="app-menu__item-name">
-           <img src="../assets/icons/tshirt.png" />
+          <img src="../assets/icons/tshirt.png" />
         </div>
       </b-button>
       <div class="hint">
         <span class="hint__content">Тип изделия</span>
       </div>
+      <div class="app-menu__item-title">Изделие</div>
     </div>
 
     <div class="app-menu__item">
@@ -20,6 +21,7 @@
       <div class="hint">
         <span class="hint__content">Принты</span>
       </div>
+      <div class="app-menu__item-title">Принт</div>
     </div>
 
     <div class="app-menu__item">
@@ -31,6 +33,7 @@
       <div class="hint">
         <span class="hint__content">Добавить текст</span>
       </div>
+      <div class="app-menu__item-title">Текст</div>
     </div>
     <div class="app-menu__item">
       <b-button @click="showModalUpload()" class="btn-circle">
@@ -41,6 +44,7 @@
       <div class="hint">
         <span class="hint__content">Загрузить</span>
       </div>
+      <div class="app-menu__item-title">Импорт</div>
     </div>
   </div>
 </template>
@@ -81,6 +85,14 @@ export default {
   &__item {
     margin: 10px 0;
     position: relative;
+    &-title {
+      margin-top: 15px;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0.85;
+      text-align: center;
+      display: none;
+    }
   }
 
   .btn-circle {
@@ -97,10 +109,7 @@ export default {
   .btn-circle:hover + .hint {
     max-width: 500px;
     position: absolute;
-    width: 100%;
-    @media screen and (max-width: 992px) {
-      display: none;
-    }
+    width: 170px;
   }
 
   .hint {
@@ -123,6 +132,14 @@ export default {
       line-height: 60px;
       position: absolute;
       width: 100%;
+    }
+  }
+  @media screen and (max-width: 992px) {
+    .hint {
+      display: none;
+    }
+    .app-menu__item-title {
+      display: block;
     }
   }
 }

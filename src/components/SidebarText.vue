@@ -131,7 +131,11 @@
     </div>
     <hr class="mb-0" />
 
-    <div class="sidebar-text__font-select" @click="fontSelect()">
+    <div
+      class="sidebar-text__font-select"
+      @click="fontSelect()"
+      :style="{fontFamily: selectedElement && selectedElement.font ? selectedElement.font.name : '' }"
+    >
       {{selectedElement && selectedElement.font ? selectedElement.font.name : ''}}
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 451.847 451.847">
@@ -203,7 +207,11 @@
         </svg>
         <br />На задний план
       </div>
-      <div class="sidebar-text__layer-tools-item">
+      <div
+        class="sidebar-text__layer-tools-item"
+        id="select-side-popover"
+        @click="showSideSelect = !showSideSelect"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
           <path
             d="M496,128c8.832,0,16-7.168,16-16V16c0-8.832-7.168-16-16-16h-96c-8.832,0-16,7.168-16,16v32H128V16    c0-8.832-7.168-16-16-16H16C7.168,0,0,7.168,0,16v96c0,8.832,7.168,16,16,16h32v256H16c-8.832,0-16,7.168-16,16v96    c0,8.832,7.168,16,16,16h96c8.832,0,16-7.168,16-16v-32h256v32c0,8.832,7.168,16,16,16h96c8.832,0,16-7.168,16-16v-96    c0-8.832-7.168-16-16-16h-32V128H496z M32,96V32h64v64H32z M96,480H32v-64h64V480z M384,400v32H128v-32c0-8.832-7.168-16-16-16H80    V128h32c8.832,0,16-7.168,16-16V80h256v32c0,8.832,7.168,16,16,16h32v256h-32C391.168,384,384,391.168,384,400z M480,416v64h-64    v-64H480z M416,96V32h64v64H416z"
@@ -211,6 +219,15 @@
         </svg>
         <br />Область печати
       </div>
+
+      <b-popover
+        :show.sync="showSideSelect"
+        custom-class="select-side"
+        placement="top"
+        target="select-side-popover"
+      >
+        <side-select @selectSide="onSelectSide" />
+      </b-popover>
       <div class="sidebar-text__layer-tools-item" @click="duplicateLayer">
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -254,6 +271,7 @@
 
 <script>
 import Color from "./Color";
+import SideSelect from "./SideSelect";
 import NumberInput from "./NumberInput";
 import { Sidebar, TextAlignment } from "../consts";
 import { eventBus } from "../main";
@@ -264,14 +282,16 @@ import {
   CONSTRUCTOR_SET_SELECTED_ITEM,
   CONSTRUCTOR_SET_ITEMS,
   SIDEBAR_SET_ACTIVE,
-  CONSTRUCTOR_ADD_ITEM
+  CONSTRUCTOR_ADD_ITEM,
+  CONSTRUCTOR_SET_SELECTED_SIDE
 } from "../store/mutations.type";
 import { UPDATE_ELEMENT_SIZE } from "../eventBus.type";
 
 export default {
   components: {
     Color,
-    NumberInput
+    NumberInput,
+    SideSelect
   },
   data() {
     return {
@@ -284,7 +304,8 @@ export default {
         { color: "00BF60", id: 5 }
       ],
       text: "",
-      innerFontSize: 14
+      innerFontSize: 14,
+      showSideSelect: false
     };
   },
   mounted() {
@@ -395,6 +416,11 @@ export default {
       newItem.x += 10;
       newItem.y += 10;
       this.$store.commit(CONSTRUCTOR_ADD_ITEM, newItem);
+    },
+    onSelectSide(side) {
+      this.showSideSelect = false;
+      this.selectedElement.side = side.id;
+      this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
     }
   }
 };

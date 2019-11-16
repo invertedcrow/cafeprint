@@ -32,7 +32,7 @@
     >Добавить в корзину</button>
     <button
       v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
-      @click="onGetPriceClicked"
+      @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
     <button
@@ -142,7 +142,7 @@ export default {
     },
     onSave(item) {
       const params = {
-        mainblank_id: item.mainblank_id,
+        mainblankid: item.mainblank_id,
         preview_side_id: item.id,
         sides: this.sidesElems
       };

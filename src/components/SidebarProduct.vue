@@ -74,7 +74,7 @@
       <hr />
 
       <div class="sidebar-product__layers">
-        <a href="#" @click="selectSidebarLayers">
+        <a href="#" @click.prevent="selectSidebarLayers">
           <svg
             width="20"
             height="20"
@@ -169,7 +169,8 @@ export default {
   &__sizes {
     font-size: 14px;
     margin-bottom: 17px;
-
+    display: flex;
+    align-items: center;
     &-item {
       display: inline-block;
       padding: 5px 14px;
@@ -177,12 +178,28 @@ export default {
       border-radius: 18px;
       font-weight: bold;
       cursor: pointer;
+      flex-shrink: 0;
       &:not(:last-child) {
         margin-right: 23px;
       }
     }
     &-current {
       color: #9aa2af;
+    }
+    @media screen and (max-width: 992px) {
+      flex-direction: column;
+      align-items: start;
+      &-item {
+        margin-bottom: 15px;
+      }
+    }
+    @media screen and (max-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      &-item {
+        margin-bottom: 0;
+      }
     }
   }
 
