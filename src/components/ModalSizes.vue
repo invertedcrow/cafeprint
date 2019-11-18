@@ -66,6 +66,9 @@ export default {
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_SIZE]),
     onHide() {
+      if (this.readonly) {
+        eventBus.$emit("hideModal", MODALS.SIZES_READONLY);
+      }
       eventBus.$emit("hideModal", MODALS.SIZES);
     },
     setSelectedSize(size) {
