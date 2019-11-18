@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     showSizesModal() {
-      eventBus.$emit("showModal", MODALS.SIZES);
+      eventBus.$emit("showModal", MODALS.SIZES_READONLY);
     },
     onDetailsClicked() {
       this.$store.commit("setActiveSidebar", Sidebar.ARTICLE);

@@ -23,18 +23,21 @@
           :width="image.width"
           :height="image.height"
         />
-        <g v-html="side.svg_area" />
+        <g id="maskRect" v-html="side.svg_area" />
 
-        <polygon
-          id="editable-area"
-          v-if="sideArea.tag == 'polygon'"
-          class="area"
-          :points="sideArea.points"
-        />
-        <g :transform="'translate('+sideArea.x+', '+sideArea.y+')'">
+       
+        <g>
+           <polygon
+            id="editable-area"
+            v-if="sideArea.tag == 'polygon'"          
+            fill="none"
+            :points="sideArea.points"          
+          />
           <rect
             v-if="sideArea.tag == 'rect'"
             id="editable-area"
+            :x="sideArea.x"
+            :y="sideArea.y"
             fill="none"
             vector-effect="non-scaling-stroke"
             stroke-width="2"
@@ -110,8 +113,8 @@
 
           <g v-if="selectedLayers.length">
             <rect
-              :x="groupParams.x"
-              :y="groupParams.y"
+              :x="+sideArea.x + +groupParams.x"
+              :y="+sideArea.y + +groupParams.y"
               :width="groupParams.width"
               :height="groupParams.height"
               class="ctrl-bounds group-bound"
@@ -122,7 +125,7 @@
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
               >
-                <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                <rect class="ctrl-rect" :x="sideArea.x" :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
@@ -130,8 +133,8 @@
                   height="18px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  x="4px"
-                  y="3px"
+                  :x="(+sideArea.x + 4)"
+                  :y="(+sideArea.y + 3)"
                   viewBox="0 0 76.398 76.398"
                   style="enable-background:new 0 0 76.398 76.398;"
                   xml:space="preserve"
@@ -147,7 +150,7 @@
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
               >
-                <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                <rect class="ctrl-rect" :x="sideArea.x" :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
@@ -155,8 +158,8 @@
                   height="15px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  x="5px"
-                  y="5px"
+                  :x="(+sideArea.x + 5)"
+                  :y="(+sideArea.y + 5)"
                   viewBox="0 0 472.774 472.774"
                   xml:space="preserve"
                 >
@@ -173,20 +176,20 @@
             </g>
           </g>
           <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
-            <g v-for="(item, index) in sideItems" :key="index">
+            <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)">
               <g
                 ref="groupEls"
                 :id="'group-'+index"
-                :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
+                :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+`${+sideArea.x + item.width/2}`+' '+`${+sideArea.y + item.height/2}`+')'"
                 @mousedown="onMouseDown($event,item)"
                 @touchstart="onMouseDown($event,item)"
               >
-                <rect x="0" y="0" :width="item.width" :height="item.height" fill="transparent" />
+                <rect :x="sideArea.x" :y="sideArea.y" :width="item.width" :height="item.height" fill="transparent" />
                 <svg
                   :height="item.height"
                   :width="item.width"
-                  :x="0"
-                  :y="0"
+                  :x="sideArea.x"
+                  :y="sideArea.y"
                   :opacity="base.layers_opacity"
                 >
                   <template v-if="item.type=='text'">
@@ -217,13 +220,13 @@
                 </svg>
                 <g v-if="selectedElement === item && !selectedLayers.length">
                   <rect
-                    :x="0"
-                    :y="0"
+                    :x="sideArea.x"
+                    :y="sideArea.y"
                     :width="item.width"
                     :height="item.height"
                     class="ctrl-bounds"
                   />
-                  <g fill="#fff" font-size="40px">
+                  <g fill="#fff" font-size="0px" :transform="'translate('+sideArea.x+', '+sideArea.y+')'">
                     <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
                     <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
                     <text v-if="scaling">H: {{round(item.height)}} W: {{round(item.width)}}</text>
@@ -234,7 +237,8 @@
                       @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
                       :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
                     >
-                      <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                      <rect class="ctrl-rect" :width="tools.squaresize" :x="sideArea.x"
+                    :y="sideArea.y" :height="tools.squaresize" />
                       <svg
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         class="ctrl-icon"
@@ -242,8 +246,8 @@
                         height="18px"
                         xmlns="http://www.w3.org/2000/svg"
                         version="1.1"
-                        x="4px"
-                        y="3px"
+                        :x="(+sideArea.x + 5)"
+                        :y="(+sideArea.y + 3)"
                         viewBox="0 0 76.398 76.398"
                         style="enable-background:new 0 0 76.398 76.398;"
                         xml:space="preserve"
@@ -258,7 +262,8 @@
                       @touchstart="removeActiveItem()"
                       :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'"
                     >
-                      <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                      <rect class="ctrl-rect" :x="sideArea.x"
+                    :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
                       <svg
                         class="ctrl-icon"
                         xmlns="http://www.w3.org/2000/svg"
@@ -266,8 +271,8 @@
                         viewBox="-18 0 511 512"
                         width="15px"
                         fill="#757575"
-                        x="4px"
-                        y="3px"
+                        :x="(+sideArea.x + 5)"
+                        :y="(+sideArea.y + 3)"
                       >
                         <path
                           d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"
@@ -280,7 +285,8 @@
                       @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
                       :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
                     >
-                      <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                      <rect class="ctrl-rect" :x="sideArea.x"
+                    :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
                       <svg
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         class="ctrl-icon"
@@ -288,8 +294,8 @@
                         height="15px"
                         xmlns="http://www.w3.org/2000/svg"
                         version="1.1"
-                        x="5px"
-                        y="5px"
+                        :x="(+sideArea.x + 5)"
+                        :y="(+sideArea.y + 3)"
                         viewBox="0 0 472.774 472.774"
                         xml:space="preserve"
                       >
@@ -401,7 +407,11 @@ export default {
         },
         side: function(val) {
           // TODO: finish polygon mask 
-          
+
+          setTimeout(() => {
+            const mask = document.getElementById("maskRect");
+            mask.firstChild.setAttribute('fill', 'none');
+          }, 0)
 
           let element = new DOMParser().parseFromString(val.svg_area, "text/xml");
           this.sideArea.tag = element.documentElement.tagName;
