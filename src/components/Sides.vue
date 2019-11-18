@@ -8,16 +8,21 @@
           </defs>
           <image v-bind:xlink:href="side.image" style="width: 100%" />
           <g id="containerGroupMain">
-            <svg :x="side.area.x" :y="side.area.y" viewBox="0 0 500 500" width="500" height="500">
-              <g v-for="(item, index) in side.items" ref="groupEls" :key="index">
+            <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
+              <g
+                v-for="(item, index) in side.items"
+                ref="groupEls"
+                :key="index"
+                mask="url(#mainMask)"
+              >
                 <g
-                  :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+item.width/2+' '+item.height/2+')'"
+                  :transform="'translate('+side.area.x+', '+side.area.y+') rotate('+item.rotate+' '+`${+item.x + item.width/2}`+' '+`${+item.y + item.height/2}`+')'"
                 >
                   <svg
                     :height="item.height"
                     :width="item.width"
-                    :x="0"
-                    :y="0"
+                    :x="item.x"
+                    :y="item.y"
                     :opacity="base.layers_opacity"
                   >
                     <image
