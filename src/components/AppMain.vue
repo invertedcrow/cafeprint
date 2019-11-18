@@ -113,8 +113,8 @@
 
           <g v-if="selectedLayers.length">
             <rect
-              :x="groupParams.x"
-              :y="groupParams.y"
+              :x="+sideArea.x + +groupParams.x"
+              :y="+sideArea.y + +groupParams.y"
               :width="groupParams.width"
               :height="groupParams.height"
               class="ctrl-bounds group-bound"
@@ -125,7 +125,7 @@
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
               >
-                <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                <rect class="ctrl-rect" :x="sideArea.x" :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
@@ -133,8 +133,8 @@
                   height="18px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  x="4px"
-                  y="3px"
+                  :x="(+sideArea.x + 4)"
+                  :y="(+sideArea.y + 3)"
                   viewBox="0 0 76.398 76.398"
                   style="enable-background:new 0 0 76.398 76.398;"
                   xml:space="preserve"
@@ -150,7 +150,7 @@
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
               >
-                <rect class="ctrl-rect" :width="tools.squaresize" :height="tools.squaresize" />
+                <rect class="ctrl-rect" :x="sideArea.x" :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
@@ -158,8 +158,8 @@
                   height="15px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  x="5px"
-                  y="5px"
+                  :x="(+sideArea.x + 5)"
+                  :y="(+sideArea.y + 5)"
                   viewBox="0 0 472.774 472.774"
                   xml:space="preserve"
                 >

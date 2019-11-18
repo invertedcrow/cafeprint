@@ -11,7 +11,7 @@
             <img class="img-fluid" :src="getUrl(item.preview_image)" alt />
           </div>
           <div class="list__item-info">
-            <div class="list__item-title">{{item.name}}</div>
+            <div class="list__item-title" :title="item.name">{{item.name}}</div>
             <div class="list__item-price">{{item.manufacture_price}} uah</div>
           </div>
           <div class="list__item-hover">

@@ -21,6 +21,10 @@
     <b-modal :id="MODALS.SIZES" modal-class="sizes-modal md-modal" hide-footer hide-header>
       <modal-sizes />
     </b-modal>
+
+    <b-modal :id="MODALS.SIZES_READONLY" modal-class="sizes-modal md-modal" hide-footer hide-header>
+      <modal-sizes :readonly="true" />
+    </b-modal>
   </div>
 </template>
 

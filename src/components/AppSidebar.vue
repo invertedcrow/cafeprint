@@ -25,37 +25,39 @@
       </div>
     </template>
 
-    <button
-      v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length"
-      @click="onAddToCart"
-      class="get-price"
-    >Добавить в корзину</button>
-    <button
-      v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
-      @click.prevent="onGetPriceClicked"
-      class="get-price"
-    >Узнать стоимость</button>
-    <button
-      id="popover-select-side"
-      class="get-price"
-      v-show="this.sidesElems.length"
-    >Сохранить себе</button>
+    <div class="constructor-sidebar__btns">
+      <button
+        v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length"
+        @click="onAddToCart"
+        class="get-price"
+      >Добавить в корзину</button>
+      <button
+        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
+        @click.prevent="onGetPriceClicked"
+        class="get-price"
+      >Узнать стоимость</button>
+      <button
+        id="popover-select-side"
+        class="get-price"
+        v-show="this.sidesElems.length"
+      >Сохранить себе</button>
 
-    <b-popover
-      ref="popover"
-      custom-class="sides-popover"
-      placement="top"
-      target="popover-select-side"
-      triggers="focus"
-      title="Выберите сторону которую отображать на превью"
-    >
-      <div
-        class="baseBtn secondary"
-        v-for="(item, index) in renderSides"
-        :key="index"
-        @click="onSave(item)"
-      >{{item.name}}</div>
-    </b-popover>
+      <b-popover
+        ref="popover"
+        custom-class="sides-popover"
+        placement="top"
+        target="popover-select-side"
+        triggers="focus"
+        title="Выберите сторону которую отображать на превью"
+      >
+        <div
+          class="baseBtn secondary"
+          v-for="(item, index) in renderSides"
+          :key="index"
+          @click="onSave(item)"
+        >{{item.name}}</div>
+      </b-popover>
+    </div>
   </div>
 </template>
 
@@ -105,7 +107,8 @@ export default {
       "renderSides",
       "sidesElems",
       "sizesList",
-      "color"
+      "color",
+      "maxPrintSize"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -119,8 +122,15 @@ export default {
       this.baseSizes.forEach(size => {
         let sides = [];
         this.base.sides.forEach(item => {
-          if (item.printSize) {
-            sides.push({ side_id: item.id, print_size_id: item.printSize.id });
+          if (this.maxPrintSize) {
+            if (item.printSize) {
+              sides.push({
+                side_id: item.id,
+                print_size_id: item.printSize.id
+              });
+            }
+          } else {
+            sides.push({ side_id: item.id });
           }
         });
         items.push({ size_id: size.id, sides });
@@ -132,7 +142,7 @@ export default {
       const params = {
         id: this.base.id,
         color_id: this.color.id,
-        full: 0,
+        full: this.maxPrintSize ? 0 : 1,
         items
       };
       this.size.quantity = 1;
@@ -184,6 +194,9 @@ export default {
 <style lang="scss" scoped>
 .constructor-sidebar {
   margin-top: 50px;
+  &__btns {
+    margin: -5px;
+  }
   @media screen and (max-width: 992px) {
     margin-top: 0;
   }
@@ -198,12 +211,10 @@ button.get-price {
   background-color: #72b425;
   color: #fff;
   border: 0;
+  margin: 5px;
   &:focus,
   &:active {
     outline: none;
-  }
-  &:last-child {
-    margin-top: 10px;
   }
 }
 </style>

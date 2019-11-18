@@ -33,7 +33,8 @@
         <div class="table__body d-flex flex-column justify-content-between">
           <div
             class="table__body-item"
-            :class="{active: size && item.id == size.id}"
+            :style="{ pointerEvents: readonly ? 'none' : 'auto' }"
+            :class="{active: size && item.id == size.id && !readonly }"
             v-for="item in base.sizes"
             :key="item.id"
             @click="setSelectedSize(item)"
@@ -61,12 +62,16 @@ import { mapMutations, mapGetters } from "vuex";
 import { CONSTRUCTOR_SET_SIZE } from "../store/mutations.type";
 import { API_URL } from "../consts";
 export default {
+  props: ["readonly"],
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_SIZE]),
     onHide() {
       eventBus.$emit("hideModal", MODALS.SIZES);
     },
     setSelectedSize(size) {
+      if (this.readonly) {
+        return;
+      }
       this.$store.commit(CONSTRUCTOR_SET_SIZE, size);
       eventBus.$emit("hideModal", MODALS.SIZES);
     }

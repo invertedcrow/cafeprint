@@ -10,7 +10,7 @@
           <div class="design__item-img d-flex justify-content-center align-items-center">
             <img :src="imgUrl(item)" />
           </div>
-          <div class="design__item-title" :title="'long long long very lon name'">{{item.name}}</div>
+          <div class="design__item-title" :title="item.name">{{item.name}}</div>
           <div class="design__item-hover">
             <button class="baseBtn w-100" @click="select(item)">Добавить</button>
           </div>
