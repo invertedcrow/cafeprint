@@ -46,7 +46,7 @@
             :width="sideArea.width"
           />
 
-          <g>
+          <!-- <g>
             <template v-if="dragging && selectedElement">
               <line
                 v-if="lines.centerH"
@@ -109,7 +109,7 @@
                 vector-effect="non-scaling-stroke"
               />
             </template>
-          </g>
+          </g> -->
 
           <g v-if="selectedLayers.length">
             <rect
@@ -399,10 +399,10 @@ export default {
                 this.$store.commit("addText", false);
             }
         },
-        addImg: function (val)  {            
+        addImg: function (val)  {              
             if (val) {
                 this.addImgField(val);
-                this.$store.commit("addImg", null);
+                //this.$store.commit("addImg", null);
             }
         },
         side: function(val) {
@@ -1106,10 +1106,10 @@ export default {
               type: "img",            
               x: ((this.sideItems.length + 2) % 20) * 20,
               y: ((this.sideItems.length + 2) % 20) * 20,             
-              width: file.width ? file.width/file.height * 150 : 150,
+              width: file.width && file.width/file.height < 1 ? file.width/file.height * 150 : 150,
               url: file.url,
               name: file.name,
-              height: 150,//200,
+              height: file.height && file.height/file.width < 1 ? file.height/file.width * 150 : 150,
               node: null,
               rotate: 0,
               o: {

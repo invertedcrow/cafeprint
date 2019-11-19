@@ -29,7 +29,8 @@ import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations } from "vuex";
 import { UPLOAD_ADD_FILE } from "../store/mutations.type";
-import { API_URL } from "../consts";
+import { API_URL, MODALS } from "../consts";
+import { eventBus } from "../main";
 
 export default {
   components: {
@@ -49,7 +50,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations([UPLOAD_ADD_FILE]),
+    ...mapMutations([UPLOAD_ADD_FILE, "addImg"]),
     onAddFile() {
       this.$refs.myVueDropzone.$el.click();
     },
@@ -57,12 +58,20 @@ export default {
       const res = JSON.parse(response[0].xhr.response);
       response.forEach((item, i) => {
         let name = item.name.slice(0, item.name.indexOf("."));
-        if(res[i]) {
-          let img = { url: res[i], name, height: item.height, width: item.width };
+        if (res[i]) {
+          let img = {
+            url: res[i],
+            name,
+            height: item.height,
+            width: item.width
+          };
           this.$store.commit(UPLOAD_ADD_FILE, img);
+          setTimeout(() => {
+            this.addImg(img);
+          }, 100);
         }
-       
       });
+      eventBus.$emit("hideModal", MODALS.UPLOAD);
     },
     templatePreview() {
       return `     

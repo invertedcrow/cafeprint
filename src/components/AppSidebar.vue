@@ -118,7 +118,6 @@ export default {
     ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
     onGetPriceClicked() {
       let items = [];
-
       this.baseSizes.forEach(size => {
         let sides = [];
         this.base.sides.forEach(item => {
@@ -145,8 +144,16 @@ export default {
         full: this.maxPrintSize ? 0 : 1,
         items
       };
-      this.size.quantity = 1;
-      this.$store.commit(PRICE_SET_ITEM, this.size);
+      if (!this.size) {
+        let size = {
+          id: 0,
+          quantity: 1
+        };
+        this.$store.commit(PRICE_SET_ITEM, size);
+      } else {
+        this.size.quantity = 1;
+        this.$store.commit(PRICE_SET_ITEM, this.size);
+      }
       this.$store.dispatch(GET_PRICE, params);
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
@@ -165,7 +172,7 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          if (side.printSize) {
+          if (this.maxPrintSize && side.printSize) {
             print_sizes.push({
               sideId: side.id,
               print_size_id: side.printSize.id
