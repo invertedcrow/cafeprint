@@ -165,7 +165,7 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          if (side.printSize) {
+          if (this.maxPrintSize && side.printSize) {
             print_sizes.push({
               sideId: side.id,
               print_size_id: side.printSize.id
