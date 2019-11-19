@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="position-relative">
+    <spinner v-if="isLoading" />
     <editor />
     <modals />
   </div>
@@ -7,10 +8,10 @@
 
 <script>
 import "./assets/scss/main.scss";
-
+import Spinner from "./components/Spinner";
 import Editor from "./components/Editor";
 import Modals from "./components/Modals";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import {
   GET_BASES_CATEGORIES,
   GET_BASES_LIST,
@@ -23,7 +24,11 @@ export default {
   name: "app",
   components: {
     Editor,
-    Modals
+    Modals,
+    Spinner
+  },
+  computed: {
+    ...mapGetters(["isLoading"])
   },
   methods: {
     ...mapActions([

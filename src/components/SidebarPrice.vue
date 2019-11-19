@@ -35,6 +35,7 @@
         </svg>
       </div>
     </div>
+    <spinner v-if="isPriceLoading" />
     <perfect-scrollbar>
       <div class="sidebar-price__sizes">
         <div class="sidebar-price__sizes-label">Выберите размеры:</div>
@@ -78,7 +79,7 @@
         <button @click="onDetailsClicked" class="sidebar-price__info-details">Подробнее</button>
       </div>
     </perfect-scrollbar>
-    <div class="sidebar-price__summary">
+    <div class="sidebar-price__summary" v-if="!isPriceLoading">
       <hr />
       <div class="sidebar-price__summary-count">выбрано {{quantity}} позиций</div>
       <div class="sidebar-price__summary-sum">Итого: {{totalPrice}} UAH</div>
@@ -92,6 +93,7 @@ import { Sidebar, MODALS } from "../consts";
 import { mapGetters } from "vuex";
 import { eventBus } from "../main";
 import { PRICE_SET_ITEM } from "../store/mutations.type";
+import Spinner from "./Spinner";
 
 export default {
   name: "SidebarPrice",
@@ -122,10 +124,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["sizesList", "quantity", "totalPrice", "productMinPrice"])
+    ...mapGetters([
+      "sizesList",
+      "quantity",
+      "totalPrice",
+      "productMinPrice",
+      "isPriceLoading"
+    ])
   },
   components: {
-    NumberInput
+    NumberInput,
+    Spinner
   }
 };
 </script>
@@ -134,6 +143,7 @@ export default {
 .sidebar-price {
   font-size: 14px;
   height: 450px;
+  position: relative;
   a {
     font-size: 16px;
     text-decoration: none;

@@ -3,7 +3,7 @@ import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
-    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING
 } from '../mutations.type';
 
 import {
@@ -52,6 +52,7 @@ const initialState = () => ({
     baseColor: {},    
     fonts: [],
     maxPrintSize: null,
+    isLoading: true,
     base:  initialBase()
 });
 
@@ -92,11 +93,13 @@ const getters = {
     return sides
   },
   sidesList: (state) => state.base.sides,
-  maxPrintSize: (state) => state.maxPrintSize
+  maxPrintSize: (state) => state.maxPrintSize,
+  isLoading: (state) => state.isLoading
 };
 
 const actions = {
     [GET_BASE]: async (state, id) => {
+        state.commit(CONSTRUCTOR_SET_LOADING, true);
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
              
         if(state.state.items.length) {
@@ -118,7 +121,7 @@ const actions = {
         state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
         state.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
         state.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.data.printSizes)
-
+        state.commit(CONSTRUCTOR_SET_LOADING, false)
        // console.log(state.state)
     },
     [GET_FONTS]: async (state) => {
@@ -198,6 +201,7 @@ const mutations = {
     [CONSTRUCTOR_SET_MAX_PRINT_SIZE]: (state, sizes) => {        
         state.maxPrintSize = sizes[0]
     },
+    [CONSTRUCTOR_SET_LOADING]: (state, isLoading) => state.isLoading = isLoading,
 };
 
 export default {
