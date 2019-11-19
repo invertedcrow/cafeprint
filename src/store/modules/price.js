@@ -46,10 +46,14 @@ const actions = {
         const price = await Vue.axios.get('/constructor-new/cart/price?' + query);  
        // TODO: fix handle. response changed
         let prices = price.data.totals[params.id];               
-        let list = state.state.sizesList.slice();       
-        list.forEach(item => {
-            item.item_total = +prices[item.id]
-        })
+        let list = state.state.sizesList.slice();
+        if(list.length) {
+            list.forEach(item => {
+                item.item_total = +prices[item.id]
+            })            
+        } else {
+            list.push({item_total: +prices[0], id: 0, quantity: 1 })
+        }       
         state.commit(PRICE_SET_SIZES_LIST, list);
         state.commit(PRICE_ARTICLE_SET, price.data[params.id]);
     }
