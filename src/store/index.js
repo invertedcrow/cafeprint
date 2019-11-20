@@ -7,6 +7,7 @@ import filter from './modules/filter';
 import design from './modules/design';
 import price from './modules/price';
 import save from './modules/save';
+import user from './modules/user';
 import { Sidebar } from '../consts';
 
 Vue.use(Vuex);
@@ -18,7 +19,8 @@ export default new Vuex.Store({
         filter,
         design,
         price,
-        save
+        save,
+        user
     },
     state: {
         activeSidebar: Sidebar.PRODUCT,

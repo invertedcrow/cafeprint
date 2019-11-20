@@ -32,3 +32,5 @@ export const PRICE_RESET                    = 'resetPricelist';
 export const PRICE_ARTICLE_SET              = 'setPriceArticle';
 export const PRICE_SET_LOADING              = 'setPriceLoading';    
 export const SAVE_SET_SIDES_LIST            = 'setSidesElementsList';
+
+export const USER_SET_ROLE                  = 'setUserRole';

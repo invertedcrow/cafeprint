@@ -39,7 +39,7 @@
       <button
         id="popover-select-side"
         class="get-price"
-        v-show="this.sidesElems.length"
+        v-show="this.sidesElems.length && userRole != USER_ROLE.guest"
       >Сохранить себе</button>
 
       <b-popover
@@ -66,7 +66,7 @@ import SidebarProduct from "./SidebarProduct";
 import SidebarText from "./SidebarText";
 import SidebarFont from "./SidebarFont";
 import SidebarPrice from "./SidebarPrice";
-import { TextAlignment, Sidebar } from "../consts";
+import { TextAlignment, Sidebar, USER_ROLE } from "../consts";
 import SidebarArticle from "./SidebarArticle";
 import SidebarLayers from "./SidebarLayers";
 import { mapGetters, mapActions } from "vuex";
@@ -94,7 +94,8 @@ export default {
   data() {
     return {
       TextAlignment,
-      Sidebar
+      Sidebar,
+      USER_ROLE
     };
   },
   computed: {
@@ -108,7 +109,8 @@ export default {
       "sidesElems",
       "sizesList",
       "color",
-      "maxPrintSize"
+      "maxPrintSize",
+      "userRole"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;

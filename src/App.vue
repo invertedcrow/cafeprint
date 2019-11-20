@@ -17,9 +17,10 @@ import {
   GET_BASES_LIST,
   GET_DESIGN_CATEGORIES,
   GET_DESIGN,
-  GET_FONTS
+  GET_FONTS,
+  USER_GET_ROLE
 } from "./store/actions.type";
-
+import { USER_ROLE } from "./consts";
 export default {
   name: "app",
   components: {
@@ -28,7 +29,7 @@ export default {
     Spinner
   },
   computed: {
-    ...mapGetters(["isLoading"])
+    ...mapGetters(["isLoading", "prevRole", "userRole"])
   },
   methods: {
     ...mapActions([
@@ -36,8 +37,17 @@ export default {
       GET_BASES_LIST,
       GET_DESIGN_CATEGORIES,
       GET_DESIGN,
-      GET_FONTS
-    ])
+      GET_FONTS,
+      USER_GET_ROLE
+    ]),
+    checkUserRole() {
+      if (
+        this.prevRole != USER_ROLE.guest &&
+        this.userRole == USER_ROLE.guest
+      ) {
+        alert("Session was closed");
+      }
+    }
   },
   mounted() {
     this.$store.dispatch(GET_BASES_CATEGORIES);
@@ -49,6 +59,11 @@ export default {
       category_ids: []
     });
     this.$store.dispatch(GET_FONTS);
+    this.$store.dispatch(USER_GET_ROLE);
+    setInterval(() => {
+      this.$store.dispatch(USER_GET_ROLE);
+      this.checkUserRole();
+    }, 300000);
   }
 };
 </script>
