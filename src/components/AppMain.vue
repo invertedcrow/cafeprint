@@ -571,8 +571,8 @@ export default {
                 this.allItemsParams.height = item.y - this.allItemsParams.y + item.height                }
         })   
       
-       this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.side.real_width;
-       this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.side.real_height; 
+       this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
+       this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
         
         printsSizes.forEach((size) => {
           if( this.allItemsParams.realItemsHeight <= size.real_height &&   this.allItemsParams.realItemsWidth <= size.real_width) {
@@ -783,20 +783,22 @@ export default {
                 
                   distance = (distance - centerToDot) * 1.95;
                 
-                  const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.side.real_width;
-                  const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.side.real_height; 
+                  const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.size.width;
+                  const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.size.height; 
 
                   if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
                     return         
                   } else if (item.width < item.drag.w + distance && this.isReachMax()) {
                     return
                   }
-              
-                  const ratio   = item.drag.h / item.drag.w;    
-                  item.width    = item.drag.w + item.drag.w*distance/100,
-                  item.height   = item.drag.h + item.drag.h*distance/100,
-                  item.x        = item.drag.x + item.drag.x*distance/100,
-                  item.y        = item.drag.y + item.drag.y*distance/100,
+                   const ratio   = item.drag.h / item.drag.w;    
+                   const diff_before = (item.width - 500)/2
+                  
+                  item.width    = item.drag.w + item.drag.w*distance/100;
+                  item.height   = item.width*ratio; 
+                  const diff_current = (item.width - 500)/2
+                  item.x        = item.drag.x + diff_before - diff_current,
+                  item.y        = item.drag.y + diff_before - diff_current,
                   item.fontSize = item.fontSize ? item.height / item.text.length : null;
                   
               }
@@ -1064,8 +1066,8 @@ export default {
                   // TODO Не знаю почему 1.95, но оно неплохо работает
                   distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
                   
-                    const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.side.real_width;
-                    const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.side.real_height; 
+                    const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.size.width;
+                    const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.size.height; 
                      
                   if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
                     return         
@@ -1162,12 +1164,8 @@ export default {
             const maxWidth  = widths.length ? Math.max(...widths) : 132;
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
+                  this.selectedElement.width    = maxWidth;
               }
-           
-            if(this.selectedElement) {
-               this.selectedElement.width    = maxWidth;
-            }
-           
         });
       },
       moveUp() {

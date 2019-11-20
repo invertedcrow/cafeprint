@@ -27,19 +27,19 @@
 
     <div class="constructor-sidebar__btns">
       <button
-        v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length"
+        v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length && items.length"
         @click="onAddToCart"
         class="get-price"
       >Добавить в корзину</button>
       <button
-        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
+        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length"
         @click.prevent="onGetPriceClicked"
         class="get-price"
       >Узнать стоимость</button>
       <button
         id="popover-select-side"
         class="get-price"
-        v-show="this.sidesElems.length && userRole != USER_ROLE.guest"
+        v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
       >Сохранить себе</button>
 
       <b-popover
@@ -110,7 +110,8 @@ export default {
       "sizesList",
       "color",
       "maxPrintSize",
-      "userRole"
+      "userRole",
+      "items"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -124,7 +125,7 @@ export default {
         let sides = [];
         this.base.sides.forEach(item => {
           if (this.maxPrintSize) {
-            if (item.printSize) {
+            if (item.items.length && item.printSize) {
               sides.push({
                 side_id: item.id,
                 print_size_id: item.printSize.id

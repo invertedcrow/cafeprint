@@ -72,7 +72,13 @@ const getters = {
   size: (state) => state.size,
   baseSizes: (state) => state.base.sizes,
   printSize: (state) => state.printSize,
-  side: (state) => state.side,  
+  side: (state) => {
+    let side = {...state.side };
+    if(!side.items || !side.items.length ) {
+        side.printSize = null
+    }
+    return side
+  },  
   description: (state) => state.base.description,
   selectedLayers: (state) => state.items.filter(item => item.selected),      
   items: (state) => state.items, 

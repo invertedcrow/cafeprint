@@ -330,7 +330,11 @@ export default {
       return this.selectedElement && this.selectedElement.italic;
     },
     isMultiLine() {
-      return this.selectedElement && this.selectedElement.text.length > 1;
+      return (
+        this.selectedElement &&
+        this.selectedElement.type == "text" &&
+        this.selectedElement.text.length > 1
+      );
     },
     fontSize() {
       return this.selectedElement && Math.round(this.selectedElement.fontSize);
@@ -338,7 +342,7 @@ export default {
   },
   methods: {
     initText() {
-      if (this.selectedElement) {
+      if (this.selectedElement && this.selectedElement.type == "text") {
         this.text = this.selectedElement.text.join("\n") || "";
       }
     },
