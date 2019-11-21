@@ -260,10 +260,12 @@
                     :height="item.height"
                     class="ctrl-bounds"
                   />
-                  <g fill="#fff" font-size="0px" :transform="'translate('+sideArea.x+', '+sideArea.y+')'">
-                    <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
-                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
-                    <text v-if="scaling">H: {{round(item.height)}} W: {{round(item.width)}}</text>
+                  <g fill="#5e6a7d" font-size="12px" :transform="'translate('+sideArea.x+', '+(+sideArea.y - 5)+')'">
+                    <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
+                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text> -->
+                    <text v-if="item.height > 40" :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'">{{round(item.real_height)}} см</text>
+                    <text v-if="item.width > 37">{{round(item.real_width)}} см</text>
+                  
                   </g>
                   <g>
                     <g
@@ -564,6 +566,8 @@ export default {
           };
         
         items.forEach((item, i) => {  
+            item.real_width = item.width/this.sideArea.height*this.size.height;
+            item.real_height = item.height/this.sideArea.height*this.size.height;
             if(item.x > this.allItemsParams.x && (item.x - this.allItemsParams.x + item.width) > this.allItemsParams.width) {
                 this.allItemsParams.width = +item.x - +this.allItemsParams.x + +item.width              
             }                 
@@ -616,7 +620,7 @@ export default {
           return 0;
       },
       round(value) {
-          return Math.round(value);
+          return value.toFixed(1);
       },
       resetSelected() {
           this.items.forEach(item => item.selected = false);       
