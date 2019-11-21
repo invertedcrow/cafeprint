@@ -620,7 +620,9 @@ export default {
           return 0;
       },
       round(value) {
-          return value.toFixed(1);
+          if(value) {
+            return value.toFixed(1);
+          }          
       },
       resetSelected() {
           this.items.forEach(item => item.selected = false);       

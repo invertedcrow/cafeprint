@@ -55,8 +55,8 @@ export default {
     this.$store.dispatch(GET_DESIGN_CATEGORIES);
     this.$store.dispatch(GET_DESIGN, {
       limit: 16,
-      search: "",
-      category_ids: []
+      search: ""
+      // category_ids: []
     });
     this.$store.dispatch(GET_FONTS);
     this.$store.dispatch(USER_GET_ROLE);

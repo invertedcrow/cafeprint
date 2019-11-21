@@ -28,11 +28,7 @@
           <design-selection-categories />
         </div>
         <div class="design__list d-flex">
-          <design-selection-list v-if="designList.length" :list="designList" />
-          <div
-            v-else
-            class="h-100 w-100 d-flex flex-column justify-content-center align-items-center"
-          >Не найдено</div>
+          <design-selection-list :list="designList" />
         </div>
       </div>
     </perfect-scrollbar>

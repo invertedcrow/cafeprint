@@ -2,6 +2,8 @@ import Vue from "vue";
 import { SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART } from '../actions.type';
 import { SAVE_SET_SIDES_LIST } from '../mutations.type'
 import qs  from 'qs';
+import { MODALS, MESSAGE } from '../../consts';
+import { eventBus } from '../../main';
 
 const initialState = () => ({
     sidesElems: []
@@ -22,7 +24,11 @@ const actions = {
    },
    [SAVE_TO_CART]: async (state, params) => {
    const encParams = qs.stringify(params);
-    const response =  await Vue.axios.post('/constructor-new/cart', encParams);
+   const response =  await Vue.axios.post('/constructor-new/cart', encParams);  
+   if(response.data) {
+    eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.ADD_CART_SUCCES);
+   }
+   
 }
 
 }

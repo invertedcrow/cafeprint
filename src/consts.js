@@ -20,6 +20,7 @@ const MODAL_UPLOAD      = 'upload';
 const MODAL_INFO        = 'info';
 const MODAL_SIZES       = 'sizes';
 const SIZES_READONLY    = 'sizes_readonly';
+const MODAL_MESSAGE     = 'message'
 
 export const TextAlignment = {
     START:      TEXT_ALIGNMENT_START,
@@ -41,7 +42,8 @@ export const MODALS = {
     UPLOAD:     MODAL_UPLOAD,
     INFO:       MODAL_INFO,
     SIZES:      MODAL_SIZES,
-    SIZES_READONLY: SIZES_READONLY
+    SIZES_READONLY: SIZES_READONLY,
+    MESSAGE:      MODAL_MESSAGE,
 };
 
 export const Sidebar = {
@@ -58,6 +60,10 @@ export const USER_ROLE = {
     printer: 'printer',
     admin:   'admin'
 };
+
+export const MESSAGE = {
+    ADD_CART_SUCCES: "Ваше изделие успешно добавлено в корзину. Для оформления заказа перейдите по <a href='/cart'>ссылке</a>"
+}
 //export const API_URL = "https://stage.mfest.com.ua";
 //local
 export const API_URL = ""
