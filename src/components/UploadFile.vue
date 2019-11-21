@@ -55,23 +55,35 @@ export default {
       this.$refs.myVueDropzone.$el.click();
     },
     onLoadFile(response) {
-      const res = JSON.parse(response[0].xhr.response);
-      response.forEach((item, i) => {
-        let name = item.name.slice(0, item.name.indexOf("."));
-        if (res[i]) {
-          let img = {
-            url: res[i],
-            name,
-            height: item.height,
-            width: item.width
-          };
-          this.$store.commit(UPLOAD_ADD_FILE, img);
-          setTimeout(() => {
-            this.addImg(img);
-          }, 100);
+      if (!response[0].xhr) {
+        return;
+      }
+      setTimeout(() => {
+        const res = JSON.parse(response[0].xhr.response);
+        if (res.errors && res.errors.length) {
+          res.errors.forEach(item => {
+            let index = response.findIndex(file => file.name == item.file.name);
+            response.splice(index, 1);
+          });
         }
-      });
-      eventBus.$emit("hideModal", MODALS.UPLOAD);
+        response.forEach((item, i) => {
+          let name = item.name.slice(0, item.name.indexOf("."));
+          if (res.links[i]) {
+            let img = {
+              url: res.links[i],
+              name,
+              height: item.height,
+              width: item.width
+            };
+            this.$store.commit(UPLOAD_ADD_FILE, img);
+            setTimeout(() => {
+              this.addImg(img);
+            }, 50);
+          }
+        });
+
+        eventBus.$emit("hideModal", MODALS.UPLOAD);
+      }, 500);
     },
     templatePreview() {
       return `     

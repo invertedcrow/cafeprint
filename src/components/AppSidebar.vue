@@ -27,19 +27,19 @@
 
     <div class="constructor-sidebar__btns">
       <button
-        v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length"
+        v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length && items.length"
         @click="onAddToCart"
         class="get-price"
       >Добавить в корзину</button>
       <button
-        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length"
+        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length"
         @click.prevent="onGetPriceClicked"
         class="get-price"
       >Узнать стоимость</button>
       <button
         id="popover-select-side"
         class="get-price"
-        v-show="this.sidesElems.length"
+        v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
       >Сохранить себе</button>
 
       <b-popover
@@ -66,7 +66,7 @@ import SidebarProduct from "./SidebarProduct";
 import SidebarText from "./SidebarText";
 import SidebarFont from "./SidebarFont";
 import SidebarPrice from "./SidebarPrice";
-import { TextAlignment, Sidebar } from "../consts";
+import { TextAlignment, Sidebar, USER_ROLE } from "../consts";
 import SidebarArticle from "./SidebarArticle";
 import SidebarLayers from "./SidebarLayers";
 import { mapGetters, mapActions } from "vuex";
@@ -94,7 +94,8 @@ export default {
   data() {
     return {
       TextAlignment,
-      Sidebar
+      Sidebar,
+      USER_ROLE
     };
   },
   computed: {
@@ -108,7 +109,9 @@ export default {
       "sidesElems",
       "sizesList",
       "color",
-      "maxPrintSize"
+      "maxPrintSize",
+      "userRole",
+      "items"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -122,7 +125,7 @@ export default {
         let sides = [];
         this.base.sides.forEach(item => {
           if (this.maxPrintSize) {
-            if (item.printSize) {
+            if (item.items.length && item.printSize) {
               sides.push({
                 side_id: item.id,
                 print_size_id: item.printSize.id

@@ -216,7 +216,41 @@
                     :y="0"
                     :height="item.height"
                     :width="item.width"
+                    @load="item.spinner = false"
                   />
+
+
+                  <svg v-if="item.type=='img' && item.spinner == true" :x="(item.width/2 - 20)" :y="(item.height/2 - 20)" width="40" height="40" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
+                            <stop stop-color="#72b425" stop-opacity="0" offset="0%"/>
+                            <stop stop-color="#72b425" stop-opacity=".631" offset="63.146%"/>
+                            <stop stop-color="#72b425" offset="100%"/>
+                        </linearGradient>
+                    </defs>
+                    <g fill="none" fill-rule="evenodd">
+                        <g transform="translate(1 1)">
+                            <path d="M36 18c0-9.94-8.06-18-18-18" id="Oval-2" stroke="url(#a)" stroke-width="2">
+                                <animateTransform
+                                    attributeName="transform"
+                                    type="rotate"
+                                    from="0 18 18"
+                                    to="360 18 18"
+                                    dur="0.9s"
+                                    repeatCount="indefinite" />
+                            </path>
+                            <circle fill="#fff" cx="36" cy="18" r="1">
+                                <animateTransform
+                                    attributeName="transform"
+                                    type="rotate"
+                                    from="0 18 18"
+                                    to="360 18 18"
+                                    dur="0.9s"
+                                    repeatCount="indefinite" />
+                            </circle>
+                        </g>
+                    </g>
+                </svg>
                 </svg>
                 <g v-if="selectedElement === item && !selectedLayers.length">
                   <rect
@@ -537,8 +571,8 @@ export default {
                 this.allItemsParams.height = item.y - this.allItemsParams.y + item.height                }
         })   
       
-       this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.side.real_width;
-       this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.side.real_height; 
+       this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
+       this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
         
         printsSizes.forEach((size) => {
           if( this.allItemsParams.realItemsHeight <= size.real_height &&   this.allItemsParams.realItemsWidth <= size.real_width) {
@@ -749,20 +783,22 @@ export default {
                 
                   distance = (distance - centerToDot) * 1.95;
                 
-                  const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.side.real_width;
-                  const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.side.real_height; 
+                  const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.size.width;
+                  const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.size.height; 
 
                   if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
                     return         
                   } else if (item.width < item.drag.w + distance && this.isReachMax()) {
                     return
                   }
-              
-                  const ratio   = item.drag.h / item.drag.w;    
-                  item.width    = item.drag.w + item.drag.w*distance/100,
-                  item.height   = item.drag.h + item.drag.h*distance/100,
-                  item.x        = item.drag.x + item.drag.x*distance/100,
-                  item.y        = item.drag.y + item.drag.y*distance/100,
+                   const ratio   = item.drag.h / item.drag.w;    
+                   const diff_before = (item.width - 500)/2
+                  
+                  item.width    = item.drag.w + item.drag.w*distance/100;
+                  item.height   = item.width*ratio; 
+                  const diff_current = (item.width - 500)/2
+                  item.x        = item.drag.x + diff_before - diff_current,
+                  item.y        = item.drag.y + diff_before - diff_current,
                   item.fontSize = item.fontSize ? item.height / item.text.length : null;
                   
               }
@@ -1030,8 +1066,8 @@ export default {
                   // TODO Не знаю почему 1.95, но оно неплохо работает
                   distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
                   
-                    const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.side.real_width;
-                    const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.side.real_height; 
+                    const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.size.width;
+                    const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.size.height; 
                      
                   if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
                     return         
@@ -1117,6 +1153,7 @@ export default {
                   y: 0
               },
               selected: false,
+              spinner: true
           };
       },
       updateSizes() {        
@@ -1127,12 +1164,8 @@ export default {
             const maxWidth  = widths.length ? Math.max(...widths) : 132;
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
+                  this.selectedElement.width    = maxWidth;
               }
-           
-            if(this.selectedElement) {
-               this.selectedElement.width    = maxWidth;
-            }
-           
         });
       },
       moveUp() {

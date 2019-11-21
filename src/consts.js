@@ -53,6 +53,11 @@ export const Sidebar = {
     PRODUCT:    SIDEBAR_PRODUCT
 };
 
+export const USER_ROLE = {
+    guest:   'guest',
+    printer: 'printer',
+    admin:   'admin'
+};
 //export const API_URL = "https://stage.mfest.com.ua";
 //local
 export const API_URL = ""

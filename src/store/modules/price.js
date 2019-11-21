@@ -1,11 +1,12 @@
 import Vue from "vue";
 import { GET_PRICE } from '../actions.type';
-import { PRICE_SET_SIZES_LIST, PRICE_SET_ITEM, PRICE_RESET, PRICE_ARTICLE_SET } from '../mutations.type'
+import { PRICE_SET_SIZES_LIST, PRICE_SET_ITEM, PRICE_RESET, PRICE_ARTICLE_SET, PRICE_SET_LOADING } from '../mutations.type'
 import qs  from 'qs';
 
 const initialState = () => ({
     sizesList: [], 
-    article: null
+    article: null,
+    isPriceLoading: true
 })
 
 const state =  initialState();
@@ -36,12 +37,13 @@ const getters = {
         }
      
     },
-    article: (state) => state.article
+    article: (state) => state.article,
+    isPriceLoading: (state) => state.isPriceLoading
 }
 
 const actions = {
     [GET_PRICE]: async (state, params) => {    
-                
+        state.commit(PRICE_SET_LOADING, true);
         const query =  qs.stringify(params);
         const price = await Vue.axios.get('/constructor-new/cart/price?' + query);  
        // TODO: fix handle. response changed
@@ -56,6 +58,7 @@ const actions = {
         }       
         state.commit(PRICE_SET_SIZES_LIST, list);
         state.commit(PRICE_ARTICLE_SET, price.data[params.id]);
+        state.commit(PRICE_SET_LOADING, false)
     }
 }
 
@@ -70,6 +73,7 @@ const mutations = {
     },    
     [PRICE_RESET]: (state) => state.sizesList = [...state.sizesList.map(item => {item.quantity = 0; return item})],
     [PRICE_ARTICLE_SET]: (state, article) => state.article = article, 
+    [PRICE_SET_LOADING]: (state, isLoading) => state.isPriceLoading = isLoading
 }
 
 export default {

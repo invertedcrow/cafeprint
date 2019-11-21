@@ -1,5 +1,6 @@
 <template>
-  <div class="d-flex h-100 w-100">
+  <div class="d-flex h-100 w-100 position-relative">
+    <spinner v-if="isDesignListLoading" />
     <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="design d-flex flex-wrap">
         <div
@@ -24,10 +25,13 @@
 import { MODALS, API_URL } from "../consts";
 import { eventBus } from "../main";
 import { mapGetters, mapMutations, mapActions } from "vuex";
-import { GET_DESIGN } from "../store/actions.type";
-import { GET_DESIGN_ITEM } from "../store/actions.type";
+import { GET_DESIGN, GET_DESIGN_ITEM } from "../store/actions.type";
 
+import Spinner from "./Spinner";
 export default {
+  components: {
+    Spinner
+  },
   props: ["list"],
   methods: {
     ...mapMutations(["addImg"]),
@@ -48,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["designFilter", "designList"])
+    ...mapGetters(["designFilter", "designList", "isDesignListLoading"])
   }
 };
 </script>

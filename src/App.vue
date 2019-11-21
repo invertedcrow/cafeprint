@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="position-relative">
+    <spinner v-if="isLoading" />
     <editor />
     <modals />
   </div>
@@ -7,23 +8,28 @@
 
 <script>
 import "./assets/scss/main.scss";
-
+import Spinner from "./components/Spinner";
 import Editor from "./components/Editor";
 import Modals from "./components/Modals";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import {
   GET_BASES_CATEGORIES,
   GET_BASES_LIST,
   GET_DESIGN_CATEGORIES,
   GET_DESIGN,
-  GET_FONTS
+  GET_FONTS,
+  USER_GET_ROLE
 } from "./store/actions.type";
-
+import { USER_ROLE } from "./consts";
 export default {
   name: "app",
   components: {
     Editor,
-    Modals
+    Modals,
+    Spinner
+  },
+  computed: {
+    ...mapGetters(["isLoading", "prevRole", "userRole"])
   },
   methods: {
     ...mapActions([
@@ -31,8 +37,17 @@ export default {
       GET_BASES_LIST,
       GET_DESIGN_CATEGORIES,
       GET_DESIGN,
-      GET_FONTS
-    ])
+      GET_FONTS,
+      USER_GET_ROLE
+    ]),
+    checkUserRole() {
+      if (
+        this.prevRole != USER_ROLE.guest &&
+        this.userRole == USER_ROLE.guest
+      ) {
+        alert("Session was closed");
+      }
+    }
   },
   mounted() {
     this.$store.dispatch(GET_BASES_CATEGORIES);
@@ -44,6 +59,11 @@ export default {
       category_ids: []
     });
     this.$store.dispatch(GET_FONTS);
+    this.$store.dispatch(USER_GET_ROLE);
+    setInterval(() => {
+      this.$store.dispatch(USER_GET_ROLE);
+      this.checkUserRole();
+    }, 300000);
   }
 };
 </script>

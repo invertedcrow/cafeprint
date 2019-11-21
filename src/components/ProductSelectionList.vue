@@ -1,5 +1,6 @@
 <template>
   <div class="d-flex h-100">
+    <spinner v-if="isProductsListLoading" />
     <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="list d-flex flex-wrap justify-content-start">
         <div
@@ -28,8 +29,11 @@ import { MODALS, API_URL } from "../consts";
 import { eventBus } from "../main";
 import { mapGetters, mapActions } from "vuex";
 import { GET_BASE, GET_BASES_LIST } from "../store/actions.type";
-
+import Spinner from "./Spinner";
 export default {
+  components: {
+    Spinner
+  },
   methods: {
     ...mapActions([GET_BASE, GET_BASES_LIST]),
     onReachEnd() {
@@ -54,7 +58,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["bases", "filterParams"])
+    ...mapGetters(["bases", "filterParams", "isProductsListLoading"])
   }
 };
 </script>

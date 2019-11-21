@@ -8,7 +8,7 @@
       >размер {{size.name}}</span>
       <span
         class="sidebar-product__sizes-current"
-      >Текущий размер принта - {{side.printSize ? side.printSize.name : '' }}</span>
+      >Текущий размер принта {{side.printSize ? '- ' + side.printSize.name : '' }}</span>
     </div>
     <hr />
 
