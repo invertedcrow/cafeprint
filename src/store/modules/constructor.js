@@ -3,7 +3,7 @@ import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
-    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID
 } from '../mutations.type';
 
 import {
@@ -100,7 +100,15 @@ const getters = {
   },
   sidesList: (state) => state.base.sides,
   maxPrintSize: (state) => state.maxPrintSize,
-  isLoading: (state) => state.isLoading
+  isLoading: (state) => state.isLoading,
+  isValid: (state) => {
+      let findInvalid = state.base.sides.find(item => item.invalid);
+      if(findInvalid && state.maxPrintSize) {
+          return false
+      }
+
+      return true
+  }
 };
 
 const actions = {
@@ -208,6 +216,15 @@ const mutations = {
         state.maxPrintSize = sizes[0]
     },
     [CONSTRUCTOR_SET_LOADING]: (state, isLoading) => state.isLoading = isLoading,
+    [CONSTRUCTOR_SET_SIDE_INVALID]: (state, side) => {
+        let sides = state.base.sides.slice();
+        sides.forEach(item => {
+            if(item.id == side.id) {
+                item.invalid = side.invalid
+            }
+        })
+        state.base.sides = sides;
+    }
 };
 
 export default {

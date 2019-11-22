@@ -1,7 +1,10 @@
 <template>
   <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
-      <div class="sides__item d-flex flex-column" :class="{active: side.id == active() }">
+      <div
+        class="sides__item d-flex flex-column"
+        :class="{active: side.id == active(), invalid: side.invalid && maxPrintSize }"
+      >
         <svg :viewBox="'0 0 500 500'" width="500" height="500">
           <defs>
             <mask id="mainMask" v-html="side.area.svg_area" maskUnits="userSpaceOnUse" />
@@ -93,7 +96,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["side", "renderSides", "base"])
+    ...mapGetters(["side", "renderSides", "base", "maxPrintSize"])
   },
   watch: {
     renderSides: function(val) {
@@ -160,6 +163,9 @@ export default {
     &.active {
       border: 1px solid #ebebeb;
       opacity: 1;
+    }
+    &.invalid {
+      border: 1px solid red;
     }
     svg {
       width: 100%;

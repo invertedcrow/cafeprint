@@ -3,6 +3,9 @@
     :style="{width: `${scaleWidth}%`, marginLeft: `${scaleMargin}%`}"
     class="main d-flex justify-content-center"
   >
+    <div v-if="!isValid" class="main__alert-message">
+        Размер принта привышает А2. Выберте изделие с полной запечаткой, или уменьшите область печати
+    </div>
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
@@ -176,7 +179,7 @@
             </g>
           </g>
           <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
-            <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)">
+            <g v-for="(item, index) in sideItems" :key="index">
               <g
                 ref="groupEls"
                 :id="'group-'+index"
@@ -252,13 +255,14 @@
                     </g>
                 </svg>
                 </svg>
-                <g v-if="selectedElement === item && !selectedLayers.length">
+                <g v-if="selectedElement === item && !selectedLayers.length || item.invalid">
                   <rect
                     :x="sideArea.x"
                     :y="sideArea.y"
                     :width="item.width"
                     :height="item.height"
                     class="ctrl-bounds"
+                    :class="{invalid: item.invalid}"
                   />
                   <g fill="#5e6a7d" font-size="12px" :transform="'translate('+sideArea.x+', '+(+sideArea.y - 5)+')'">
                     <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
@@ -358,7 +362,7 @@ import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar, API_URL} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
 import {UPDATE_ELEMENT_SIZE} from "../eventBus.type";
-import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM, CONSTRUCTOR_SET_PRINT_SIZE} from "../store/mutations.type";
+import {CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM, CONSTRUCTOR_SET_PRINT_SIZE, CONSTRUCTOR_SET_SIDE_INVALID} from "../store/mutations.type";
 const defaultProps = {
     hex: "#fff",
     a: 1
@@ -418,6 +422,22 @@ export default {
         };
     },
     watch: {
+        base: function(val) {
+          if(val) {
+            if(this.items) {
+             setTimeout(() => {
+              this.items.map(item => {
+                if(this.checkItemPosition(item).invalid) {
+                  this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: item.side, invalid: true});
+                }
+                return this.checkItemPosition(item)                
+              });
+             
+             })
+            
+            }
+          }
+        },
         size: function(val) {   
           if(this.currSize) {
              let diff = Math.min(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
@@ -489,7 +509,7 @@ export default {
         })        
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize", "color"]),
+        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize", "color", "isValid"]),
         sideItems() {        
           return this.filterBySide(this.items)
         },
@@ -583,7 +603,13 @@ export default {
             printSize = size;
           } 
         })
-        this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {printSize, sideId: this.side.id})
+       
+        if(printSize.id) {
+          this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {printSize, sideId: this.side.id});
+          this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
+        } else {
+          this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})  
+        }        
       },
       resizeAllLayers(diff) {       
           let arr = [...this.items]
@@ -792,11 +818,11 @@ export default {
                   const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.size.width;
                   const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.size.height; 
 
-                  if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
-                    return         
-                  } else if (item.width < item.drag.w + distance && this.isReachMax()) {
-                    return
-                  }
+                  // if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
+                  //   return         
+                  // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
+                  //   return
+                  // }
                    const ratio   = item.drag.h / item.drag.w;    
                    const diff_before = (item.width - 500)/2
                   
@@ -900,39 +926,47 @@ export default {
                   const isMax = this.isReachMax();
                   const all = this.allItemsParams;                 
 
-                  if((left < all.x || (left > all.x && (left + item.width > all.x + all.width))) && isMax) {
-                    return
-                  }                    
-                  if((top < all.y || (top > all.y && (top + item.height > all.y + all.height))) && isMax) {
-                    return
-                  }                  
-                  if (left < 0) {
-                      item.x -= boundLeft;
+                  // if((left < all.x || (left > all.x && (left + item.width > all.x + all.width))) && isMax) {
+                  //   return
+                  // }                    
+                  // if((top < all.y || (top > all.y && (top + item.height > all.y + all.height))) && isMax) {
+                  //   return
+                  // }   
+                  
+                  item.x = event.x - item.drag.mx + item.drag.x;
+                  item.y = event.y - item.drag.my + item.drag.y;
+                  item.y = item.y/(this.scaleWidth/100);
+                  item.x = item.x/(this.scaleWidth/100);  
+                 
+                    if (left < 0) {
+                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
+                      item.invalid = true;
                       this.lines.left = true;
-                  }
-                  if (right > edBounds.width) {
-                      item.x += edBounds.width - boundRight - 1;
+                    }
+                    if (right > edBounds.width) {
+                     this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
+                      item.invalid = true;
                       this.lines.right = true;
-                  }
-                  if (left > 0 && right < edBounds.width) {
-                      item.x = event.x - item.drag.mx + item.drag.x;
-                  }
-
-                  if (top < 0) {
-                      item.y -= boundTop;
+                    }                  
+                    if (top < 0) {
+                    this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
+                     item.invalid = true;
                       this.lines.top = true;
-                  }
-                  if (bottom > edBounds.height) {
-                      item.y += edBounds.height - boundBottom - 1;
+                    }
+                    if (bottom > edBounds.height) {
+                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
+                      item.invalid = true;
                       this.lines.bottom = bottom;
-                  }
-                  if (top > 0 && bottom < edBounds.height) {
-                      item.y = event.y - item.drag.my + item.drag.y;
-                  }
-
+                    }
+                    if (top > 0 && bottom < edBounds.height && left > 0 && right < edBounds.width || !this.maxPrintSize) {                    
+                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false})  
+                      item.invalid = false; 
+                      
+                    }
+                 
+                 
                   const centerX = (this.sideArea.width) / 2;
                   const centerY = (this.sideArea.height) / 2;
-                  // const centerY = (edBounds.height - strokeWidth)/ 2;
                   const oX = (left + right) / 2;
                   const oY = (top + bottom) / 2;
 
@@ -971,8 +1005,7 @@ export default {
                       this.lines.centerV = true;
                   }
                   
-                  item.y = item.y/(this.scaleWidth/100);
-                  item.x = item.x/(this.scaleWidth/100);                 
+                              
                   // const strokeWidth = 4;
                   // const centerX = (this.sideArea.width - strokeWidth) / 2;
                   // const centerY = (this.sideArea.height - strokeWidth) / 2;
@@ -1074,12 +1107,16 @@ export default {
                   
                     const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.size.width;
                     const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.size.height; 
-                     
-                  if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
-                    return         
-                  } else if (item.width < item.drag.w + distance && this.isReachMax()) {
+               
+                  if((item.drag.w + distance) < 1 || (item.drag.h + distance) < 1) {
                     return
                   }
+                  // if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
+                  //    this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
+                  //   return         
+                  // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
+                  //   return
+                  // }
 
                   const ratio   = item.drag.h / item.drag.w;
                   item.width    = item.drag.w + distance;
@@ -1105,15 +1142,17 @@ export default {
       },
 
       addTextField() {
-          const item = this.createTextField();        
-          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
-          this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
+          const item = this.createTextField();      
+          let checked = this.checkItemPosition(item);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, checked);
+          this.$store.commit(CONSTRUCTOR_ADD_ITEM, checked);
           eventBus.$emit(UPDATE_ELEMENT_SIZE);
       },
       addImgField(file) {
           const item = this.createImgField(file);
-          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
-          this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
+          let checked = this.checkItemPosition(item);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, checked);
+          this.$store.commit(CONSTRUCTOR_ADD_ITEM, checked);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },
       createTextField() {  
@@ -1162,6 +1201,22 @@ export default {
               spinner: true
           };
       },
+      checkItemPosition(item) {  
+        const left     = item.x;
+        const right    = item.x + item.width;
+        const top      = item.y;
+        const bottom   = item.y + item.height;         
+        if (left < 0 || right > this.sideArea.width || top < 0 || bottom > this.sideArea.height) {  
+          item.invalid = true;
+        } else {
+          item.invalid = false;
+        }
+        if(!this.maxPrintSize) {
+          item.invalid = false;
+        } 
+
+        return item  
+      },
       updateSizes() {        
         setTimeout(() => {         
             const index     = this.items.indexOf(this.selectedElement);
@@ -1171,6 +1226,7 @@ export default {
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
                   this.selectedElement.width    = maxWidth;
+                  this.selectedElement = this.checkItemPosition(this.selectedElement)
               }
         });
       },
@@ -1254,6 +1310,11 @@ var swapArrayElements = function (arr, indexA, indexB) {
 <style lang="scss" scoped>
 .main {
   transition: all 0.3s ease-out;
+  &__alert-message {
+    color: red;
+    position: absolute;
+    text-align: center;
+  }
 }
 .constructor {
   width: 100%;
@@ -1302,6 +1363,9 @@ var swapArrayElements = function (arr, indexA, indexB) {
     stroke: #a4a7ae;
     stroke-width: 1;
     stroke-linecap: round;
+    &.invalid {
+      stroke: red;
+    }
   }
 }
 </style>
