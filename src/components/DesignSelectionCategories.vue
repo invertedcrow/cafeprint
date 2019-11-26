@@ -52,7 +52,7 @@ export default {
     setActiveCategory(item) {
       item.active = item.active ? false : true;
       let arr = [];
-      console.log(this.category_ids);
+      
       if (this.category_ids) {
         arr = this.category_ids;
       }

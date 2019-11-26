@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <spinner v-if="isDesignListLoading" />
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd" v-if="list.length">
       <div class="design d-flex flex-wrap">
         <div
           class="design__item d-flex flex-column align-items-center justify-content-between"
@@ -18,6 +18,10 @@
         </div>
       </div>
     </perfect-scrollbar>
+    <div
+      v-if="!list.length && !isDesignListLoading"
+      class="h-100 w-100 d-flex flex-column justify-content-center align-items-center"
+    >Не найдено</div>
   </div>
 </template>
 

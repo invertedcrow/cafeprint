@@ -25,6 +25,10 @@
     <b-modal :id="MODALS.SIZES_READONLY" modal-class="sizes-modal md-modal" hide-footer hide-header>
       <modal-sizes :readonly="true" />
     </b-modal>
+
+    <b-modal :id="MODALS.MESSAGE" modal-class="message-modal" hide-footer hide-header>
+      <modal-message :message="message" />
+    </b-modal>
   </div>
 </template>
 
@@ -36,6 +40,7 @@ import ModalDesign from "./ModalDesign";
 import ModalUpload from "./ModalUpload";
 import ModalInfo from "./ModalInfo";
 import ModalSizes from "./ModalSizes";
+import ModalMessage from "./ModalMessage";
 
 export default {
   components: {
@@ -43,15 +48,18 @@ export default {
     ModalDesign,
     ModalUpload,
     ModalInfo,
-    ModalSizes
+    ModalSizes,
+    ModalMessage
   },
   data() {
     return {
-      MODALS
+      MODALS,
+      message: ""
     };
   },
   mounted() {
-    eventBus.$on("showModal", modalId => {
+    eventBus.$on("showModal", (modalId, message) => {
+      this.message = message ? message : "";
       this.$bvModal.show(modalId);
     });
     eventBus.$on("hideModal", modalId => {

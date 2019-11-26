@@ -51,11 +51,12 @@ const actions = {
         let list = state.state.sizesList.slice();
         if(list.length) {
             list.forEach(item => {
-                item.item_total = +prices[item.id]
+                item.item_total = +prices[item.id],
+                item.quantity = item.quantity ? item.quantity : 0;
             })            
         } else {
             list.push({item_total: +prices[0], id: 0, quantity: 1 })
-        }       
+        }   
         state.commit(PRICE_SET_SIZES_LIST, list);
         state.commit(PRICE_ARTICLE_SET, price.data[params.id]);
         state.commit(PRICE_SET_LOADING, false)

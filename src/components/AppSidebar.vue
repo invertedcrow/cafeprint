@@ -25,7 +25,7 @@
       </div>
     </template>
 
-    <div class="constructor-sidebar__btns">
+    <div class="constructor-sidebar__btns" v-if="isValid">
       <button
         v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length && items.length"
         @click="onAddToCart"
@@ -36,11 +36,11 @@
         @click.prevent="onGetPriceClicked"
         class="get-price"
       >Узнать стоимость</button>
-      <button
+      <!-- <button
         id="popover-select-side"
         class="get-price"
         v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
-      >Сохранить себе</button>
+      >Сохранить себе</button>-->
 
       <b-popover
         ref="popover"
@@ -111,7 +111,8 @@ export default {
       "color",
       "maxPrintSize",
       "userRole",
-      "items"
+      "items",
+      "isValid"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -139,7 +140,7 @@ export default {
       });
 
       if (this.activeSidebar !== Sidebar.PRICE) {
-        this.$store.commit(PRICE_RESET, "");
+        // this.$store.commit(PRICE_RESET, "");
       }
       const params = {
         id: this.base.id,
