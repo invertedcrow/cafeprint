@@ -30,7 +30,7 @@
                   >
                     <image
                       v-if="item.type=='img'"
-                      v-bind:xlink:href="imgUrl(item.url)"
+                      :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                       :height="item.height"
                       :width="item.width"
                     />

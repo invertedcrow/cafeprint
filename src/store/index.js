@@ -8,6 +8,7 @@ import design from './modules/design';
 import price from './modules/price';
 import save from './modules/save';
 import user from './modules/user';
+import blankloader from './modules/blankloader'
 import { Sidebar } from '../consts';
 
 Vue.use(Vuex);
@@ -20,7 +21,8 @@ export default new Vuex.Store({
         design,
         price,
         save,
-        user
+        user,
+        blankloader
     },
     state: {
         activeSidebar: Sidebar.PRODUCT,

@@ -214,7 +214,7 @@
 
                   <image
                     v-if="item.type=='img'"
-                    :xlink:href="imgUrl(item.url)"
+                    :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                     :x="0"
                     :y="0"
                     :height="item.height"
@@ -611,9 +611,10 @@ export default {
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})  
         }        
       },
-      resizeAllLayers(diff) {       
+      resizeAllLayers(diff) {  
           let arr = [...this.items]
           arr.forEach((item) => {             
+            console.log(item)            
               const diff_before = (item.width - 500)/2
               item.width = +item.width*diff;
               item.height = +item.height*diff;
@@ -627,7 +628,7 @@ export default {
             }
             
           });
-        
+          console.log(1111)
           this.$store.commit(CONSTRUCTOR_SET_ITEMS, arr)
       },
       onChange(val) {
@@ -651,7 +652,8 @@ export default {
           }          
       },
       resetSelected() {
-          this.items.forEach(item => item.selected = false);       
+          this.items.forEach(item => item.selected = false);  
+          console.log(2222) 
           this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
@@ -1142,6 +1144,7 @@ export default {
       },
 
       addTextField() {
+          console.log(this.items)
           const item = this.createTextField();      
           let checked = this.checkItemPosition(item);
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, checked);
@@ -1164,7 +1167,7 @@ export default {
               x: ((this.sideItems.length + 2) % 20) * 20,
               y: ((this.sideItems.length + 2) % 20) * 20,
               text: ["Your text here"],
-              width: 124,
+              width: 132,
               height: 25,
               font: "Arial",
               fontSize: 20,

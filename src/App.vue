@@ -18,7 +18,8 @@ import {
   GET_DESIGN_CATEGORIES,
   GET_DESIGN,
   GET_FONTS,
-  USER_GET_ROLE
+  USER_GET_ROLE,
+  BLANKLOAD_GET
 } from "./store/actions.type";
 import { USER_ROLE } from "./consts";
 export default {
@@ -38,7 +39,8 @@ export default {
       GET_DESIGN_CATEGORIES,
       GET_DESIGN,
       GET_FONTS,
-      USER_GET_ROLE
+      USER_GET_ROLE,
+      BLANKLOAD_GET
     ]),
     checkUserRole() {
       if (
@@ -51,7 +53,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch(GET_BASES_CATEGORIES);
-    this.$store.dispatch(GET_BASES_LIST, { limit: 10, init: true });
+    this.$store.dispatch(GET_BASES_LIST, { limit: 10, init: false });
+    if (true) {
+      this.$store.dispatch(BLANKLOAD_GET);
+    }
     this.$store.dispatch(GET_DESIGN_CATEGORIES);
     this.$store.dispatch(GET_DESIGN, {
       limit: 16,
@@ -64,6 +69,7 @@ export default {
       this.$store.dispatch(USER_GET_ROLE);
       this.checkUserRole();
     }, 300000);
+    console.log(this.$store.state);
   }
 };
 </script>
