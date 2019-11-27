@@ -3,9 +3,10 @@
     :style="{width: `${scaleWidth}%`, marginLeft: `${scaleMargin}%`}"
     class="main d-flex justify-content-center"
   >
-    <div v-if="!isValid" class="main__alert-message">
-        Размер принта привышает А2. Выберте изделие с полной запечаткой, или уменьшите область печати
-    </div>
+    <div
+      v-if="!isValid"
+      class="main__alert-message"
+    >Размер принта привышает А2. Выберте изделие с полной запечаткой, или уменьшите область печати</div>
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
@@ -28,13 +29,12 @@
         />
         <g id="maskRect" v-html="side.svg_area" />
 
-       
         <g>
-           <polygon
+          <polygon
             id="editable-area"
-            v-if="sideArea.tag == 'polygon'"          
+            v-if="sideArea.tag == 'polygon'"
             fill="none"
-            :points="sideArea.points"          
+            :points="sideArea.points"
           />
           <rect
             v-if="sideArea.tag == 'rect'"
@@ -112,7 +112,7 @@
                 vector-effect="non-scaling-stroke"
               />
             </template>
-          </g> -->
+          </g>-->
 
           <g v-if="selectedLayers.length">
             <rect
@@ -128,7 +128,13 @@
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
               >
-                <rect class="ctrl-rect" :x="sideArea.x" :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
+                <rect
+                  class="ctrl-rect"
+                  :x="sideArea.x"
+                  :y="sideArea.y"
+                  :width="tools.squaresize"
+                  :height="tools.squaresize"
+                />
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
@@ -136,8 +142,8 @@
                   height="18px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  :x="(+sideArea.x + 4)"
-                  :y="(+sideArea.y + 3)"
+                  :x="(+item.x + 4)"
+                  :y="(+item.y + 3)"
                   viewBox="0 0 76.398 76.398"
                   style="enable-background:new 0 0 76.398 76.398;"
                   xml:space="preserve"
@@ -153,7 +159,13 @@
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
               >
-                <rect class="ctrl-rect" :x="sideArea.x" :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
+                <rect
+                  class="ctrl-rect"
+                  :x="sideArea.x"
+                  :y="sideArea.y"
+                  :width="tools.squaresize"
+                  :height="tools.squaresize"
+                />
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
@@ -161,8 +173,8 @@
                   height="15px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  :x="(+sideArea.x + 5)"
-                  :y="(+sideArea.y + 5)"
+                  :x="(+item.x + 5)"
+                  :y="(+item.y + 5)"
                   viewBox="0 0 472.774 472.774"
                   xml:space="preserve"
                 >
@@ -183,16 +195,22 @@
               <g
                 ref="groupEls"
                 :id="'group-'+index"
-                :transform="'translate('+item.x+', '+item.y+') rotate('+item.rotate+' '+`${+sideArea.x + item.width/2}`+' '+`${+sideArea.y + item.height/2}`+')'"
+                :transform="item.matrix ? item.matrix : ''"
                 @mousedown="onMouseDown($event,item)"
                 @touchstart="onMouseDown($event,item)"
               >
-                <rect :x="sideArea.x" :y="sideArea.y" :width="item.width" :height="item.height" fill="transparent" />
+                <rect
+                  :x="item.x"
+                  :y="item.y"
+                  :width="item.width"
+                  :height="item.height"
+                  fill="transparent"
+                />
                 <svg
                   :height="item.height"
                   :width="item.width"
-                  :x="sideArea.x"
-                  :y="sideArea.y"
+                  :x="item.x"
+                  :y="item.y"
                   :opacity="base.layers_opacity"
                 >
                   <template v-if="item.type=='text'">
@@ -222,54 +240,74 @@
                     @load="item.spinner = false"
                   />
 
-
-                  <svg v-if="item.type=='img' && item.spinner == true" :x="(item.width/2 - 20)" :y="(item.height/2 - 20)" width="40" height="40" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    v-if="item.type=='img' && item.spinner == true"
+                    :x="(item.width/2 - 20)"
+                    :y="(item.height/2 - 20)"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 38 38"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <defs>
-                        <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
-                            <stop stop-color="#72b425" stop-opacity="0" offset="0%"/>
-                            <stop stop-color="#72b425" stop-opacity=".631" offset="63.146%"/>
-                            <stop stop-color="#72b425" offset="100%"/>
-                        </linearGradient>
+                      <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
+                        <stop stop-color="#72b425" stop-opacity="0" offset="0%" />
+                        <stop stop-color="#72b425" stop-opacity=".631" offset="63.146%" />
+                        <stop stop-color="#72b425" offset="100%" />
+                      </linearGradient>
                     </defs>
                     <g fill="none" fill-rule="evenodd">
-                        <g transform="translate(1 1)">
-                            <path d="M36 18c0-9.94-8.06-18-18-18" id="Oval-2" stroke="url(#a)" stroke-width="2">
-                                <animateTransform
-                                    attributeName="transform"
-                                    type="rotate"
-                                    from="0 18 18"
-                                    to="360 18 18"
-                                    dur="0.9s"
-                                    repeatCount="indefinite" />
-                            </path>
-                            <circle fill="#fff" cx="36" cy="18" r="1">
-                                <animateTransform
-                                    attributeName="transform"
-                                    type="rotate"
-                                    from="0 18 18"
-                                    to="360 18 18"
-                                    dur="0.9s"
-                                    repeatCount="indefinite" />
-                            </circle>
-                        </g>
+                      <g transform="translate(1 1)">
+                        <path
+                          d="M36 18c0-9.94-8.06-18-18-18"
+                          id="Oval-2"
+                          stroke="url(#a)"
+                          stroke-width="2"
+                        >
+                          <animateTransform
+                            attributeName="transform"
+                            type="rotate"
+                            from="0 18 18"
+                            to="360 18 18"
+                            dur="0.9s"
+                            repeatCount="indefinite"
+                          />
+                        </path>
+                        <circle fill="#fff" cx="36" cy="18" r="1">
+                          <animateTransform
+                            attributeName="transform"
+                            type="rotate"
+                            from="0 18 18"
+                            to="360 18 18"
+                            dur="0.9s"
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                      </g>
                     </g>
-                </svg>
+                  </svg>
                 </svg>
                 <g v-if="selectedElement === item && !selectedLayers.length || item.invalid">
                   <rect
-                    :x="sideArea.x"
-                    :y="sideArea.y"
+                    :x="item.x"
+                    :y="item.y"
                     :width="item.width"
                     :height="item.height"
                     class="ctrl-bounds"
                     :class="{invalid: item.invalid}"
                   />
-                  <g fill="#5e6a7d" font-size="12px" :transform="'translate('+sideArea.x+', '+(+sideArea.y - 5)+')'">
+                  <g
+                    fill="#5e6a7d"
+                    font-size="12px"
+                    :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
+                  >
                     <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
-                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text> -->
-                    <text v-if="item.height > 40" :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'">{{round(item.real_height)}} см</text>
+                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>-->
+                    <text
+                      v-if="item.height > 40"
+                      :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
+                    >{{round(item.real_height)}} см</text>
                     <text v-if="item.width > 37">{{round(item.real_width)}} см</text>
-                  
                   </g>
                   <g>
                     <g
@@ -277,8 +315,13 @@
                       @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
                       :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
                     >
-                      <rect class="ctrl-rect" :width="tools.squaresize" :x="sideArea.x"
-                    :y="sideArea.y" :height="tools.squaresize" />
+                      <rect
+                        class="ctrl-rect"
+                        :width="tools.squaresize"
+                        :x="item.x"
+                        :y="item.y"
+                        :height="tools.squaresize"
+                      />
                       <svg
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         class="ctrl-icon"
@@ -286,8 +329,8 @@
                         height="18px"
                         xmlns="http://www.w3.org/2000/svg"
                         version="1.1"
-                        :x="(+sideArea.x + 5)"
-                        :y="(+sideArea.y + 3)"
+                        :x="(+item.x + 5)"
+                        :y="(+item.y + 3)"
                         viewBox="0 0 76.398 76.398"
                         style="enable-background:new 0 0 76.398 76.398;"
                         xml:space="preserve"
@@ -302,8 +345,13 @@
                       @touchstart="removeActiveItem()"
                       :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'"
                     >
-                      <rect class="ctrl-rect" :x="sideArea.x"
-                    :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
+                      <rect
+                        class="ctrl-rect"
+                        :x="item.x"
+                        :y="item.y"
+                        :width="tools.squaresize"
+                        :height="tools.squaresize"
+                      />
                       <svg
                         class="ctrl-icon"
                         xmlns="http://www.w3.org/2000/svg"
@@ -311,8 +359,8 @@
                         viewBox="-18 0 511 512"
                         width="15px"
                         fill="#757575"
-                        :x="(+sideArea.x + 5)"
-                        :y="(+sideArea.y + 3)"
+                        :x="(+item.x + 5)"
+                        :y="(+item.y + 3)"
                       >
                         <path
                           d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"
@@ -325,8 +373,13 @@
                       @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
                       :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
                     >
-                      <rect class="ctrl-rect" :x="sideArea.x"
-                    :y="sideArea.y" :width="tools.squaresize" :height="tools.squaresize" />
+                      <rect
+                        class="ctrl-rect"
+                        :x="item.x"
+                        :y="item.y"
+                        :width="tools.squaresize"
+                        :height="tools.squaresize"
+                      />
                       <svg
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         class="ctrl-icon"
@@ -334,8 +387,8 @@
                         height="15px"
                         xmlns="http://www.w3.org/2000/svg"
                         version="1.1"
-                        :x="(+sideArea.x + 5)"
-                        :y="(+sideArea.y + 3)"
+                        :x="(+item.x + 5)"
+                        :y="(+item.y + 4)"
                         viewBox="0 0 472.774 472.774"
                         xml:space="preserve"
                       >
@@ -357,7 +410,7 @@
 </template>
 
 <script>
-
+import {scale, rotate, translate, compose, applyToPoint, fromString, rotateDEG, transform, toSVG } from 'transformation-matrix';
 import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar, API_URL} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
@@ -613,8 +666,7 @@ export default {
       },
       resizeAllLayers(diff) {  
           let arr = [...this.items]
-          arr.forEach((item) => {             
-            console.log(item)            
+          arr.forEach((item) => {        
               const diff_before = (item.width - 500)/2
               item.width = +item.width*diff;
               item.height = +item.height*diff;
@@ -628,7 +680,6 @@ export default {
             }
             
           });
-          console.log(1111)
           this.$store.commit(CONSTRUCTOR_SET_ITEMS, arr)
       },
       onChange(val) {
@@ -653,7 +704,7 @@ export default {
       },
       resetSelected() {
           this.items.forEach(item => item.selected = false);  
-          console.log(2222) 
+         
           this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
@@ -939,8 +990,15 @@ export default {
                   item.y = event.y - item.drag.my + item.drag.y;
                   item.y = item.y/(this.scaleWidth/100);
                   item.x = item.x/(this.scaleWidth/100);  
-                 
-                    if (left < 0) {
+                  if(item.matrix) {
+                    const matrix = item.matrix.match(/(-?\d{1,}\.?\d?){1,}/g);    
+                    item.matrix = "1,0,0,1,0,0";                  
+                    let cX = item.x + item.width/2;
+                    let cY = item.y + item.height/2;
+                    item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))
+                  }
+                  
+                    if (left < this.sideArea.x) {
                       this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
                       item.invalid = true;
                       this.lines.left = true;
@@ -950,7 +1008,7 @@ export default {
                       item.invalid = true;
                       this.lines.right = true;
                     }                  
-                    if (top < 0) {
+                    if (top < this.sideArea.y) {
                     this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
                      item.invalid = true;
                       this.lines.top = true;
@@ -960,52 +1018,52 @@ export default {
                       item.invalid = true;
                       this.lines.bottom = bottom;
                     }
-                    if (top > 0 && bottom < edBounds.height && left > 0 && right < edBounds.width || !this.maxPrintSize) {                    
+                    if (top > this.sideArea.y && bottom < edBounds.height && left > this.sideArea.x && right < edBounds.width || !this.maxPrintSize) {                    
                       this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false})  
                       item.invalid = false; 
                       
                     }
                  
                  
-                  const centerX = (this.sideArea.width) / 2;
-                  const centerY = (this.sideArea.height) / 2;
-                  const oX = (left + right) / 2;
-                  const oY = (top + bottom) / 2;
+                  // const centerX = (this.sideArea.width) / 2;
+                  // const centerY = (this.sideArea.height) / 2;
+                  // const oX = (left + right) / 2;
+                  // const oY = (top + bottom) / 2;
 
-                  // Прилипание к центральным линиям
-                  if (oY > centerY - 5 && oY < centerY + 5) {
-                      item.y = centerY - (item.height / 2);
-                      this.lines.centerH = true;
-                  }
+                  // // Прилипание к центральным линиям
+                  // if (oY > centerY - 5 && oY < centerY + 5) {
+                  //     item.y = centerY - (item.height / 2);
+                  //     this.lines.centerH = true;
+                  // }
 
-                  if (oX > centerX - 5 && oX < centerX + 5) {
-                      item.x = centerX - (item.width / 2);
-                      this.lines.centerV = true;
-                  }
+                  // if (oX > centerX - 5 && oX < centerX + 5) {
+                  //     item.x = centerX - (item.width / 2);
+                  //     this.lines.centerV = true;
+                  // }
 
-                  // Верх и горизонтальный центр
-                  if (bottom > centerY - 5 && bottom < centerY + 5) {
-                      item.y = centerY - (bottom - top) + (item.drag.y - item.drag.top);
-                      this.lines.centerH = true;
-                  }
+                  // // Верх и горизонтальный центр
+                  // if (bottom > centerY - 5 && bottom < centerY + 5) {
+                  //     item.y = centerY - (bottom - top) + (item.drag.y - item.drag.top);
+                  //     this.lines.centerH = true;
+                  // }
 
-                  // Низ и горизонтальный центр
-                  if (top > centerY - 5 && top < centerY + 5) {
-                      item.y = centerY + (bottom - top) + (item.drag.y - item.drag.bottom);
-                      this.lines.centerH = true;
-                  }
+                  // // Низ и горизонтальный центр
+                  // if (top > centerY - 5 && top < centerY + 5) {
+                  //     item.y = centerY + (bottom - top) + (item.drag.y - item.drag.bottom);
+                  //     this.lines.centerH = true;
+                  // }
 
-                  // Лево и вертикальный центр
-                  if (left > centerX - 5 && left < centerX + 5) {
-                      item.x = centerX + (right - left) + (item.drag.x - item.drag.right);
-                      this.lines.centerV = true;
-                  }
+                  // // Лево и вертикальный центр
+                  // if (left > centerX - 5 && left < centerX + 5) {
+                  //     item.x = centerX + (right - left) + (item.drag.x - item.drag.right);
+                  //     this.lines.centerV = true;
+                  // }
 
-                  // Право и вертикальный центр
-                  if (right > centerX - 5 && right < centerX + 5) {
-                      item.x = centerX - (right - left) + (item.drag.x - item.drag.left);
-                      this.lines.centerV = true;
-                  }
+                  // // Право и вертикальный центр
+                  // if (right > centerX - 5 && right < centerX + 5) {
+                  //     item.x = centerX - (right - left) + (item.drag.x - item.drag.left);
+                  //     this.lines.centerV = true;
+                  // }
                   
                               
                   // const strokeWidth = 4;
@@ -1096,9 +1154,14 @@ export default {
                   var dx = event.x - item.drag.oX,
                       dy = event.y - item.drag.oY,
                       angle = (Math.atan2(dy, dx) * (180 / Math.PI));
-
                   const newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
-                  item.rotate = newAngle % 359;                 
+                    item.rotate = newAngle % 359;                 
+                    item.matrix = "1,0,0,1,0,0";
+                      
+                    item.matrix = `matrix(${Math.cos(item.rotate)},${-Math.sin(item.rotate)},${Math.sin(item.rotate)},${Math.cos(item.rotate)},0,0)`;
+                    let cX = item.x + item.width/2;
+                    let cY = item.y + item.height/2;
+                    item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))                    
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
                   let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
@@ -1143,8 +1206,7 @@ export default {
           this.showcolors = !this.showcolors;
       },
 
-      addTextField() {
-          console.log(this.items)
+      addTextField() {        
           const item = this.createTextField();      
           let checked = this.checkItemPosition(item);
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, checked);
@@ -1209,7 +1271,7 @@ export default {
         const right    = item.x + item.width;
         const top      = item.y;
         const bottom   = item.y + item.height;         
-        if (left < 0 || right > this.sideArea.width || top < 0 || bottom > this.sideArea.height) {  
+        if (left < this.sideArea.x || right > (this.sideArea.x + this.sideArea.width) || top < this.sideArea.y || bottom > (this.sideArea.y + this.sideArea.height)) {  
           item.invalid = true;
         } else {
           item.invalid = false;

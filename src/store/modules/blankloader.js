@@ -1,11 +1,8 @@
 import Vue from "vue";
 import { BLANKLOAD_GET, GET_BASE } from '../actions.type';
-import { CONSTRUCTOR_ADD_ITEM } from '../mutations.type'
-import qs  from 'qs';
-import { MODALS, MESSAGE } from '../../consts';
-import { eventBus } from '../../main';
+import { CONSTRUCTOR_ADD_ITEM } from '../mutations.type';
 
-import { blank3 } from './mock-data/3';
+import { blank4 } from './mock-data/4';
 
 const initialState = () => ({
     sidesElems: []
@@ -22,18 +19,12 @@ const actions = {
    let base = await context.dispatch(GET_BASE, 124); 
     let blankLayers = [];
     
-    console.log('as element')
-    let element = new DOMParser().parseFromString(blank3, "text/xml");
-    console.log(element)
+    let element = new DOMParser().parseFromString(blank4, "text/xml");
     let groups = element.getElementById("containerGroupMain");
-    console.log('groups')
-    console.log(groups)  
     
     let images = groups.querySelectorAll('image');
     let texts = groups.querySelectorAll('text');
     
-    console.log('text')
-    console.log(texts)
     if(images) {
         createImageLayers(context, images)
     }
@@ -62,8 +53,8 @@ function createImageLayers(context, arr) {
         layer = {
             width: +item.getAttribute('width'),
             height: +item.getAttribute('height'),
-            x: +item.parentNode.getAttribute('x') - +edArea.getAttribute('x'),
-            y: +item.parentNode.getAttribute('y') - +edArea.getAttribute('y'), 
+            x: +item.parentNode.getAttribute('x'), //- +edArea.getAttribute('x'),
+            y: +item.parentNode.getAttribute('y'),// - +edArea.getAttribute('y'), 
             selected: false,
             spinner: true,
             type: "img",   
@@ -77,18 +68,18 @@ function createImageLayers(context, arr) {
             sideName: "Перед",
             rotate: 0,
         }
-        if(item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform').includes('matrix')) {
-            // console.log('transform')
-            // console.log(item.parentNode.parentNode.getAttribute('transform').match(/(\d){1,}/g))
+        if(item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform').includes('matrix')) {          
+            layer.matrix = item.parentNode.parentNode.getAttribute('transform');
+            const matrix = item.parentNode.parentNode.getAttribute('transform').match(/(-?\d{1,}\.?\d?){1,}/g)
+            let skewX = +matrix[1] || 0;
+            layer.rotate = Math.asin(skewX/Math.PI)*180;
         }
         let url = item.getAttribute('xlink:href')
         if(url && url.includes('base64')) {
             layer.dataUrl = item.getAttribute('xlink:href');
         } else {
             layer.url = item.getAttribute('xlink:href');
-        }
-        // console.log('created')
-        // console.log(layer);
+        }      
         context.commit(CONSTRUCTOR_ADD_ITEM, {...layer})
        
     })
@@ -96,15 +87,13 @@ function createImageLayers(context, arr) {
 
 function createTextLayers(context, arr) {
     let layer = {}
-    let edArea = document.getElementById('editable-area');
-    console.log('AREA EDIT')
-    console.log(edArea)
+    let edArea = document.getElementById('editable-area');   
     arr.forEach(item => {
         layer = {
             width: +item.parentNode.getAttribute('width'),
             height: +item.parentNode.getAttribute('height'),
-            x: +item.parentNode.getAttribute('x') - +edArea.getAttribute('x'),
-            y: +item.parentNode.getAttribute('y') - +edArea.getAttribute('y'), 
+            x: +item.parentNode.getAttribute('x'), //- +edArea.getAttribute('x'),
+            y: +item.parentNode.getAttribute('y'), //- +edArea.getAttribute('y'), 
             selected: false,
             type: "text",   
             node: null,
@@ -120,8 +109,8 @@ function createTextLayers(context, arr) {
             font: { name: item.getAttribute('font-family')},          
             color: "#000",
             bold: false, //!!!
-            italic: false, //!!!   
-            //fontSize           
+            italic: false, //!!!
+            rotate: 0,    
         }        
         if(item.children.length) {           
             Array.from(item.children).forEach(tSpan => {
@@ -130,20 +119,19 @@ function createTextLayers(context, arr) {
             layer.fontSize = layer.height / layer.text.length;
         }
        
-        if(item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform').includes('matrix')) {
-            console.log('transform here ', layer.text);
-            console.log(item.parentNode.parentNode.getAttribute('transform'))
+        if(item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform').includes('matrix')) {            
+            layer.matrix = item.parentNode.parentNode.getAttribute('transform');
             const matrix = item.parentNode.parentNode.getAttribute('transform').match(/(-?\d{1,}\.?\d?){1,}/g)
 
             let skewX = +matrix[1] || 0;
-            let x = layer.x;
-            let y = layer.y;
-            layer.rotate = Math.asin(skewX/Math.PI)*180;              
-            layer.width *= +matrix[0]
-            layer.x = item.parentNode.getAttribute('x')*+matrix[0] - item.parentNode.getAttribute('x')*+matrix[1] + +matrix[4] - +edArea.getAttribute('x');
-            layer.y = item.parentNode.getAttribute('y')*+matrix[3] - item.parentNode.getAttribute('y')*+matrix[2] + +matrix[5] - +edArea.getAttribute('y'); 
+            layer.rotate = Math.asin(skewX/Math.PI)*180;
+            // let x = layer.x;
+            // let y = layer.y;
+                          
+            // layer.width *= +matrix[0]
+            // layer.x = item.parentNode.getAttribute('x')*+matrix[0] - item.parentNode.getAttribute('x')*+matrix[1] + +matrix[4] - +edArea.getAttribute('x');
+            // layer.y = item.parentNode.getAttribute('y')*+matrix[3] - item.parentNode.getAttribute('y')*+matrix[2] + +matrix[5] - +edArea.getAttribute('y'); 
         }
-        console.log(layer)
         context.commit(CONSTRUCTOR_ADD_ITEM, {...layer})
        
     })
