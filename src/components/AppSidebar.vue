@@ -41,7 +41,11 @@
         class="get-price"
         v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
       >Сохранить себе</button>-->
-
+      <button
+        id="popover-select-side"
+        class="get-price"
+        v-show="userRole == USER_ROLE.admin || userRole == USER_ROLE.printer && items.length && editProduct"
+      >Сохранить</button>
       <b-popover
         ref="popover"
         custom-class="sides-popover"
@@ -73,7 +77,8 @@ import { mapGetters, mapActions } from "vuex";
 import {
   GET_PRICE,
   SAVE_SIDES_ELEMS_SAVE,
-  SAVE_TO_CART
+  SAVE_TO_CART,
+  SAVE_CHANGES
 } from "../store/actions.type";
 import {
   PRICE_SET_ITEM,
@@ -112,14 +117,15 @@ export default {
       "maxPrintSize",
       "userRole",
       "items",
-      "isValid"
+      "isValid",
+      "editProduct"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
     }
   },
   methods: {
-    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
+    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART, SAVE_CHANGES]),
     onGetPriceClicked() {
       let items = [];
       this.baseSizes.forEach(size => {
@@ -162,13 +168,17 @@ export default {
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
     onSave(item) {
-      const params = {
-        mainblankid: item.mainblank_id,
-        preview_side_id: item.id,
-        sides: this.sidesElems
-      };
-      this.$refs.popover.$emit("close");
-      this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
+      if (this.editProduct) {
+        this.onUpdatePrint(item);
+      } else {
+        const params = {
+          mainblankid: item.mainblank_id,
+          preview_side_id: item.id,
+          sides: this.sidesElems
+        };
+        this.$refs.popover.$emit("close");
+        this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
+      }
     },
     onAddToCart() {
       const items = [];
@@ -197,6 +207,48 @@ export default {
         }
       });
       this.$store.dispatch(SAVE_TO_CART, { items });
+    },
+    onUpdatePrint(item) {
+      let sides = [];
+      console.log(item);
+      console.log(this.sidesElems);
+      console.log(this.base.sides);
+      this.base.sides.forEach(side => {
+        let svgSide = this.sidesElems.find(item => item.sideId == side.id);
+
+        // if (this.maxPrintSize) {
+        if (side.items.length && side.printSize) {
+          sides.push({
+            svg: svgSide.svg,
+            sizePrint: side.printSize.id,
+            size: this.size.id,
+            sideId: side.id
+          });
+        }
+        // } else {
+        //   sides.push({ side_id: item.id });
+        // }
+      });
+
+      const params = {
+        data: {
+          mainblankid: item.mainblank_id,
+          isConstructor: true,
+          colormainblank_id: this.color.id,
+          size_id: this.size.id,
+          sides: this.sidesElems,
+          previewSideId: item.id,
+          productid: this.editProduct,
+          // sizePrint: this.printSize.id,
+          // size: this.size.id,
+
+          preview: "",
+          second_preview: null
+        },
+        selected_color: 85
+      };
+
+      this.$store.dispatch(SAVE_CHANGES, params);
     }
   }
 };

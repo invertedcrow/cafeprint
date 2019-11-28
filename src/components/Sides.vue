@@ -18,9 +18,7 @@
                 :key="index"
                 mask="url(#mainMask)"
               >
-                <g
-                  :transform="'translate('+side.area.x+', '+side.area.y+') rotate('+item.rotate+' '+`${+item.x + item.width/2}`+' '+`${+item.y + item.height/2}`+')'"
-                >
+                <g :transform="item.matrix ? item.matrix : ''">
                   <svg
                     :height="item.height"
                     :width="item.width"
@@ -38,7 +36,7 @@
                       :height="item.height"
                       :width="item.width"
                       :x="0"
-                      :y="item.height/2"
+                      :y="item.height"
                       v-bind:key="index"
                       v-for="(text, index) in item.text"
                       :dy="index + 'em'"

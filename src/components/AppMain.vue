@@ -657,7 +657,7 @@ export default {
           } 
         })
        
-        if(printSize.id) {
+        if(printSize.id && !this.checkItemPosition(this.allItemsParams).invalid) {
           this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {printSize, sideId: this.side.id});
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
         } else {
@@ -997,18 +997,18 @@ export default {
                     let cY = item.y + item.height/2;
                     item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))
                   }
-                  
-                    if (left < this.sideArea.x) {
+                                    
+                    if (left < 0) {
                       this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
                       item.invalid = true;
-                      this.lines.left = true;
+                      this.lines.left = true;                     
                     }
                     if (right > edBounds.width) {
                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
                       item.invalid = true;
                       this.lines.right = true;
                     }                  
-                    if (top < this.sideArea.y) {
+                    if (top < 0) {
                     this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
                      item.invalid = true;
                       this.lines.top = true;
@@ -1018,7 +1018,7 @@ export default {
                       item.invalid = true;
                       this.lines.bottom = bottom;
                     }
-                    if (top > this.sideArea.y && bottom < edBounds.height && left > this.sideArea.x && right < edBounds.width || !this.maxPrintSize) {                    
+                    if (top > 0 && bottom < edBounds.height && left > 0 && right < edBounds.width || !this.maxPrintSize) {                    
                       this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false})  
                       item.invalid = false; 
                       
@@ -1271,7 +1271,7 @@ export default {
         const right    = item.x + item.width;
         const top      = item.y;
         const bottom   = item.y + item.height;         
-        if (left < this.sideArea.x || right > (this.sideArea.x + this.sideArea.width) || top < this.sideArea.y || bottom > (this.sideArea.y + this.sideArea.height)) {  
+        if (left < +this.sideArea.x || right > (+this.sideArea.x + +this.sideArea.width) || top < +this.sideArea.y || bottom > (+this.sideArea.y + +this.sideArea.height)) {  
           item.invalid = true;
         } else {
           item.invalid = false;
@@ -1282,7 +1282,8 @@ export default {
 
         return item  
       },
-      updateSizes() {        
+      updateSizes() {       
+        console.log('update') 
         setTimeout(() => {         
             const index     = this.items.indexOf(this.selectedElement);
             const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           

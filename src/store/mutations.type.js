@@ -14,6 +14,7 @@ export const CONSTRUCTOR_SET_SIZE 			= 'setSelectedSize';
 export const CONSTRUCTOR_SET_PRINT_SIZE 	= 'setPrintSize';
 export const CONSTRUCTOR_SET_LOADING        = 'setAppStateLoading';
 export const CONSTRUCTOR_SET_SIDE_INVALID   = 'setInvalidSide';
+export const CONSTRUCTOR_SET_EDIT_PRODUCT   = 'setEditProduct';
 export const DESIGN_SET_CATEGORIES          = 'setCategories';
 export const DESIGN_SET_ACTIVE_CATEGORIES   = 'setActiveCategory';
 export const DESIGN_SET_LIST                = 'setDesignList';

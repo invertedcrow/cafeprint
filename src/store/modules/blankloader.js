@@ -1,6 +1,15 @@
 import Vue from "vue";
 import { BLANKLOAD_GET, GET_BASE } from '../actions.type';
-import { CONSTRUCTOR_ADD_ITEM } from '../mutations.type';
+import { 
+    CONSTRUCTOR_ADD_ITEM, 
+    CONSTRUCTOR_SET_LOADING, 
+    CONSTRUCTOR_SET_BASE, 
+    CONSTRUCTOR_SET_SELECTED_SIDE, 
+    CONSTRUCTOR_SET_COLOR, 
+    CONSTRUCTOR_SET_SIZE, 
+    PRICE_SET_SIZES_LIST, 
+    CONSTRUCTOR_SET_MAX_PRINT_SIZE,
+    CONSTRUCTOR_SET_EDIT_PRODUCT } from '../mutations.type';
 
 import { blank4 } from './mock-data/4';
 
@@ -15,46 +24,69 @@ const getters = {
 }
 
 const actions = {
-   [BLANKLOAD_GET]: async (context, params) => {
-   let base = await context.dispatch(GET_BASE, 124); 
+   [BLANKLOAD_GET]: async (context, id) => {
+    const response = await Vue.axios.get(`constructor-new/clip-arts/products/${id}`)
     let blankLayers = [];
-    
-    let element = new DOMParser().parseFromString(blank4, "text/xml");
-    let groups = element.getElementById("containerGroupMain");
-    
-    let images = groups.querySelectorAll('image');
-    let texts = groups.querySelectorAll('text');
-    
-    if(images) {
-        createImageLayers(context, images)
-    }
+    const base = response.data.mainBlank;
+    const prints = response.data.prints;
+    context.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, id);
+    context.commit(CONSTRUCTOR_SET_BASE, base);
+    context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.sides[0]);
+    context.commit(CONSTRUCTOR_SET_COLOR, base.colors[0]);
    
-    if(texts) {
-        createTextLayers(context, texts)
+    context.commit(PRICE_SET_SIZES_LIST, base.sizes);   
+    context.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.printSizes);
+    let sizeId = Object.values(prints)[0].size_id;
+
+    let size = base.sizes.find(item => item.id == sizeId);
+    if(size) {
+        context.commit(CONSTRUCTOR_SET_SIZE, size)
+    } else {
+        state.commit(CONSTRUCTOR_SET_SIZE, base.sizes[0])
     }
-    
+
+    for(let side in prints) {      
+        let svg = await Vue.axios.get(prints[side].url_zip);    
+        renderBase(context, svg.data, side);
+    }  
+
+    context.commit(CONSTRUCTOR_SET_LOADING, false);
     
    },
 }
 
 const mutations = {
-    //[SAVE_SET_SIDES_LIST]: (state, sides) => state.sidesElems = sides,
 }
 
 export default {
     state, getters, actions, mutations
 }
 
+function renderBase(context, svg, side) {
+    let element = new DOMParser().parseFromString(svg, "text/xml");
+    let groups = element.getElementById("containerGroupMain");    
+    let images = groups.querySelectorAll('image');
+    let texts = groups.querySelectorAll('text');
+    
+    if(images) {
+        createImageLayers(context, images, side)
+    }
+   
+    if(texts) {
+        createTextLayers(context, texts, side)
+    }
+   
+}
 
-function createImageLayers(context, arr) {
+function createImageLayers(context, arr, side) {
     let layer = {}
     let edArea = document.getElementById('editable-area');
     arr.forEach(item => {
         layer = {
             width: +item.getAttribute('width'),
             height: +item.getAttribute('height'),
-            x: +item.parentNode.getAttribute('x'), //- +edArea.getAttribute('x'),
-            y: +item.parentNode.getAttribute('y'),// - +edArea.getAttribute('y'), 
+            x: +item.parentNode.getAttribute('x'), 
+            y: +item.parentNode.getAttribute('y'),
             selected: false,
             spinner: true,
             type: "img",   
@@ -64,7 +96,7 @@ function createImageLayers(context, arr) {
                 x: 0,
                 y: 0
             },
-            side: '61', ///static
+            side: side,
             sideName: "Перед",
             rotate: 0,
         }
@@ -85,15 +117,15 @@ function createImageLayers(context, arr) {
     })
 }
 
-function createTextLayers(context, arr) {
+function createTextLayers(context, arr, side) {
     let layer = {}
     let edArea = document.getElementById('editable-area');   
     arr.forEach(item => {
         layer = {
             width: +item.parentNode.getAttribute('width'),
             height: +item.parentNode.getAttribute('height'),
-            x: +item.parentNode.getAttribute('x'), //- +edArea.getAttribute('x'),
-            y: +item.parentNode.getAttribute('y'), //- +edArea.getAttribute('y'), 
+            x: +item.parentNode.getAttribute('x'), 
+            y: +item.parentNode.getAttribute('y'),
             selected: false,
             type: "text",   
             node: null,
@@ -102,14 +134,14 @@ function createTextLayers(context, arr) {
                 x: 0,
                 y: 0
             },
-            side: '61', ///static
+            side: side,
             sideName: "Перед",
-            textAnchor: "start", //!!!             
+            textAnchor: "start",            
             text: [],       
             font: { name: item.getAttribute('font-family')},          
-            color: "#000",
-            bold: false, //!!!
-            italic: false, //!!!
+            color: item.getAttribute('fill') || '#000',
+            bold: item.getAttribute('font-style') == 'bold' ? true : false, 
+            italic: item.getAttribute('font-style') == 'italic' ? true : false, 
             rotate: 0,    
         }        
         if(item.children.length) {           

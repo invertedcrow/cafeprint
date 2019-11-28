@@ -101,7 +101,7 @@
               </div>
               <div v-if="layer.type === 'img'" class="d-flex justify-content-start">
                 <div class="sidebar-layers__side-layer__icon">
-                  <img :src="layer.url" />
+                  <img :src="layer.url ? layer.url : layer.dataUrl" />
                 </div>
                 <div class="sidebar-layers__side-layer__text">{{layer.name}}</div>
               </div>

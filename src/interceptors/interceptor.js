@@ -7,6 +7,8 @@ export default function setup() {
   axios.defaults.headers.common['Authorization'] = "Basic bWZlc3Q6bWZlc3Rvd25lcg==";
   axios.interceptors.request.use(
     function(config) {
+      const tokenElement = document.querySelector('[name="csrf-token"]');
+      const token = tokenElement.getAttribute("content");
 
       const username = 'mfest';
       const password = 'mfestowner';
@@ -19,7 +21,12 @@ export default function setup() {
       //   username: username,
       //   password: password
       // }
-      config.url = `${API_URL}${config.url}`;     
+      config.url = `${API_URL}${config.url}`;   
+
+      config.data = {
+        ...config.data,
+        _csrf: token
+      };
       return config;
     },
     function(err) {

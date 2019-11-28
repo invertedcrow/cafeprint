@@ -3,7 +3,8 @@ import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
-    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
+    CONSTRUCTOR_SET_EDIT_PRODUCT
 } from '../mutations.type';
 
 import {
@@ -53,7 +54,8 @@ const initialState = () => ({
     fonts: [],
     maxPrintSize: null,
     isLoading: true,
-    base:  initialBase()
+    base:  initialBase(),
+    editProduct: null
 });
 
 export const state = initialState;
@@ -108,7 +110,8 @@ const getters = {
       }
 
       return true
-  }
+  },
+  editProduct: (state) => state.editProduct,
 };
 
 const actions = {
@@ -224,7 +227,8 @@ const mutations = {
             }
         })
         state.base.sides = sides;
-    }
+    },
+    [CONSTRUCTOR_SET_EDIT_PRODUCT]: (state, product) => state.editProduct = product,
 };
 
 export default {

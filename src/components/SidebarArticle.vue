@@ -56,7 +56,7 @@
               </div>
               <div v-if="el.type === 'img'" class="d-flex justify-content-start">
                 <div class="sidebar-article__prints-list__icon">
-                  <img :src="el.url" />
+                  <img :src="el.url ? el.url : el.dataUrl" />
                 </div>
                 <div class="sidebar-article__prints-list__text">{{el.name}}</div>
               </div>

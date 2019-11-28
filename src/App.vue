@@ -52,11 +52,17 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch(GET_BASES_CATEGORIES);
-    this.$store.dispatch(GET_BASES_LIST, { limit: 10, init: false });
-    if (true) {
-      this.$store.dispatch(BLANKLOAD_GET);
+    const url = new URL(window.location);
+    const id = url.searchParams.get("product");
+    let init = true;
+
+    if (id) {
+      this.$store.dispatch(BLANKLOAD_GET, id);
+      init = false;
     }
+    this.$store.dispatch(GET_BASES_CATEGORIES);
+    this.$store.dispatch(GET_BASES_LIST, { limit: 10, init });
+
     this.$store.dispatch(GET_DESIGN_CATEGORIES);
     this.$store.dispatch(GET_DESIGN, {
       limit: 16,
@@ -69,7 +75,6 @@ export default {
       this.$store.dispatch(USER_GET_ROLE);
       this.checkUserRole();
     }, 300000);
-    console.log(this.$store.state);
   }
 };
 </script>

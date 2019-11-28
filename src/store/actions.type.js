@@ -12,6 +12,7 @@ export const GET_PRICE             = "getPrice";
 
 export const SAVE_SIDES_ELEMS_SAVE = "saveToProfile";
 export const SAVE_TO_CART          = "saveToCart";
+export const SAVE_CHANGES          = "updatePrint";
 
 export const USER_GET_ROLE         = "getUserRole";
 
