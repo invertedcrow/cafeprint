@@ -118,7 +118,8 @@ export default {
       "userRole",
       "items",
       "isValid",
-      "editProduct"
+      "editProduct",
+      "features"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -148,10 +149,12 @@ export default {
       if (this.activeSidebar !== Sidebar.PRICE) {
         // this.$store.commit(PRICE_RESET, "");
       }
+
       const params = {
         id: this.base.id,
         color_id: this.color.id,
         full: this.maxPrintSize ? 0 : 1,
+        features: this.features,
         items
       };
       if (!this.size) {
@@ -201,18 +204,16 @@ export default {
             is_service: 0,
             svg: this.sidesElems,
             print_sizes,
-            feature: this.base.features
+            features: this.features
           };
           items.push(item);
         }
       });
+      console.log(items);
       this.$store.dispatch(SAVE_TO_CART, { items });
     },
     onUpdatePrint(item) {
       let sides = [];
-      console.log(item);
-      console.log(this.sidesElems);
-      console.log(this.base.sides);
       this.base.sides.forEach(side => {
         let svgSide = this.sidesElems.find(item => item.sideId == side.id);
 
@@ -256,7 +257,7 @@ export default {
 
 <style lang="scss" scoped>
 .constructor-sidebar {
-  margin-top: 50px;
+  //margin-top: 50px;
   &__btns {
     margin: -5px;
   }

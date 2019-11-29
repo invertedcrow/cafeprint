@@ -304,10 +304,10 @@
                     <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
                     <text v-if="rotation">{{round(item.rotate)}}&#176;</text>-->
                     <text
-                      v-if="item.height > 40"
+                      v-if="item.height > 40 && item.real_height"
                       :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
                     >{{round(item.real_height)}} см</text>
-                    <text v-if="item.width > 37">{{round(item.real_width)}} см</text>
+                    <text v-if="item.width > 37 && item.real_width">{{round(item.real_width)}} см</text>
                   </g>
                   <g>
                     <g
@@ -491,8 +491,8 @@ export default {
             }
           }
         },
-        size: function(val) {   
-          if(this.currSize) {
+        size: function(val) {  
+          if(this.currSize && val) {
              let diff = Math.min(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
             if(+this.currSize.width > +val.width) {
                 diff = Math.max(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
@@ -638,28 +638,36 @@ export default {
             height: Math.max(...arrH),
           };
         
-        items.forEach((item, i) => {  
-            item.real_width = item.width/this.sideArea.height*this.size.height;
+        items.forEach((item, i) => { 
+          console.log() 
+          if(this.size) {
+             item.real_width = item.width/this.sideArea.height*this.size.height;
             item.real_height = item.height/this.sideArea.height*this.size.height;
             if(item.x > this.allItemsParams.x && (item.x - this.allItemsParams.x + item.width) > this.allItemsParams.width) {
                 this.allItemsParams.width = +item.x - +this.allItemsParams.x + +item.width              
             }                 
             if(item.y > this.allItemsParams.y && (item.y - this.allItemsParams.y + item.height) > this.allItemsParams.height) {
                 this.allItemsParams.height = item.y - this.allItemsParams.y + item.height                }
+          }
+           
         })   
-      
-       this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
-       this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
+       if(this.size) {
+          this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
+          this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
+       }
+       
         
         printsSizes.forEach((size) => {
           if( this.allItemsParams.realItemsHeight <= size.real_height &&   this.allItemsParams.realItemsWidth <= size.real_width) {
             printSize = size;
           } 
         })
-       
+
         if(printSize.id && !this.checkItemPosition(this.allItemsParams).invalid) {
           this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {printSize, sideId: this.side.id});
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
+        } else if(!this.checkItemPosition(this.allItemsParams).invalid) {
+            this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
         } else {
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})  
         }        
@@ -976,8 +984,8 @@ export default {
                   const boundRight  = elBounds.right - edBounds.left;
                   const boundTop    = elBounds.top - edBounds.top;
                   const boundBottom = elBounds.bottom - edBounds.top;                 
-                  const isMax = this.isReachMax();
-                  const all = this.allItemsParams;                 
+                 // const isMax = this.isReachMax();
+                 // const all = this.allItemsParams;                 
 
                   // if((left < all.x || (left > all.x && (left + item.width > all.x + all.width))) && isMax) {
                   //   return
@@ -991,17 +999,17 @@ export default {
                   item.y = item.y/(this.scaleWidth/100);
                   item.x = item.x/(this.scaleWidth/100);  
                   if(item.matrix) {
-                    const matrix = item.matrix.match(/(-?\d{1,}\.?\d?){1,}/g);    
+                    //const matrix = item.matrix.match(/(-?\d{1,}\.?\d?){1,}/g);    
                     item.matrix = "1,0,0,1,0,0";                  
                     let cX = item.x + item.width/2;
                     let cY = item.y + item.height/2;
                     item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))
                   }
-                                    
+
                     if (left < 0) {
                       this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
                       item.invalid = true;
-                      this.lines.left = true;                     
+                      this.lines.left = true;    
                     }
                     if (right > edBounds.width) {
                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
@@ -1169,9 +1177,10 @@ export default {
 
                   // TODO Не знаю почему 1.95, но оно неплохо работает
                   distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
-                  
+                  if(this.size) {
                     const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.size.width;
                     const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.size.height; 
+                  }                    
                
                   if((item.drag.w + distance) < 1 || (item.drag.h + distance) < 1) {
                     return
@@ -1226,8 +1235,8 @@ export default {
               sideName: this.side.name,
               type: "text",
               textAnchor: "start",
-              x: ((this.sideItems.length + 2) % 20) * 20,
-              y: ((this.sideItems.length + 2) % 20) * 20,
+              x: 150 + ((this.sideItems.length + 2) % 20) * 10,
+              y: 150 + ((this.sideItems.length + 2) % 20) * 10,
               text: ["Your text here"],
               width: 132,
               height: 25,
@@ -1250,8 +1259,8 @@ export default {
               side: this.side.id,
               sideName: this.side.name,
               type: "img",            
-              x: ((this.sideItems.length + 2) % 20) * 20,
-              y: ((this.sideItems.length + 2) % 20) * 20,             
+              x: 150 + ((this.sideItems.length + 2) % 20) * 10,
+              y: 150 + ((this.sideItems.length + 2) % 20) * 10,           
               width: file.width && file.width/file.height < 1 ? file.width/file.height * 150 : 150,
               url: file.url,
               name: file.name,
@@ -1282,8 +1291,7 @@ export default {
 
         return item  
       },
-      updateSizes() {       
-        console.log('update') 
+      updateSizes() {        
         setTimeout(() => {         
             const index     = this.items.indexOf(this.selectedElement);
             const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           

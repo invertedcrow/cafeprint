@@ -50,7 +50,7 @@
     <hr class="sidebar-product__line-colors-bottom" />
 
     <div class="sidebar-product__modal-controls">
-      <div>
+      <div v-if="base.sizes && base.sizes.length">
         <a @click="showSizesModal()">
           <svg
             width="20"
@@ -71,6 +71,7 @@
           <span>Размеры основы</span>
         </a>
       </div>
+      <features v-if="base.features && base.features.length" />
       <hr />
 
       <div class="sidebar-product__layers">
@@ -104,6 +105,7 @@
 
 <script>
 import Color from "./Color";
+import Features from "./Features";
 import { Sidebar, MODALS } from "../consts";
 import { eventBus } from "../main";
 import { mapGetters, mapMutations } from "vuex";
@@ -113,7 +115,8 @@ import {
 } from "../store/mutations.type";
 export default {
   components: {
-    Color
+    Color,
+    Features
   },
   computed: {
     ...mapGetters(["base", "color", "size", "printSize", "side"])

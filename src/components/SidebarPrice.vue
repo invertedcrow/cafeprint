@@ -142,7 +142,7 @@ export default {
 <style lang="scss" scoped>
 .sidebar-price {
   font-size: 14px;
-  height: 450px;
+  height: 500px;
   position: relative;
   a {
     font-size: 16px;

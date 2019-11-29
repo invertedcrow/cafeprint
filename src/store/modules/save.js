@@ -31,7 +31,9 @@ const actions = {
     },
     [SAVE_CHANGES]: async (state, params) => {
        // const encParams = qs.stringify(params);
-        const response =  await Vue.axios.put('/constructor-new/save/product', params);     
+        const tokenElement = document.querySelector('[name="csrf-token"]');
+        const _csrf = tokenElement.getAttribute("content");
+        const response =  await Vue.axios.put('/constructor-new/save/product', {data: params, _csrf });     
         if(response.data) {
             eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
         }   
