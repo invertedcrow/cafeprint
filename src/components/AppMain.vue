@@ -301,13 +301,13 @@
                     font-size="12px"
                     :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
                   >
-                    <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
-                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>-->
+                     <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
+                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
                     <text
-                      v-if="item.height > 40 && item.real_height"
+                      v-if="item.height > 40 && item.real_height && !rotation"
                       :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
                     >{{round(item.real_height)}} см</text>
-                    <text v-if="item.width > 37 && item.real_width">{{round(item.real_width)}} см</text>
+                    <text v-if="item.width > 37 && item.real_width && !rotation">{{round(item.real_width)}} см</text>
                   </g>
                   <g>
                     <g
@@ -639,7 +639,6 @@ export default {
           };
         
         items.forEach((item, i) => { 
-          console.log() 
           if(this.size) {
              item.real_width = item.width/this.sideArea.height*this.size.height;
             item.real_height = item.height/this.sideArea.height*this.size.height;
@@ -910,12 +909,11 @@ export default {
 
           const edBounds              = this.editableAreaEl.getBoundingClientRect();
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();
-
           const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
 
           item.drag = {
-              x:        item.x,
-              y:        item.y,
+              x:        !handle ? item.x + item.x*(this.scaleWidth/100 - 1) : item.x,
+              y:        !handle ? item.y + item.y*(this.scaleWidth/100 - 1) : item.y,
               mx:       eDown.touches ? eDown.touches[0].clientX : eDown.x,
               my:       eDown.touches ? eDown.touches[0].clientY :eDown.y,
               w:        item.width,
@@ -994,10 +992,10 @@ export default {
                   //   return
                   // }   
                   
-                  item.x = event.x - item.drag.mx + item.drag.x;
-                  item.y = event.y - item.drag.my + item.drag.y;
-                  item.y = item.y/(this.scaleWidth/100);
-                  item.x = item.x/(this.scaleWidth/100);  
+                  item.x = event.x - item.drag.mx + item.drag.x - item.x*(this.scaleWidth/100 - 1);
+                  item.y = event.y - item.drag.my + item.drag.y - item.y*(this.scaleWidth/100 - 1);
+                  // item.y = item.y/(this.scaleWidth/100);
+                  // item.x = item.x/(this.scaleWidth/100);  
                   if(item.matrix) {
                     //const matrix = item.matrix.match(/(-?\d{1,}\.?\d?){1,}/g);    
                     item.matrix = "1,0,0,1,0,0";                  
@@ -1292,7 +1290,8 @@ export default {
         return item  
       },
       updateSizes() {        
-        setTimeout(() => {         
+        setTimeout(() => {   
+          console.log('update size txt')      
             const index     = this.items.indexOf(this.selectedElement);
             const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
@@ -1361,7 +1360,7 @@ export default {
              this.scaleMargin += 10
            }
         } else {
-            if(this.scaleWidth < 200) {
+            if(this.scaleWidth < 180) {
              this.scaleWidth += 20;
               this.scaleMargin -= 10
            }
