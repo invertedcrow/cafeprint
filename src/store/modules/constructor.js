@@ -157,6 +157,7 @@ const actions = {
         } else {
             state.commit(CONSTRUCTOR_RESET_FEATURES);
         }
+        cleanUri();
         state.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, null)
         state.commit(CONSTRUCTOR_SET_LOADING, false)
        // console.log(state.state)
@@ -265,3 +266,11 @@ export default {
     actions,
     mutations
 };
+
+function cleanUri() {
+    const uri = window.location.toString();
+    if (uri.indexOf("?") > 0) {
+        const clean_uri = uri.substring(0, uri.indexOf("?"));
+        window.history.replaceState({}, document.title, clean_uri);
+    }
+}
