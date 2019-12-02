@@ -190,7 +190,7 @@ export default {
       sides.forEach(side => {
         side.svg = side.svg
           .replace(/<defs.*defs>/, "")
-          .replace(/mask=".*\)"/, "")
+          .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
       });
       const params = {
@@ -231,17 +231,20 @@ export default {
     },
     onUpdatePrint(item) {
       let sides = [];
+
       this.base.sides.forEach(side => {
-        let svgSide = this.sidesElems.find(item => item.sideId == side.id);
+        let svgSide = this.sidesElems.find(
+          itemSide => itemSide.sideId == side.id
+        );
+
         let svg = svgSide.svg
           .replace(/<defs.*defs>/, "")
-          .replace(/mask=".*\)"/, "")
+          .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
-
         if (side.items.length && side.printSize) {
           sides.push({
             svg: svg,
-            // sizePrint: side.printSize.id,
+            print_size_id: side.printSize.id,
             //  size: this.size.id,
             sideId: side.id,
             isModify: true
