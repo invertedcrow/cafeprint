@@ -36,15 +36,15 @@
         @click.prevent="onGetPriceClicked"
         class="get-price"
       >Узнать стоимость</button>
-      <!-- <button
-        id="popover-select-side"
-        class="get-price"
-        v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
-      >Сохранить себе</button>-->
       <button
         id="popover-select-side"
         class="get-price"
-        v-show="userRole == USER_ROLE.admin || userRole == USER_ROLE.printer && items.length && editProduct"
+        v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
+      >Сохранить себе</button>
+      <button
+        id="popover-select-side-admin"
+        class="get-price"
+        v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct"
       >Сохранить</button>
       <b-popover
         ref="popover"
@@ -59,6 +59,21 @@
           v-for="(item, index) in renderSides"
           :key="index"
           @click="onSave(item)"
+        >{{item.name}}</div>
+      </b-popover>
+      <b-popover
+        ref="popover"
+        custom-class="sides-popover"
+        placement="top"
+        target="popover-select-side-admin"
+        triggers="focus"
+        title="Выберите сторону которую отображать на превью"
+      >
+        <div
+          class="baseBtn secondary"
+          v-for="(item, index) in renderSides"
+          :key="index"
+          @click="onUpdatePrint(item)"
         >{{item.name}}</div>
       </b-popover>
     </div>
@@ -171,17 +186,20 @@ export default {
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
     onSave(item) {
-      if (this.editProduct) {
-        this.onUpdatePrint(item);
-      } else {
-        const params = {
-          mainblankid: item.mainblank_id,
-          preview_side_id: item.id,
-          sides: this.sidesElems
-        };
-        this.$refs.popover.$emit("close");
-        this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
-      }
+      let sides = this.sidesElems.slice();
+      sides.forEach(side => {
+        side.svg = side.svg
+          .replace(/<defs.*defs>/, "")
+          .replace(/mask=".*\)"/, "")
+          .replace(/\<image.*?<\/image>/, "");
+      });
+      const params = {
+        mainblankid: item.mainblank_id,
+        preview_side_id: item.id,
+        sides
+      };
+      this.$refs.popover.$emit("close");
+      this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
     },
     onAddToCart() {
       const items = [];
@@ -209,21 +227,24 @@ export default {
           items.push(item);
         }
       });
-      console.log(items);
       this.$store.dispatch(SAVE_TO_CART, { items });
     },
     onUpdatePrint(item) {
       let sides = [];
       this.base.sides.forEach(side => {
         let svgSide = this.sidesElems.find(item => item.sideId == side.id);
+        let svg = svgSide.svg
+          .replace(/<defs.*defs>/, "")
+          .replace(/mask=".*\)"/, "")
+          .replace(/\<image.*?<\/image>/, "");
 
-        // if (this.maxPrintSize) {
         if (side.items.length && side.printSize) {
           sides.push({
-            svg: svgSide.svg,
-            sizePrint: side.printSize.id,
-            size: this.size.id,
-            sideId: side.id
+            svg: svg,
+            // sizePrint: side.printSize.id,
+            //  size: this.size.id,
+            sideId: side.id,
+            isModify: true
           });
         }
         // } else {
@@ -237,7 +258,8 @@ export default {
           isConstructor: true,
           colormainblank_id: this.color.id,
           size_id: this.size.id,
-          sides: this.sidesElems,
+          sides: sides,
+          //  sides: this.sidesElems,
           previewSideId: item.id,
           productid: this.editProduct,
           // sizePrint: this.printSize.id,
@@ -248,7 +270,6 @@ export default {
         },
         selected_color: 85
       };
-
       this.$store.dispatch(SAVE_CHANGES, params);
     }
   }

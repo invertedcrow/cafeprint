@@ -157,6 +157,7 @@ const actions = {
         } else {
             state.commit(CONSTRUCTOR_RESET_FEATURES);
         }
+        state.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, null)
         state.commit(CONSTRUCTOR_SET_LOADING, false)
        // console.log(state.state)
     },
