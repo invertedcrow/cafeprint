@@ -29,6 +29,7 @@ const actions = {
     let blankLayers = [];
     const base = response.data.mainBlank;
     const prints = response.data.prints;
+   
     context.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, id);
     context.commit(CONSTRUCTOR_SET_BASE, base);
     context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.sides[0]);
@@ -63,11 +64,11 @@ export default {
 }
 
 function renderBase(context, svg, side) {
-    let element = new DOMParser().parseFromString(svg, "text/xml");
+    let element = new DOMParser().parseFromString(svg, "text/html");    
     let groups = element.getElementById("containerGroupMain");    
     let images = groups.querySelectorAll('image');
     let texts = groups.querySelectorAll('text');
-    
+   
     if(images) {
         createImageLayers(context, images, side)
     }
@@ -148,6 +149,9 @@ function createTextLayers(context, arr, side) {
             Array.from(item.children).forEach(tSpan => {
                 layer.text.push(tSpan.textContent)
             })
+            layer.fontSize = layer.height / layer.text.length;
+        } else {
+            layer.text.push(item.textContent)
             layer.fontSize = layer.height / layer.text.length;
         }
        
