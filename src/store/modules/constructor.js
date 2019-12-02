@@ -3,7 +3,8 @@ import {
     CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_SET_SELECTED_ITEM,
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
-    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID
+    CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
+    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES
 } from '../mutations.type';
 
 import {
@@ -53,7 +54,9 @@ const initialState = () => ({
     fonts: [],
     maxPrintSize: null,
     isLoading: true,
-    base:  initialBase()
+    base:  initialBase(),
+    editProduct: null,
+    features: []
 });
 
 export const state = initialState;
@@ -108,7 +111,10 @@ const getters = {
       }
 
       return true
-  }
+  },
+  editProduct: (state) => state.editProduct,
+  baseFeatures: (state) => state.base.features,
+  features: (state) => state.features,
 };
 
 const actions = {
@@ -135,6 +141,23 @@ const actions = {
         state.commit(PRICE_SET_SIZES_LIST, base.data.sizes);
         state.commit(SIDEBAR_SET_ACTIVE, Sidebar.PRODUCT);
         state.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.data.printSizes)
+
+        if(base.data.features && base.data.features.length) {
+            let features = base.data.features;
+            features.forEach((item, index) => {
+                if(item.values) {
+                    item.values.forEach(val => {
+                        if(val.is_default == '1') {
+                            state.commit(CONSTRUCTOR_SET_FEATURES, {index, id: val.id});
+                        }
+                    })
+                }
+                
+            })
+        } else {
+            state.commit(CONSTRUCTOR_RESET_FEATURES);
+        }
+        state.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, null)
         state.commit(CONSTRUCTOR_SET_LOADING, false)
        // console.log(state.state)
     },
@@ -147,8 +170,8 @@ const actions = {
 
 const mutations = {
     [CONSTRUCTOR_SET_BASE]: (state, base) => state.base = base,
-    [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, value],
-    [CONSTRUCTOR_SET_ITEMS]: (state, value) =>state.items = value,
+    [CONSTRUCTOR_ADD_ITEM]: (state, value) => state.items = [...state.items, {...value}],
+    [CONSTRUCTOR_SET_ITEMS]: (state, value) => state.items = value,
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
     [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.side = value,
     [CONSTRUCTOR_SET_SIZE]: (state, value) => state.size = value,
@@ -224,7 +247,16 @@ const mutations = {
             }
         })
         state.base.sides = sides;
-    }
+    },
+    [CONSTRUCTOR_SET_EDIT_PRODUCT]: (state, product) => state.editProduct = product,
+    [CONSTRUCTOR_SET_FEATURES]: (state, feature) => {
+        let feat = state.features.slice();
+        if(feature.index != undefined) {
+            feat[feature.index] = feature.id;
+            state.features = feat;
+        }       
+    },
+    [CONSTRUCTOR_RESET_FEATURES]: (state) => state.features = [],
 };
 
 export default {

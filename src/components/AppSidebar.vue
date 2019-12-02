@@ -36,12 +36,16 @@
         @click.prevent="onGetPriceClicked"
         class="get-price"
       >Узнать стоимость</button>
-      <!-- <button
+      <button
         id="popover-select-side"
         class="get-price"
         v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
-      >Сохранить себе</button>-->
-
+      >Сохранить себе</button>
+      <button
+        id="popover-select-side-admin"
+        class="get-price"
+        v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct"
+      >Сохранить</button>
       <b-popover
         ref="popover"
         custom-class="sides-popover"
@@ -55,6 +59,21 @@
           v-for="(item, index) in renderSides"
           :key="index"
           @click="onSave(item)"
+        >{{item.name}}</div>
+      </b-popover>
+      <b-popover
+        ref="popover"
+        custom-class="sides-popover"
+        placement="top"
+        target="popover-select-side-admin"
+        triggers="focus"
+        title="Выберите сторону которую отображать на превью"
+      >
+        <div
+          class="baseBtn secondary"
+          v-for="(item, index) in renderSides"
+          :key="index"
+          @click="onUpdatePrint(item)"
         >{{item.name}}</div>
       </b-popover>
     </div>
@@ -73,7 +92,8 @@ import { mapGetters, mapActions } from "vuex";
 import {
   GET_PRICE,
   SAVE_SIDES_ELEMS_SAVE,
-  SAVE_TO_CART
+  SAVE_TO_CART,
+  SAVE_CHANGES
 } from "../store/actions.type";
 import {
   PRICE_SET_ITEM,
@@ -112,14 +132,16 @@ export default {
       "maxPrintSize",
       "userRole",
       "items",
-      "isValid"
+      "isValid",
+      "editProduct",
+      "features"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
     }
   },
   methods: {
-    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART]),
+    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART, SAVE_CHANGES]),
     onGetPriceClicked() {
       let items = [];
       this.baseSizes.forEach(size => {
@@ -142,10 +164,12 @@ export default {
       if (this.activeSidebar !== Sidebar.PRICE) {
         // this.$store.commit(PRICE_RESET, "");
       }
+
       const params = {
         id: this.base.id,
         color_id: this.color.id,
         full: this.maxPrintSize ? 0 : 1,
+        features: this.features,
         items
       };
       if (!this.size) {
@@ -162,10 +186,17 @@ export default {
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
     onSave(item) {
+      let sides = this.sidesElems.slice();
+      sides.forEach(side => {
+        side.svg = side.svg
+          .replace(/<defs.*defs>/, "")
+          .replace(/mask=".*\)"/, "")
+          .replace(/\<image.*?<\/image>/, "");
+      });
       const params = {
         mainblankid: item.mainblank_id,
         preview_side_id: item.id,
-        sides: this.sidesElems
+        sides
       };
       this.$refs.popover.$emit("close");
       this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
@@ -191,12 +222,55 @@ export default {
             is_service: 0,
             svg: this.sidesElems,
             print_sizes,
-            feature: this.base.features
+            features: this.features
           };
           items.push(item);
         }
       });
       this.$store.dispatch(SAVE_TO_CART, { items });
+    },
+    onUpdatePrint(item) {
+      let sides = [];
+      this.base.sides.forEach(side => {
+        let svgSide = this.sidesElems.find(item => item.sideId == side.id);
+        let svg = svgSide.svg
+          .replace(/<defs.*defs>/, "")
+          .replace(/mask=".*\)"/, "")
+          .replace(/\<image.*?<\/image>/, "");
+
+        if (side.items.length && side.printSize) {
+          sides.push({
+            svg: svg,
+            // sizePrint: side.printSize.id,
+            //  size: this.size.id,
+            sideId: side.id,
+            isModify: true
+          });
+        }
+        // } else {
+        //   sides.push({ side_id: item.id });
+        // }
+      });
+
+      const params = {
+        data: {
+          mainblankid: item.mainblank_id,
+          isConstructor: true,
+          colormainblank_id: this.color.id,
+          size_id: this.size.id,
+          sides: sides,
+          //  sides: this.sidesElems,
+          previewSideId: item.id,
+          productid: this.editProduct,
+          // sizePrint: this.printSize.id,
+          // size: this.size.id,
+
+          preview: "",
+          second_preview: null
+        },
+        selected_color: 85
+      };
+      this.$store.dispatch(SAVE_CHANGES, params);
     }
   }
 };
@@ -204,7 +278,7 @@ export default {
 
 <style lang="scss" scoped>
 .constructor-sidebar {
-  margin-top: 50px;
+  //margin-top: 50px;
   &__btns {
     margin: -5px;
   }

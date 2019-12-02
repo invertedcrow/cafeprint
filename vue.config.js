@@ -1,6 +1,6 @@
 module.exports = {
    // filenameHashing: false,
-    productionSourceMap: false,
+    //productionSourceMap: false,
     outputDir: '../assets/app',   
     chainWebpack: config => {
       config.module.rule('images').use('url-loader')

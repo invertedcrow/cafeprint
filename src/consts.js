@@ -62,7 +62,9 @@ export const USER_ROLE = {
 };
 
 export const MESSAGE = {
-    ADD_CART_SUCCES: "Ваше изделие успешно добавлено в корзину. Для оформления заказа перейдите по <a href='/cart'>ссылке</a>"
+    ADD_CART_SUCCES: "Ваше изделие успешно добавлено в корзину. Для оформления заказа перейдите по <a href='/cart'>ссылке</a>",
+    UPDATE_SUCCES: "Изменения сохранены успешно",
+    SAVE_TO_PROFILE_SUCCES: "Принт сохранен успешно"
 }
 //export const API_URL = "https://stage.mfest.com.ua";
 //local

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-article">
+  <div class="sidebar-article d-flex flex-column">
     <div class="sidebar-card-header">
       <div @click="back()" class="sidebar-card-header__icon">
         <svg
@@ -31,58 +31,80 @@
         </svg>
       </div>
     </div>
-
-    <div class="sidebar-article__item-price">
-      <div class="sidebar-article__group-title">Стоимость изделия</div>
-      <div class="sidebar-article__item-price__item">
-        <div class="sidebar-article__item-price__item-name">{{base.name}}</div>
-        <div class="sidebar-article__item-price__item-price">{{article.base_price}} UAH</div>
+    <perfect-scrollbar>
+      <div class="sidebar-article__prints">
+        <div class="sidebar-article__group-title">Стоимость изделия</div>
+        <div class="sidebar-article__item-price__item">
+          <div class="sidebar-article__item-price__item-name">{{base.name}}</div>
+          <div class="sidebar-article__item-price__item-price">{{article.base_price}} UAH</div>
+        </div>
+        <hr />
       </div>
-    </div>
-    <hr />
 
-    <div class="sidebar-article__prints">
-      <div class="sidebar-article__group-title sidebar-article__prints-label">Стоимость принтов</div>
-      <template v-for="(side, index) in renderSides">
-        <div :key="index" v-if="side.items.length">
-          <div class="sidebar-article__prints-side-name">{{side.name}}</div>
+      <div class="sidebar-article__prints">
+        <div class="sidebar-article__group-title sidebar-article__prints-label">Стоимость принтов</div>
+        <template v-for="(side, index) in renderSides">
+          <div :key="index" v-if="side.items.length">
+            <div class="sidebar-article__prints-side-name">{{side.name}}</div>
+            <ul class="sidebar-article__prints-list">
+              <li :key="index" v-for="(el, index) in side.items">
+                <div v-if="el.type === 'text'" class="d-flex justify-content-start">
+                  <div class="sidebar-article__prints-list__icon">
+                    <span>T</span>
+                  </div>
+                  <span class="sidebar-article__prints-list__text">{{el.text.join(' ') }}</span>
+                </div>
+                <div v-if="el.type === 'img'" class="d-flex justify-content-start">
+                  <div class="sidebar-article__prints-list__icon">
+                    <img :src="el.url ? el.url : el.dataUrl" />
+                  </div>
+                  <div class="sidebar-article__prints-list__text">{{el.name}}</div>
+                </div>
+                <div class="sidebar-article__prints-list__price">
+                  <span v-if="el.price > 0">{{el.price}} UAH</span>
+                  <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span>
+                </div>
+              </li>
+            </ul>
+            <div class="sidebar-article__printing__item" v-if="side.printSize">
+              <div
+                class="sidebar-article__printing__item-name"
+              >Размер печати {{side.printSize.name}}</div>
+              <div class="sidebar-article__printing__item-price">{{printPrice(side)}} UAH</div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="sidebar-article__prints" v-if="features.length">
+        <div class="sidebar-article__group-title">Дополнительно</div>
+        <template>
           <ul class="sidebar-article__prints-list">
-            <li :key="index" v-for="(el, index) in side.items">
-              <div v-if="el.type === 'text'" class="d-flex justify-content-start">
+            <li :key="index" v-for="(feature, index) in features">
+              <div class="d-flex justify-content-start">
                 <div class="sidebar-article__prints-list__icon">
-                  <span>T</span>
+                  <!-- <span>T</span> -->
                 </div>
-                <span class="sidebar-article__prints-list__text">{{el.text.join(' ') }}</span>
-              </div>
-              <div v-if="el.type === 'img'" class="d-flex justify-content-start">
-                <div class="sidebar-article__prints-list__icon">
-                  <img :src="el.url" />
-                </div>
-                <div class="sidebar-article__prints-list__text">{{el.name}}</div>
+                <span class="sidebar-article__prints-list__text">{{ featureName(feature.value_id) }}</span>
               </div>
               <div class="sidebar-article__prints-list__price">
-                <span v-if="el.price > 0">{{el.price}} UAH</span>
+                <span v-if="feature.feature_price > 0">{{feature.feature_price}} UAH</span>
                 <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span>
               </div>
             </li>
           </ul>
-          <div class="sidebar-article__printing__item">
-            <div class="sidebar-article__printing__item-name">Размер печати {{side.printSize.name}}</div>
-            <div class="sidebar-article__printing__item-price">{{printPrice(side)}} UAH</div>
-          </div>
-        </div>
-      </template>
-    </div>
-    <!-- 
+        </template>
+      </div>
+
+      <!-- 
     <div class="sidebar-article__printing"> 
       <div class="sidebar-article__group-title sidebar-article__printing-label">Стоимость печати</div>
       <div class="sidebar-article__printing__item">
         <div class="sidebar-article__printing__item-name">Размер печати А4</div>
         <div class="sidebar-article__printing__item-price">150 UAH</div>
       </div>
-    </div>-->
-    <hr />
-
+      </div>-->
+    </perfect-scrollbar>
     <div class="sidebar-article__group-title">Стоимость изделия: {{productMinPrice.item_total}} UAH</div>
   </div>
 </template>
@@ -101,9 +123,25 @@ export default {
     };
   },
   methods: {
+    featureName(id) {
+      let features = this.base.features;
+      let name = "";
+      features.forEach(item => {
+        let feat = item.values.find(a => a.id == id);
+        if (feat) {
+          name = feat.name;
+        }
+      });
+
+      return name;
+    },
     printPrice(side) {
-      return this.article.sizes[this.productMinPrice.id].sides[side.id]
-        .print_price;
+      if (this.article.sizes) {
+        return this.article.sizes[this.productMinPrice.id].sides[side.id]
+          .print_price;
+      }
+
+      return "";
     },
     back() {
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
@@ -122,7 +160,13 @@ export default {
       "renderSides",
       "sizesList",
       "productMinPrice"
-    ])
+    ]),
+    features() {
+      if (this.article.features) {
+        return Object.values(this.article.features);
+      }
+      return [];
+    }
   }
 };
 </script>
@@ -130,7 +174,8 @@ export default {
 <style lang="scss" scoped>
 .sidebar-article {
   $font-gray: #7d8695;
-
+  height: 500px;
+  position: relative;
   .sidebar-card-header__icon {
     cursor: pointer;
   }
@@ -167,6 +212,7 @@ export default {
   }
 
   &__prints {
+    padding-right: 15px;
     &-label {
       margin-bottom: 0;
     }
@@ -186,6 +232,9 @@ export default {
         /*padding: 10px 0;*/
         height: 60px;
         border-bottom: 1px solid #ebebeb;
+        &:last-child {
+          margin-bottom: 15px;
+        }
       }
 
       &__price {
