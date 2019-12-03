@@ -87,7 +87,8 @@ export default {
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
     },
     imgUrl(url) {
-      return API_URL + "/" + url;
+      let link = API_URL + (url[0] == "/" ? "" : "/") + url;
+      return link;
     },
     active() {
       return this.side.id;

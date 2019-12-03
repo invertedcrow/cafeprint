@@ -607,7 +607,8 @@ export default {
   methods: {   
       ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM]),  
       imgUrl(url) {
-        return API_URL + "/" + url
+        let link = API_URL + (url[0] == "/" ? "" : "/") + url;        
+        return link;
       },
       filterBySide(items) {
          return items.filter(x => x.side === this.side.id) || []

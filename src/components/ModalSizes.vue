@@ -82,7 +82,11 @@ export default {
   computed: {
     ...mapGetters(["size", "base"]),
     imgUrl() {
-      return API_URL + "/" + this.base.size_image;
+      let link =
+        API_URL +
+        (this.base.size_image[0] == "/" ? "" : "/") +
+        this.base.size_image;
+      return link;
     }
   }
 };

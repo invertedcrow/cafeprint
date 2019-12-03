@@ -44,10 +44,9 @@ const actions = {
         const _csrf = tokenElement.getAttribute("content");
         const response =  await Vue.axios.put('/constructor-new/save/product', {data: params.data, selected_color: params.selected_color, _csrf });     
         context.commit(CONSTRUCTOR_SET_LOADING, false);
-        console.log(response)
+      
         if(response.data) {
             const id = params.data.productid;
-            console.log('GET id', id)
             context.dispatch(BLANKLOAD_GET, id);
             eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
         }   

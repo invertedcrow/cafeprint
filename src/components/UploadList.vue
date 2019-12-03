@@ -43,7 +43,8 @@ export default {
   methods: {
     ...mapMutations(["addImg", UPLOAD_REMOVE_FILE]),
     imgUrl(item) {
-      return API_URL + "/" + item.url;
+      let link = API_URL + (item.url == "/" ? "" : "/") + item.url;
+      return link;
     },
     onSelectImg(img) {
       this.addImg(img);
