@@ -46,6 +46,11 @@
         class="get-price"
         v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct"
       >Сохранить</button>
+      <button
+        id="popover-select-side-product"
+        class="get-price"
+        v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length"
+      >Добавить продукт</button>
       <b-popover
         ref="popover"
         custom-class="sides-popover"
@@ -76,6 +81,26 @@
           @click="onUpdatePrint(item)"
         >{{item.name}}</div>
       </b-popover>
+      <b-popover
+        ref="popover"
+        custom-class="sides-popover"
+        placement="top"
+        target="popover-select-side-product"
+        triggers="focus"
+        title="Выберите сторону которую отображать на превью"
+      >
+        <div
+          class="baseBtn secondary"
+          v-for="(item, index) in renderSides"
+          :key="index"
+          @click="onCreateproduct(item)"
+        >{{item.name}}</div>
+      </b-popover>
+      <!-- form send -->
+      <form ref="form" action="/product/add-product" method="POST">
+        <input type="hidden" name="_csrf" :value="csrf" />
+        <input type="text" class="svgDataSubmit" hidden name="data" :value="formProductData" />
+      </form>
     </div>
   </div>
 </template>
@@ -93,7 +118,8 @@ import {
   GET_PRICE,
   SAVE_SIDES_ELEMS_SAVE,
   SAVE_TO_CART,
-  SAVE_CHANGES
+  SAVE_CHANGES,
+  SAVE_ADD_PRODUCT
 } from "../store/actions.type";
 import {
   PRICE_SET_ITEM,
@@ -115,7 +141,9 @@ export default {
     return {
       TextAlignment,
       Sidebar,
-      USER_ROLE
+      USER_ROLE,
+      csrf: null,
+      formProductData: null
     };
   },
   computed: {
@@ -141,7 +169,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions([SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART, SAVE_CHANGES]),
+    ...mapActions([
+      SAVE_SIDES_ELEMS_SAVE,
+      SAVE_TO_CART,
+      SAVE_CHANGES,
+      SAVE_ADD_PRODUCT
+    ]),
     onGetPriceClicked() {
       let items = [];
       this.baseSizes.forEach(size => {
@@ -207,12 +240,14 @@ export default {
         let item = {};
         let print_sizes = [];
         this.base.sides.forEach(side => {
-          if (this.maxPrintSize && side.printSize) {
-            print_sizes.push({
-              sideId: side.id,
-              print_size_id: side.printSize.id
-            });
-          }
+          //if (this.maxPrintSize && side.printSize) {
+          print_sizes.push({
+            sideId: side.id,
+            print_size_id: side.printSize
+              ? side.printSize.id
+              : this.base.printSizes[0].id
+          });
+          // }
         });
         if (size.quantity) {
           item = {
@@ -241,10 +276,12 @@ export default {
           .replace(/<defs.*defs>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
-        if (side.items.length && side.printSize) {
+        if (side.items.length) {
           sides.push({
             svg: svg,
-            print_size_id: side.printSize.id,
+            print_size_id: side.printSize
+              ? side.printSize.id
+              : this.base.printSizes[0].id,
             //  size: this.size.id,
             sideId: side.id,
             isModify: true
@@ -273,7 +310,53 @@ export default {
         },
         selected_color: 85
       };
+
       this.$store.dispatch(SAVE_CHANGES, params);
+    },
+    onCreateproduct(item) {
+      let sides = [];
+      const tokenElement = document.querySelector('[name="csrf-token"]');
+      this.csrf = tokenElement.getAttribute("content");
+      this.base.sides.forEach(side => {
+        let svgSide = this.sidesElems.find(
+          itemSide => itemSide.sideId == side.id
+        );
+
+        let svg = svgSide.svg
+          .replace(/<defs.*defs>/, "")
+          .replace(/mask="url\(\#mainMask\)"/g, "")
+          .replace(/\<image.*?<\/image>/, "");
+        if (side.items.length && side.printSize) {
+          sides.push({
+            svg: svg,
+            print_size_id: side.printSize.id,
+            sideId: side.id,
+            isModify: true
+          });
+        }
+      });
+
+      const params = {
+        data: {
+          mainblankid: item.mainblank_id,
+          isConstructor: true,
+          colormainblank_id: this.color.id,
+          size_id: this.size.id,
+          sides: sides,
+          previewSideId: item.id,
+          productid: this.editProduct,
+          preview: "",
+          second_preview: null
+        },
+        selected_color: 85
+      };
+
+      this.formProductData = JSON.stringify(params.data);
+      setTimeout(() => {
+        this.$refs.form.submit();
+      });
+
+      //this.$store.dispatch(SAVE_ADD_PRODUCT, params);
     }
   }
 };
