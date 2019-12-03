@@ -25,7 +25,7 @@
       </div>
     </template>
 
-    <div class="constructor-sidebar__btns" v-if="isValid">
+    <div class="constructor-sidebar__btns">
       <button
         v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length && items.length"
         @click="onAddToCart"
