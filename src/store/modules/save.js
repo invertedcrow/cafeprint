@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART, SAVE_CHANGES } from '../actions.type';
+import { SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET } from '../actions.type';
 import { SAVE_SET_SIDES_LIST, CONSTRUCTOR_SET_LOADING } from '../mutations.type'
 import qs  from 'qs';
 import { MODALS, MESSAGE } from '../../consts';
@@ -44,8 +44,25 @@ const actions = {
         const _csrf = tokenElement.getAttribute("content");
         const response =  await Vue.axios.put('/constructor-new/save/product', {data: params.data, selected_color: params.selected_color, _csrf });     
         context.commit(CONSTRUCTOR_SET_LOADING, false);
+      
         if(response.data) {
+            const id = params.data.productid;
+            context.dispatch(BLANKLOAD_GET, id);
             eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
+        }   
+
+    },
+
+
+    [SAVE_ADD_PRODUCT]:async (context, params) => {
+        context.commit(CONSTRUCTOR_SET_LOADING, true);
+       // const encParams = qs.stringify(params);
+        const tokenElement = document.querySelector('[name="csrf-token"]');
+        const _csrf = tokenElement.getAttribute("content");
+        const response =  await Vue.axios.post('/product/add-product', {data: params.data, selected_color: params.selected_color, _csrf });     
+        context.commit(CONSTRUCTOR_SET_LOADING, false);
+        if(response.data) {
+            eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.PRODUCT_ADD_SUCCES);
         }   
     },
 

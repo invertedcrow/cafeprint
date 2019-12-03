@@ -9,7 +9,8 @@ import {
     CONSTRUCTOR_SET_SIZE, 
     PRICE_SET_SIZES_LIST, 
     CONSTRUCTOR_SET_MAX_PRINT_SIZE,
-    CONSTRUCTOR_SET_EDIT_PRODUCT } from '../mutations.type';
+    CONSTRUCTOR_SET_EDIT_PRODUCT,
+    CONSTRUCTOR_SET_ITEMS } from '../mutations.type';
 
 import { blank4 } from './mock-data/4';
 
@@ -25,11 +26,12 @@ const getters = {
 
 const actions = {
    [BLANKLOAD_GET]: async (context, id) => {
+    context.commit(CONSTRUCTOR_SET_LOADING, true);
     const response = await Vue.axios.get(`constructor-new/clip-arts/products/${id}`)
     let blankLayers = [];
     const base = response.data.mainBlank;
     const prints = response.data.prints;
-   
+    context.commit(CONSTRUCTOR_SET_ITEMS, [])
     context.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, id);
     context.commit(CONSTRUCTOR_SET_BASE, base);
     context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.sides[0]);

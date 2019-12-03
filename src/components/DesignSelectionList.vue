@@ -45,7 +45,11 @@ export default {
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     },
     imgUrl(item) {
-      return API_URL + "/" + item.preview_print;
+      let link =
+        API_URL +
+        (item.preview_print[0] == "/" ? "" : "/") +
+        item.preview_print;
+      return link;
     },
     onReachEnd() {
       let filter = { ...this.designFilter };
