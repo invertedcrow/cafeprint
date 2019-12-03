@@ -6,7 +6,7 @@
     <div
       v-if="!isValid"
       class="main__alert-message"
-    >Размер принта привышает А2. Выберте изделие с полной запечаткой, или уменьшите область печати</div>
+    >Размер принта привышает допустимую область печати. Лишнее будет спрятано</div>
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
@@ -301,13 +301,13 @@
                     font-size="12px"
                     :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
                   >
-                    <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text>
-                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>-->
+                     <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
+                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
                     <text
-                      v-if="item.height > 40 && item.real_height"
+                      v-if="item.height > 40 && item.real_height > 0 && !rotation"
                       :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
                     >{{round(item.real_height)}} см</text>
-                    <text v-if="item.width > 37 && item.real_width">{{round(item.real_width)}} см</text>
+                    <text v-if="item.width > 37 && item.real_width > 0 && !rotation">{{round(item.real_width)}} см</text>
                   </g>
                   <g>
                     <g
@@ -621,44 +621,81 @@ export default {
        checkPrintSize(e) {        
           let printSize = {name: ''};         
           const printsSizes = this.base.printSizes;
-          const items = this.sideItems;
+          let items = this.sideItems.slice();
         
           if(!items.length) {
               return null
-          }       
+          }      
 
-          let arrX = items.map(item => item.x)
-          let arrY = items.map(item => item.y)    
-          let arrW = items.map(item => item.width)
-          let arrH = items.map(item => item.height)           
+        items.forEach((item, i) => {          
+          if(this.size) {
+            if(item.x < +this.sideArea.x) {
+              item.visibleX = +this.sideArea.x;
+              item.visibleWidth = item.width - (+this.sideArea.x - item.x)
+               if(item.visibleWidth < 0) {
+                 item.visibleX = -1;
+              }
+              item.real_width = item.visibleWidth/this.sideArea.height*this.size.height;
+            } else if((item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
+              item.visibleX = item.x < (+this.sideArea.x + +this.sideArea.width) ? item.x : -1;
+              item.visibleWidth = item.width - ((item.x + item.width) - (+this.sideArea.x + +this.sideArea.width))
+              item.real_width = item.visibleWidth/this.sideArea.height*this.size.height;
+            } else {
+              item.visibleX = item.x;
+              item.visibleWidth = item.width;
+              item.real_width = item.width/this.sideArea.height*this.size.height;
+            }
+            
+            if(item.y < +this.sideArea.y) {
+              item.visibleY = +this.sideArea.y;
+              item.visibleHeight = item.height - (+this.sideArea.y - item.y);
+              if(item.visibleHeight < 0) {
+                 item.visibleY = -1;
+              }
+              item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;
+            } else if((item.y + item.height) > (+this.sideArea.y + +this.sideArea.height)) {
+              item.visibleY = item.y < (+this.sideArea.y + +this.sideArea.height) ? item.y : -1;             
+              item.visibleHeight = item.height - ((item.y + item.height) - (+this.sideArea.y + +this.sideArea.height))
+              item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;
+            } else {
+              item.visibleY = item.y;
+              item.visibleHeight = item.height;
+              item.real_height = item.height/this.sideArea.height*this.size.height;
+            }           
+           if(item.visibleX == -1 || item.visibleY == -1) {
+              items.splice(i, 1)
+            }
+          }
+           
+        })   
+          let arrX = items.map(item => item.visibleX)
+          let arrY = items.map(item => item.visibleY)    
+          let arrW = items.map(item => item.visibleWidth)
+          let arrH = items.map(item => item.visibleHeight)  
+
           this.allItemsParams = {
             x: Math.min(...arrX),
             y: Math.min(...arrY),
             width: Math.max(...arrW),
             height: Math.max(...arrH),
           };
-        
-        items.forEach((item, i) => { 
-          console.log() 
-          if(this.size) {
-             item.real_width = item.width/this.sideArea.height*this.size.height;
-            item.real_height = item.height/this.sideArea.height*this.size.height;
-            if(item.x > this.allItemsParams.x && (item.x - this.allItemsParams.x + item.width) > this.allItemsParams.width) {
-                this.allItemsParams.width = +item.x - +this.allItemsParams.x + +item.width              
-            }                 
-            if(item.y > this.allItemsParams.y && (item.y - this.allItemsParams.y + item.height) > this.allItemsParams.height) {
-                this.allItemsParams.height = item.y - this.allItemsParams.y + item.height                }
-          }
-           
-        })   
+
+         
        if(this.size) {
+          items.forEach((item, i) => {
+              if(item.visibleX > this.allItemsParams.x && (item.visibleX - this.allItemsParams.x + item.visibleWidth) > this.allItemsParams.width) {
+                this.allItemsParams.width = +item.visibleX - +this.allItemsParams.x + +item.visibleWidth              
+              }                 
+              if(item.visibleY > this.allItemsParams.y && (item.visibleY - this.allItemsParams.y + item.visibleHeight) > this.allItemsParams.height) {
+                this.allItemsParams.height = item.visibleY - this.allItemsParams.y + item.visibleHeight                }
+           })
           this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
           this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
        }
+      
        
-        
-        printsSizes.forEach((size) => {
-          if( this.allItemsParams.realItemsHeight <= size.real_height &&   this.allItemsParams.realItemsWidth <= size.real_width) {
+        printsSizes.forEach((size) => {          
+          if( this.allItemsParams.realItemsHeight <= size.real_height && this.allItemsParams.realItemsWidth <= size.real_width) {
             printSize = size;
           } 
         })
@@ -910,12 +947,11 @@ export default {
 
           const edBounds              = this.editableAreaEl.getBoundingClientRect();
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();
-
           const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
 
           item.drag = {
-              x:        item.x,
-              y:        item.y,
+              x:        !handle ? item.x + item.x*(this.scaleWidth/100 - 1) : item.x,
+              y:        !handle ? item.y + item.y*(this.scaleWidth/100 - 1) : item.y,
               mx:       eDown.touches ? eDown.touches[0].clientX : eDown.x,
               my:       eDown.touches ? eDown.touches[0].clientY :eDown.y,
               w:        item.width,
@@ -994,10 +1030,10 @@ export default {
                   //   return
                   // }   
                   
-                  item.x = event.x - item.drag.mx + item.drag.x;
-                  item.y = event.y - item.drag.my + item.drag.y;
-                  item.y = item.y/(this.scaleWidth/100);
-                  item.x = item.x/(this.scaleWidth/100);  
+                  item.x = event.x - item.drag.mx + item.drag.x - item.x*(this.scaleWidth/100 - 1);
+                  item.y = event.y - item.drag.my + item.drag.y - item.y*(this.scaleWidth/100 - 1);
+                  // item.y = item.y/(this.scaleWidth/100);
+                  // item.x = item.x/(this.scaleWidth/100);  
                   if(item.matrix) {
                     //const matrix = item.matrix.match(/(-?\d{1,}\.?\d?){1,}/g);    
                     item.matrix = "1,0,0,1,0,0";                  
@@ -1240,7 +1276,7 @@ export default {
               text: ["Your text here"],
               width: 132,
               height: 25,
-              font: "Arial",
+              font: {name: "CyrillicHover"},
               fontSize: 20,
               node: null,
               color: this.color.color.includes('FFF') ? "#000" : "#fff",
@@ -1291,17 +1327,31 @@ export default {
 
         return item  
       },
-      updateSizes() {        
-        setTimeout(() => {         
+      updateSizes() {     
+        setTimeout(() => {   
             const index     = this.items.indexOf(this.selectedElement);
             const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
-            const maxWidth  = widths.length ? Math.max(...widths) : 132;
+            const maxWidth  = widths.length ? Math.max(...widths) : 115;
               if(this.selectedElement && this.selectedElement.fontSize) {
                   this.selectedElement.height   = this.selectedElement.fontSize * this.selectedElement.text.length;
                   this.selectedElement.width    = maxWidth;
                   this.selectedElement = this.checkItemPosition(this.selectedElement)
               }
+
+            setTimeout(() => {
+              this.sideItems.forEach((item, i) => {
+              const tSpans    = document.querySelectorAll(`#group-${i} svg > text`);           
+              const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
+              const maxWidth  = widths.length ? Math.max(...widths) : 115;
+                if(item && item.fontSize) {
+                    item.height   = item.fontSize * item.text.length;
+                    item.width    = maxWidth;
+                    item = this.checkItemPosition(item)
+                }
+            })
+            }, 100)
+            
         });
       },
       moveUp() {
@@ -1361,7 +1411,7 @@ export default {
              this.scaleMargin += 10
            }
         } else {
-            if(this.scaleWidth < 200) {
+            if(this.scaleWidth < 180) {
              this.scaleWidth += 20;
               this.scaleMargin -= 10
            }
