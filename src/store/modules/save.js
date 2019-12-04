@@ -21,35 +21,49 @@ const actions = {
     [SAVE_SIDES_ELEMS_SAVE]: async (context, params) => {
         context.commit(CONSTRUCTOR_SET_LOADING, true);
         const encParams = qs.stringify(params);
-        const response =  await Vue.axios.post('/constructor-new/save/profile', encParams); 
-        context.commit(CONSTRUCTOR_SET_LOADING, false);   
+        try {
+            const response =  await Vue.axios.post('/constructor-new/save/profile', encParams); 
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
             if(response.data) {
                 eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.SAVE_TO_PROFILE_SUCCES);
-            }  
-               
+            } 
+        } catch(e) {
+            eventBus.$emit("showModal", MODALS.MESSAGE, e.response.data.message);
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        }   
     },
     [SAVE_TO_CART]: async (context, params) => {
         context.commit(CONSTRUCTOR_SET_LOADING, true);
         const encParams = qs.stringify(params);
-        const response =  await Vue.axios.post('/constructor-new/cart', encParams);  
-        context.commit(CONSTRUCTOR_SET_LOADING, false);
-        if(response.data) {
-            eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.ADD_CART_SUCCES);
-        }   
+        try {
+            const response =  await Vue.axios.post('/constructor-new/cart', encParams);  
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+            if(response.data) {
+                eventBus.$emit("showModal", MODALS.CART_ADDED);
+            }   
+        } catch(e) {
+            eventBus.$emit("showModal", MODALS.MESSAGE, e.response.data.message);
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        }  
     },
     [SAVE_CHANGES]: async (context, params) => {
         context.commit(CONSTRUCTOR_SET_LOADING, true);
        // const encParams = qs.stringify(params);
         const tokenElement = document.querySelector('[name="csrf-token"]');
         const _csrf = tokenElement.getAttribute("content");
-        const response =  await Vue.axios.put('/constructor-new/save/product', {data: params.data, selected_color: params.selected_color, _csrf });     
-        context.commit(CONSTRUCTOR_SET_LOADING, false);
-      
-        if(response.data) {
-            const id = params.data.productid;
-            context.dispatch(BLANKLOAD_GET, id);
-            eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
-        }   
+        try {
+            const response =  await Vue.axios.put('/constructor-new/save/product', {data: params.data, selected_color: params.selected_color, _csrf });     
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        
+            if(response.data) {
+                const id = params.data.productid;
+                context.dispatch(BLANKLOAD_GET, id);
+                eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
+            }   
+        } catch(e) {
+            eventBus.$emit("showModal", MODALS.MESSAGE, e.response.data.message);
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        }  
 
     },
 
@@ -59,11 +73,16 @@ const actions = {
        // const encParams = qs.stringify(params);
         const tokenElement = document.querySelector('[name="csrf-token"]');
         const _csrf = tokenElement.getAttribute("content");
-        const response =  await Vue.axios.post('/product/add-product', {data: params.data, selected_color: params.selected_color, _csrf });     
-        context.commit(CONSTRUCTOR_SET_LOADING, false);
-        if(response.data) {
-            eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.PRODUCT_ADD_SUCCES);
-        }   
+        try {
+            const response =  await Vue.axios.post('/product/add-product', {data: params.data, selected_color: params.selected_color, _csrf });     
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+            if(response.data) {
+                eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.PRODUCT_ADD_SUCCES);
+            }   
+        } catch(e) {
+            eventBus.$emit("showModal", MODALS.MESSAGE, e.response.data.message);
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        }  
     },
 
 }
