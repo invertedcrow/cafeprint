@@ -21,6 +21,7 @@ const MODAL_INFO        = 'info';
 const MODAL_SIZES       = 'sizes';
 const SIZES_READONLY    = 'sizes_readonly';
 const MODAL_MESSAGE     = 'message'
+const CART_ADDED        = 'onAddCartSuccess'
 
 export const TextAlignment = {
     START:      TEXT_ALIGNMENT_START,
@@ -44,6 +45,7 @@ export const MODALS = {
     SIZES:      MODAL_SIZES,
     SIZES_READONLY: SIZES_READONLY,
     MESSAGE:      MODAL_MESSAGE,
+    CART_ADDED:  CART_ADDED
 };
 
 export const Sidebar = {

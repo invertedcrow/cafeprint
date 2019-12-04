@@ -29,6 +29,10 @@
     <b-modal :id="MODALS.MESSAGE" modal-class="message-modal" hide-footer hide-header>
       <modal-message :message="message" />
     </b-modal>
+
+    <b-modal :id="MODALS.CART_ADDED" modal-class="message-modal" hide-footer hide-header>
+      <modal-message-cart />
+    </b-modal>
   </div>
 </template>
 
@@ -41,6 +45,7 @@ import ModalUpload from "./ModalUpload";
 import ModalInfo from "./ModalInfo";
 import ModalSizes from "./ModalSizes";
 import ModalMessage from "./ModalMessage";
+import ModalMessageCart from "./ModalMessageCart";
 
 export default {
   components: {
@@ -49,7 +54,8 @@ export default {
     ModalUpload,
     ModalInfo,
     ModalSizes,
-    ModalMessage
+    ModalMessage,
+    ModalMessageCart
   },
   data() {
     return {

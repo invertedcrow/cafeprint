@@ -331,7 +331,8 @@ export default {
             svg: svg,
             print_size_id: side.printSize.id,
             sideId: side.id,
-            isModify: true
+            sizePrint: side.printSize.id,
+            size: this.size.id
           });
         }
       });
