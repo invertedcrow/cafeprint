@@ -25,7 +25,7 @@
       </div>
     </template>
 
-    <div class="constructor-sidebar__btns">
+    <div class="constructor-sidebar__btns" v-if="isValid">
       <button
         v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length && items.length"
         @click="onAddToCart"
@@ -239,23 +239,33 @@ export default {
       this.sizesList.forEach((size, i) => {
         let item = {};
         let print_sizes = [];
+        let svg = [];
         this.base.sides.forEach(side => {
-          //if (this.maxPrintSize && side.printSize) {
-          print_sizes.push({
-            sideId: side.id,
-            print_size_id: side.printSize
-              ? side.printSize.id
-              : this.base.printSizes[0].id
-          });
-          // }
+          if (side.items && side.items.length) {
+            if (this.base.printSizes && this.base.printSizes.length) {
+              print_sizes.push({
+                sideId: side.id,
+                print_size_id: side.printSize
+                  ? side.printSize.id
+                  : this.base.printSizes[0].id
+              });
+            }
+
+            let svgItem = this.sidesElems.find(item => item.sideId == side.id);
+            svg.push(svgItem);
+          }
         });
+
+        // if(!svg.length) {
+        //   svg.push(this.sidesElems[0]);
+        // }
         if (size.quantity) {
           item = {
             color_id: this.color.id,
             size_id: size.id,
             count: size.quantity,
             is_service: 0,
-            svg: this.sidesElems,
+            svg,
             print_sizes,
             features: this.features
           };
@@ -277,15 +287,20 @@ export default {
           .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
         if (side.items.length) {
-          sides.push({
+          let itemSide = {
             svg: svg,
-            print_size_id: side.printSize
-              ? side.printSize.id
-              : this.base.printSizes[0].id,
             //  size: this.size.id,
             sideId: side.id,
             isModify: true
-          });
+          };
+
+          if (this.base.printSizes && this.base.printSizes.length) {
+            itemSide.print_size_id = side.printSize
+              ? side.printSize.id
+              : this.base.printSizes[0].id;
+          }
+
+          sides.push(itemSide);
         }
         // } else {
         //   sides.push({ side_id: item.id });
