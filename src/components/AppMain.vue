@@ -6,7 +6,7 @@
     <div
       v-if="!isValid"
       class="main__alert-message"
-    >Размер принта привышает допустимую область печати. Лишнее будет спрятано</div>
+    >Размер принта превышает допустимый размер печати.</div>
     <div class="constructor" :style="{borderColor: base.color}">
       <svg
         id="editor"
@@ -636,15 +636,15 @@ export default {
                if(item.visibleWidth < 0) {
                  item.visibleX = -1;
               }
-              item.real_width = item.visibleWidth/this.sideArea.height*this.size.height;
+              item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
             } else if((item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
               item.visibleX = item.x < (+this.sideArea.x + +this.sideArea.width) ? item.x : -1;
               item.visibleWidth = item.width - ((item.x + item.width) - (+this.sideArea.x + +this.sideArea.width))
-              item.real_width = item.visibleWidth/this.sideArea.height*this.size.height;
+              item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
             } else {
               item.visibleX = item.x;
               item.visibleWidth = item.width;
-              item.real_width = item.width/this.sideArea.height*this.size.height;
+              item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
             }
             
             if(item.y < +this.sideArea.y) {
@@ -661,7 +661,7 @@ export default {
             } else {
               item.visibleY = item.y;
               item.visibleHeight = item.height;
-              item.real_height = item.height/this.sideArea.height*this.size.height;
+              item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;
             }           
            if(item.visibleX == -1 || item.visibleY == -1) {
               items.splice(i, 1)
@@ -690,8 +690,13 @@ export default {
               if(item.visibleY > this.allItemsParams.y && (item.visibleY - this.allItemsParams.y + item.visibleHeight) > this.allItemsParams.height) {
                 this.allItemsParams.height = item.visibleY - this.allItemsParams.y + item.visibleHeight                }
            })
-          this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
-          this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
+
+          let realDiffWidth = this.size.width/this.side.real_width;
+          let realDiffHeight = this.size.height/this.side.real_height;
+      
+          this.allItemsParams.realItemsWidth = this.allItemsParams.width/+this.sideArea.width*this.size.width;
+          this.allItemsParams.realItemsHeight = this.allItemsParams.height/+this.sideArea.height*this.size.height; 
+         
        }
       
        
@@ -708,7 +713,10 @@ export default {
             this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
         } else {
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})  
-        }        
+        }      
+        if(!printSize.id) {
+          this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true}); 
+        }  
       },
       resizeAllLayers(diff) {  
           let arr = [...this.items]
