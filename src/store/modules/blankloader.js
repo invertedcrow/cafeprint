@@ -45,7 +45,7 @@ const actions = {
     if(size) {
         context.commit(CONSTRUCTOR_SET_SIZE, size)
     } else {
-        state.commit(CONSTRUCTOR_SET_SIZE, base.sizes[0])
+        context.commit(CONSTRUCTOR_SET_SIZE, base.sizes[0])
     }
 
     for(let side in prints) {      
