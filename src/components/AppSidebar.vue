@@ -222,7 +222,7 @@ export default {
       let sides = this.sidesElems.slice();
       sides.forEach(side => {
         side.svg = side.svg
-          .replace(/<defs.*defs>/, "")
+          .replace(/<mask.*mask>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
       });
@@ -273,7 +273,7 @@ export default {
         );
 
         let svg = svgSide.svg
-          .replace(/<defs.*defs>/, "")
+          .replace(/<mask.*mask>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
         if (side.items.length) {
@@ -323,7 +323,7 @@ export default {
         );
 
         let svg = svgSide.svg
-          .replace(/<defs.*defs>/, "")
+          .replace(/<mask.*mask>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
         if (side.items.length && side.printSize) {
