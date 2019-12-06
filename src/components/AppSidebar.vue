@@ -252,6 +252,11 @@ export default {
             }
 
             let svgItem = this.sidesElems.find(item => item.sideId == side.id);
+            svgItem.svg = svgItem.svg.replace(
+              /.([^<]*)mainblanks(.*?)<\/image>/,
+              ""
+            );
+            console.log(svgItem.svg);
             svg.push(svgItem);
           }
         });
@@ -285,7 +290,8 @@ export default {
         let svg = svgSide.svg
           .replace(/<mask.*mask>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
-          .replace(/\<image.*?<\/image>/, "");
+          //.replace(/\<image.*?<\/image>/, "");
+          .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
         if (side.items.length) {
           let itemSide = {
             svg: svg,
@@ -340,7 +346,8 @@ export default {
         let svg = svgSide.svg
           .replace(/<mask.*mask>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
-          .replace(/\<image.*?<\/image>/, "");
+          //.replace(/\<image.*?<\/image>/, "");
+          .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
         if (side.items.length && side.printSize) {
           sides.push({
             svg: svg,

@@ -12,6 +12,7 @@ import {
     GET_DESIGN_CATEGORIES,
     GET_DESIGN_ITEM
 } from '../actions.type.js';
+import renderSvg from '../../utils/renderSvg';
 
 const getDefaultState = () => ({   
     isDesignListLoading: true,
@@ -57,10 +58,13 @@ const actions = {
     state.commit(DESIGN_SET_LIST, designs.data || []);
     state.commit(DESIGN_SET_LIST_LOADING, false);
    },
-   [GET_DESIGN_ITEM]: async (state, design) => {     
+   [GET_DESIGN_ITEM]: async (context, design) => {  
     const img = await Vue.axios.get(`/constructor-new/clip-arts/${design.id}`)
-    img.data.name = design.name;
-    state.commit('addImg', img.data)
+   
+    let svg = await Vue.axios.get(img.data.url_zip); 
+    let side = context.rootState.constructor.side.id;   
+    renderSvg(context, svg.data, side);
+    
    } 
 }
 

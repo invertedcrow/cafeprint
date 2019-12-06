@@ -5,7 +5,14 @@
         class="sides__item d-flex flex-column"
         :class="{active: side.id == active(), invalid: side.invalid && maxPrintSize }"
       >
-        <svg :viewBox="'0 0 500 500'" width="500" height="500">
+        <svg
+          :viewBox="'0 0 500 500'"
+          width="500"
+          height="500"
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
           <defs>
             <mask id="mainMask" v-html="side.area.svg_area" maskUnits="userSpaceOnUse" />
           </defs>
@@ -31,12 +38,14 @@
                       :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                       :height="item.height"
                       :width="item.width"
+                      :x="item.x"
+                      :y="item.y"
                     />
                     <text
                       :height="item.height"
                       :width="item.width"
                       :x="0"
-                      :y="item.height"
+                      :y="item.height/item.text.length"
                       v-bind:key="index"
                       v-for="(text, index) in item.text"
                       :dy="index + 'em'"
