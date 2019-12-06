@@ -72,10 +72,13 @@
               >Размер печати {{side.printSize.name}}</div>
               <div class="sidebar-article__printing__item-price">{{printPrice(side)}} UAH</div>
             </div>
+            <div class="sidebar-article__printing__item" v-if="!side.printSize">
+              <div class="sidebar-article__printing__item-name">Стоимость печати</div>
+              <div class="sidebar-article__printing__item-price">{{printPrice3d()}} UAH</div>
+            </div>
           </div>
         </template>
       </div>
-
       <div class="sidebar-article__prints" v-if="features.length">
         <div class="sidebar-article__group-title">Дополнительно</div>
         <template>
@@ -137,10 +140,20 @@ export default {
     },
     printPrice(side) {
       if (this.article.sizes) {
-        return this.article.sizes[this.productMinPrice.id].sides[side.id]
-          .print_price;
+        if (this.article.sizes[this.productMinPrice.id].sides) {
+          return this.article.sizes[this.productMinPrice.id].sides[side.id]
+            .print_price;
+        } else if (this.article.sizes[this.productMinPrice.id].print_price) {
+          return this.article.sizes[this.productMinPrice.id].print_price;
+        }
       }
 
+      return "";
+    },
+    printPrice3d() {
+      if (this.article.sizes) {
+        return this.article.sizes[this.productMinPrice.id].print_price;
+      }
       return "";
     },
     back() {
@@ -198,6 +211,7 @@ export default {
       display: flex;
       justify-content: space-between;
       margin-top: 15px;
+      margin-bottom: 15px;
       &-name {
         font-size: 14px;
         color: $font-gray;

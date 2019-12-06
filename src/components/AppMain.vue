@@ -301,13 +301,15 @@
                     font-size="12px"
                     :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
                   >
-                     <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
+                    <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
                     <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
                     <text
                       v-if="item.height > 40 && item.real_height > 0 && !rotation"
                       :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
                     >{{round(item.real_height)}} см</text>
-                    <text v-if="item.width > 37 && item.real_width > 0 && !rotation">{{round(item.real_width)}} см</text>
+                    <text
+                      v-if="item.width > 37 && item.real_width > 0 && !rotation"
+                    >{{round(item.real_width)}} см</text>
                   </g>
                   <g>
                     <g
@@ -716,6 +718,7 @@ export default {
         }      
         if(!printSize.id) {
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true}); 
+          this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, { printSize: null, sideId: this.side.id });
         }  
       },
       resizeAllLayers(diff) {  

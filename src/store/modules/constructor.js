@@ -72,7 +72,16 @@ const getters = {
     }    
   },
   selectedElement: (state) => state.selectedElement,
-  size: (state) => state.size,
+  size: (state) => {
+      if(!state.size && state.side) {
+          let size = {
+            width: state.side.real_width,
+            height: state.side.real_height
+          }
+          return size;
+      }
+      return state.size;
+  },
   baseSizes: (state) => state.base.sizes,
   printSize: (state) => state.printSize,
   side: (state) => {
