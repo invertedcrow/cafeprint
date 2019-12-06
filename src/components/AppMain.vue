@@ -1265,16 +1265,16 @@ export default {
 
       addTextField() {        
           const item = this.createTextField();      
-          let checked = this.checkItemPosition(item);
-          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, checked);
+          let checked = this.checkItemPosition(item);         
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, checked);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, this.sideItems[this.sideItems.length - 1]);
           eventBus.$emit(UPDATE_ELEMENT_SIZE);
       },
       addImgField(file) {
           const item = this.createImgField(file);
-          let checked = this.checkItemPosition(item);
-          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, checked);
+          let checked = this.checkItemPosition(item);          
           this.$store.commit(CONSTRUCTOR_ADD_ITEM, checked);
+          this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, this.sideItems[this.sideItems.length - 1]);
           this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
       },
       createTextField() {  

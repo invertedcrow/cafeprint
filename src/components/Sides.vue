@@ -19,24 +19,20 @@
                 mask="url(#mainMask)"
               >
                 <g :transform="item.matrix ? item.matrix : ''">
-                  <svg
-                    :height="item.height"
-                    :width="item.width"
-                    :x="item.x"
-                    :y="item.y"
-                    :opacity="base.layers_opacity"
-                  >
+                  <svg :height="500" :width="500" :x="0" :y="0" :opacity="base.layers_opacity">
                     <image
                       v-if="item.type=='img'"
                       :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                       :height="item.height"
                       :width="item.width"
+                      :x="item.x"
+                      :y="item.y"
                     />
                     <text
                       :height="item.height"
                       :width="item.width"
-                      :x="0"
-                      :y="item.height"
+                      :x="item.x"
+                      :y="item.y"
                       v-bind:key="index"
                       v-for="(text, index) in item.text"
                       :dy="index + 'em'"
