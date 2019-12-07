@@ -38,8 +38,8 @@
                       :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                       :height="item.height"
                       :width="item.width"
-                      :x="item.x"
-                      :y="item.y"
+                      :x="0"
+                      :y="0"
                     />
                     <text
                       :height="item.height"

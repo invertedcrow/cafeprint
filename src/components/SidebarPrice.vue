@@ -67,8 +67,8 @@
           </svg>
           <span>Размеры основы</span>
         </a>
+        <hr />
       </div>
-      <hr />
 
       <div class="sidebar-price__info">
         <div
@@ -79,10 +79,16 @@
         <button @click="onDetailsClicked" class="sidebar-price__info-details">Подробнее</button>
       </div>
     </perfect-scrollbar>
-    <div class="sidebar-price__summary" v-if="!isPriceLoading">
-      <hr />
-      <div class="sidebar-price__summary-count">выбрано {{quantity}} позиций</div>
-      <div class="sidebar-price__summary-sum">Итого: {{totalPrice}} UAH</div>
+    <hr />
+    <div class="sidebar-price__summary d-flex justify-content-between" v-if="!isPriceLoading">
+      <div>
+        <div class="sidebar-price__summary-count">выбрано {{quantity}} позиций</div>
+        <div class="sidebar-price__summary-sum">Итого: {{totalPrice}} UAH</div>
+      </div>
+
+      <div class="d-flex align-items-end">
+        <button @click="onAddToCart" class="get-price">Добавить в корзину</button>
+      </div>
     </div>
   </div>
 </template>
@@ -93,6 +99,7 @@ import { Sidebar, MODALS } from "../consts";
 import { mapGetters } from "vuex";
 import { eventBus } from "../main";
 import { PRICE_SET_ITEM } from "../store/mutations.type";
+import { SAVE_TO_CART } from "../store/actions.type";
 import Spinner from "./Spinner";
 
 export default {
@@ -121,6 +128,50 @@ export default {
     },
     changeQuantity(size) {
       this.$store.commit(PRICE_SET_ITEM, size);
+    },
+    onAddToCart() {
+      const items = [];
+      this.sizesList.forEach((size, i) => {
+        let item = {};
+        let print_sizes = [];
+        let svg = [];
+        this.base.sides.forEach(side => {
+          if (side.items && side.items.length) {
+            if (this.base.printSizes && this.base.printSizes.length) {
+              print_sizes.push({
+                sideId: side.id,
+                print_size_id: side.printSize
+                  ? side.printSize.id
+                  : this.base.printSizes[0].id
+              });
+            }
+
+            let svgItem = this.sidesElems.find(item => item.sideId == side.id);
+            svgItem.svg = svgItem.svg.replace(
+              /.([^<]*)mainblanks(.*?)<\/image>/,
+              ""
+            );
+            svg.push(svgItem);
+          }
+        });
+
+        // if(!svg.length) {
+        //   svg.push(this.sidesElems[0]);
+        // }
+        if (size.quantity) {
+          item = {
+            color_id: this.color.id,
+            size_id: size.id,
+            count: size.quantity,
+            is_service: 0,
+            svg,
+            print_sizes,
+            features: this.features
+          };
+          items.push(item);
+        }
+      });
+      this.$store.dispatch(SAVE_TO_CART, { items });
     }
   },
   computed: {
@@ -129,7 +180,10 @@ export default {
       "quantity",
       "totalPrice",
       "productMinPrice",
-      "isPriceLoading"
+      "isPriceLoading",
+      "base",
+      "sidesElems",
+      "color"
     ])
   },
   components: {
@@ -219,6 +273,19 @@ export default {
     &-sum {
       font-size: 18px;
       font-weight: 600;
+    }
+  }
+  button.get-price {
+    width: 200px;
+    padding: 8px;
+    border-radius: 30px;
+    background-color: #72b425;
+    color: #fff;
+    border: 0;
+    height: 40px;
+    &:focus,
+    &:active {
+      outline: none;
     }
   }
 }
