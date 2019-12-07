@@ -116,22 +116,22 @@
 
           <g v-if="selectedLayers.length">
             <rect
-              :x="+sideArea.x + +groupParams.x"
-              :y="+sideArea.y + +groupParams.y"
+              :x="+groupParams.x"
+              :y="+groupParams.y"
               :width="groupParams.width"
               :height="groupParams.height"
               class="ctrl-bounds group-bound"
             />
             <g>
-              <g
+              <!-- <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
               >
                 <rect
                   class="ctrl-rect"
-                  :x="sideArea.x"
-                  :y="sideArea.y"
+                  :x="0"
+                  :y="0"
                   :width="tools.squaresize"
                   :height="tools.squaresize"
                 />
@@ -142,8 +142,8 @@
                   height="18px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  :x="(+item.x + 4)"
-                  :y="(+item.y + 3)"
+                  :x="4"
+                  :y="3"
                   viewBox="0 0 76.398 76.398"
                   style="enable-background:new 0 0 76.398 76.398;"
                   xml:space="preserve"
@@ -152,7 +152,7 @@
                     d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
                   />
                 </svg>
-              </g>
+              </g> -->
 
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
@@ -161,8 +161,8 @@
               >
                 <rect
                   class="ctrl-rect"
-                  :x="sideArea.x"
-                  :y="sideArea.y"
+                  :x="0"
+                  :y="0"
                   :width="tools.squaresize"
                   :height="tools.squaresize"
                 />
@@ -173,8 +173,8 @@
                   height="15px"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
-                  :x="(+item.x + 5)"
-                  :y="(+item.y + 5)"
+                  :x="5"
+                  :y="5"
                   viewBox="0 0 472.774 472.774"
                   xml:space="preserve"
                 >
@@ -702,10 +702,24 @@ export default {
        }
       
        
-        printsSizes.forEach((size) => {          
+        printsSizes.forEach((size) => {    
+          let verticalSize = null;    
+          let horizontalSize = null; 
+             
           if( this.allItemsParams.realItemsHeight <= size.real_height && this.allItemsParams.realItemsWidth <= size.real_width) {
-            printSize = size;
+            verticalSize = size;
           } 
+          if( this.allItemsParams.realItemsHeight <= size.real_width && this.allItemsParams.realItemsWidth <= size.real_height) {
+            horizontalSize = size;
+          }          
+
+          if(verticalSize && horizontalSize) {
+            printSize = +verticalSize.real_width < +horizontalSize.real_width ? verticalSize : horizontalSize;
+          } else if(verticalSize) {           
+            printSize = verticalSize
+          } else if(horizontalSize) {
+            printSize = horizontalSize
+          }
         })
 
         if(printSize.id && !this.checkItemPosition(this.allItemsParams).invalid) {
@@ -908,19 +922,25 @@ export default {
 
               }
               if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
-                  const startAngle = item.drag.angle - (Math.atan2(item.drag.my - item.drag.oY, item.drag.mx - item.drag.oX) * (180 / Math.PI));
+                   const startAngle = item.drag.angle - (Math.atan2(item.drag.my - item.drag.oY, item.drag.mx - item.drag.oX) * (180 / Math.PI));
 
                   var dx = event.x - item.drag.oX,
                       dy = event.y - item.drag.oY,
                       angle = (Math.atan2(dy, dx) * (180 / Math.PI));
-
                   const newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
-                  item.rotate = newAngle % 359;                 
+                    item.rotate = newAngle % 359;    
+                    item.matrix = "1,0,0,1,0,0";
+                      
+                    item.matrix = `matrix(${Math.cos(item.rotate)},${-Math.sin(item.rotate)},${Math.sin(item.rotate)},${Math.cos(item.rotate)},0,0)`;
+                    let cX = this.groupParams.x + this.groupParams.width/2;
+                    let cY = this.groupParams.y + this.groupParams.height/2;
+                    item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))  
+                  
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
-                 
-                  let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2));// + Math.pow(item.drag.oY - item.drag.my, 2));
-                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2)); //+ Math.pow(event.clientY - item.drag.oY, 2));
+
+                  let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
+                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
 
                 
                   distance = (distance - centerToDot) * 1.95;
@@ -934,13 +954,15 @@ export default {
                   //   return
                   // }
                    const ratio   = item.drag.h / item.drag.w;    
-                   const diff_before = (item.width - 500)/2
-                  
-                  item.width    = item.drag.w + item.drag.w*distance/100;
+                   const diff_before = (+this.sideArea.width - item.width)/2
+
+                
+                  item.width    += distance/20;
                   item.height   = item.width*ratio; 
-                  const diff_current = (item.width - 500)/2
-                  item.x        = item.drag.x + diff_before - diff_current,
-                  item.y        = item.drag.y + diff_before - diff_current,
+                  const diff_current = (+this.sideArea.width - item.width)/2
+                 
+                  item.x        = item.x - (diff_before - diff_current),
+                 // item.y        = item.y - (diff_before - diff_current),
                   item.fontSize = item.fontSize ? item.height / item.text.length : null;
                   
               }
@@ -1042,8 +1064,9 @@ export default {
                   //   return
                   // }   
                   
-                  item.x = event.x - item.drag.mx + item.drag.x - item.x*(this.scaleWidth/100 - 1);
-                  item.y = event.y - item.drag.my + item.drag.y - item.y*(this.scaleWidth/100 - 1);
+                  item.x = (event.x - item.drag.mx)/1.3 + item.drag.x - item.x*(this.scaleWidth/100 - 1);
+                  item.y = (event.y - item.drag.my)/1.3 + item.drag.y - item.y*(this.scaleWidth/100 - 1);
+                
                   // item.y = item.y/(this.scaleWidth/100);
                   // item.x = item.x/(this.scaleWidth/100);  
                   if(item.matrix) {
