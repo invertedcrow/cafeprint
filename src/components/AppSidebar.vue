@@ -27,11 +27,6 @@
 
     <div class="constructor-sidebar__btns" v-if="isValid">
       <button
-        v-if="activeSidebar === Sidebar.PRICE && this.sidesElems.length && items.length"
-        @click="onAddToCart"
-        class="get-price"
-      >Добавить в корзину</button>
-      <button
         v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length"
         @click.prevent="onGetPriceClicked"
         class="get-price"
@@ -233,51 +228,6 @@ export default {
       };
       this.$refs.popover.$emit("close");
       this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
-    },
-    onAddToCart() {
-      const items = [];
-      this.sizesList.forEach((size, i) => {
-        let item = {};
-        let print_sizes = [];
-        let svg = [];
-        this.base.sides.forEach(side => {
-          if (side.items && side.items.length) {
-            if (this.base.printSizes && this.base.printSizes.length) {
-              print_sizes.push({
-                sideId: side.id,
-                print_size_id: side.printSize
-                  ? side.printSize.id
-                  : this.base.printSizes[0].id
-              });
-            }
-
-            let svgItem = this.sidesElems.find(item => item.sideId == side.id);
-            svgItem.svg = svgItem.svg.replace(
-              /.([^<]*)mainblanks(.*?)<\/image>/,
-              ""
-            );
-            console.log(svgItem.svg);
-            svg.push(svgItem);
-          }
-        });
-
-        // if(!svg.length) {
-        //   svg.push(this.sidesElems[0]);
-        // }
-        if (size.quantity) {
-          item = {
-            color_id: this.color.id,
-            size_id: size.id,
-            count: size.quantity,
-            is_service: 0,
-            svg,
-            print_sizes,
-            features: this.features
-          };
-          items.push(item);
-        }
-      });
-      this.$store.dispatch(SAVE_TO_CART, { items });
     },
     onUpdatePrint(item) {
       let sides = [];
