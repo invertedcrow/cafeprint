@@ -147,10 +147,10 @@ export default {
             }
 
             let svgItem = this.sidesElems.find(item => item.sideId == side.id);
-            svgItem.svg = svgItem.svg.replace(
-              /.([^<]*)mainblanks(.*?)<\/image>/,
-              ""
-            );
+            svgItem.svg = svgItem.svg
+              .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
+              .replace(/<mask.*mask>/, "")
+              .replace(/mask="url\(\#mainMask\)"/g, "");
             svg.push(svgItem);
           }
         });

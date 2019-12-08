@@ -83,7 +83,8 @@
             </div>-->
           </div>
           <draggable
-            v-model="draggList[index].items"
+            :list="draggList[index].items"
+            group="sides"
             @start="drag=true"
             @change="change"
             @end="drag=false"
