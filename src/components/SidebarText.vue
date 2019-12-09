@@ -35,7 +35,7 @@
     </div>
 
     <div class="sidebar-text__input">
-      <textarea v-model="text" @keyup="updateInput" placeholder="Your text here..."></textarea>
+      <textarea v-model="text" @keyup.prevent="updateInput" placeholder="Your text here..."></textarea>
     </div>
     <div class="sidebar-text__tools">
       <button @click="setFontBold" class="sidebar-text__tools-item" :class="{'active': isBold}">
@@ -158,11 +158,11 @@
     </div>
     <hr class="sidebar-text__line-colors-bottom" />
 
-    <div class="sidebar-text__font-size">
+    <!-- <div class="sidebar-text__font-size">
       Размер текста
       <number-input :min="1" :value="fontSize" @change="onFontSizeChanged"></number-input>
     </div>
-    <hr />
+    <hr />-->
 
     <div class="sidebar-text__layer-tools">
       <div class="sidebar-text__layer-tools-item" @click="moveLayerUp">
@@ -346,7 +346,8 @@ export default {
         this.text = this.selectedElement.text.join("\n") || "";
       }
     },
-    updateInput() {
+    updateInput(e) {
+      e.stopPropagation();
       this.selectedElement.text = this.text.split("\n");
       setTimeout(() => {
         this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);

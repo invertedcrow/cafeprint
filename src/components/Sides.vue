@@ -44,7 +44,7 @@
                     <text
                       :height="item.height"
                       :width="item.width"
-                      :x="0"
+                      :x="getTextXPosition(item)"
                       :y="item.height/item.text.length"
                       v-bind:key="index"
                       v-for="(text, index) in item.text"
@@ -76,7 +76,7 @@ import {
   CONSTRUCTOR_SET_SELECTED_ITEM,
   SAVE_SET_SIDES_LIST
 } from "../store/mutations.type";
-import { API_URL } from "../consts";
+import { API_URL, Sidebar } from "../consts";
 
 export default {
   data() {
@@ -91,9 +91,19 @@ export default {
       CONSTRUCTOR_SET_SELECTED_ITEM,
       SAVE_SET_SIDES_LIST
     ]),
+    getTextXPosition(item) {
+      if (item.textAnchor === TextAlignment.END) {
+        return item.width;
+      }
+      if (item.textAnchor === TextAlignment.MIDDLE) {
+        return item.width / 2;
+      }
+      return 0;
+    },
     setActiveSide(side) {
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
+      this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
     },
     imgUrl(url) {
       let link = API_URL + (url[0] == "/" ? "" : "/") + url;

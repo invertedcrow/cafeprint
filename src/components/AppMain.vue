@@ -13,6 +13,7 @@
         :viewBox="'0 0 500 500'"
         :width="500"
         :height="500"
+        :style="{'touch-action': itemTouch ? 'none' : 'auto'}"
         @mousedown="resetSelected"
         @touchstart="resetSelected"
       >
@@ -327,8 +328,8 @@
                       <svg
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         class="ctrl-icon"
-                        width="15px"
-                        height="18px"
+                        :width="tools.squaresizeIcon"
+                        :height="tools.squaresizeIcon"
                         xmlns="http://www.w3.org/2000/svg"
                         version="1.1"
                         :x="(+item.x + 5)"
@@ -357,9 +358,9 @@
                       <svg
                         class="ctrl-icon"
                         xmlns="http://www.w3.org/2000/svg"
-                        height="17px"
+                        :height="tools.squaresizeIcon"
                         viewBox="-18 0 511 512"
-                        width="15px"
+                        :width="tools.squaresizeIcon"
                         fill="#757575"
                         :x="(+item.x + 5)"
                         :y="(+item.y + 3)"
@@ -385,8 +386,8 @@
                       <svg
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         class="ctrl-icon"
-                        width="15px"
-                        height="15px"
+                        :width="tools.squaresizeIcon"
+                        :height="tools.squaresizeIcon"
                         xmlns="http://www.w3.org/2000/svg"
                         version="1.1"
                         :x="(+item.x + 5)"
@@ -444,11 +445,7 @@ export default {
             onChangeColorListener: null,
             showcolors: false,
             movetarget: null,
-            activeItemIndex: null,
-            tools: {
-                squaresize: 24,
-                min_height: 10
-            },
+            activeItemIndex: null,            
             svg: null,
             editableAreaEl: null,
             dragging: false,
@@ -473,7 +470,9 @@ export default {
                 left: false,
                 centerH: false,
                 centerV: false,
-            }
+            },
+            itemTouch: null,
+            windowWidth: null
         };
     },
     watch: {
@@ -568,6 +567,13 @@ export default {
         sideItems() {        
           return this.filterBySide(this.items)
         },
+        tools() {
+          return {
+            squaresize: this.windowWidth < 768 ? 60 : 24,
+            squaresizeIcon: this.windowWidth < 768 ? 45 : 15,
+            min_height: 10
+          }               
+      },
         addText() {
             return this.$store.state.addText;
         },
@@ -612,6 +618,9 @@ export default {
         let link = API_URL + (url[0] == "/" ? "" : "/") + url;        
         return link;
       },
+      handleResize() {
+        this.windowWidth = window.innerWidth;
+      },      
       filterBySide(items) {
          return items.filter(x => x.side === this.side.id) || []
       },
@@ -745,9 +754,8 @@ export default {
               item.x = item.x + diff_before - diff_current;
               item.y = item.y + diff_before - diff_current;
             
-          
             if(item.type == 'text') {
-              item.fontSize = Math.floor(+item.height);              
+              item.fontSize = Math.floor(+item.height/item.text.length);              
             }
             
           });
@@ -968,7 +976,8 @@ export default {
               }
               })
           },
-      onMouseDown(eDown, item, handle) {       
+      onMouseDown(eDown, item, handle) {    
+          eDown.preventDefault();   
           eDown.stopPropagation();
           let isCanMove = true; 
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
@@ -1020,6 +1029,7 @@ export default {
               this.dragging = false;
               this.rotation = false;
               this.scaling = false;
+              this.itemTouch = null;
               document.ontouchmove = null; 
               isCanMove = false;
           };
@@ -1038,7 +1048,8 @@ export default {
             this.handleMove(event, item, handle, selectedElementNode, edBounds)
           }
       },
-      handleMove(event, item, handle, selectedElementNode, edBounds) {        
+      handleMove(event, item, handle, selectedElementNode, edBounds) { 
+              this.itemTouch = true;  
               if (!handle) {
                   this.hideLines();
                   const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
@@ -1235,11 +1246,12 @@ export default {
                       angle = (Math.atan2(dy, dx) * (180 / Math.PI));
                   const newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
                     item.rotate = newAngle % 359;                 
-                    item.matrix = "1,0,0,1,0,0";
-                      
+                               
+                    item.matrix = "1,0,0,1,0,0";                     
                     item.matrix = `matrix(${Math.cos(item.rotate)},${-Math.sin(item.rotate)},${Math.sin(item.rotate)},${Math.cos(item.rotate)},0,0)`;
                     let cX = item.x + item.width/2;
                     let cY = item.y + item.height/2;
+                    
                     item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))                    
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
@@ -1377,9 +1389,9 @@ export default {
             setTimeout(() => {
               this.sideItems.forEach((item, i) => {
               const tSpans    = document.querySelectorAll(`#group-${i} svg > text`);           
-              const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
+              const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                       
               const maxWidth  = widths.length ? Math.max(...widths) : 115;
-                if(item && item.fontSize) {
+                if(item && item.fontSize) {                  
                     item.height   = item.fontSize * item.text.length;
                     item.width    = maxWidth;
                     item = this.checkItemPosition(item)
@@ -1434,6 +1446,7 @@ export default {
       const svgBounds = this.svg.getBoundingClientRect();
       this.width = svgBounds.width;
       this.height = svgBounds.height;
+      this.handleResize();
 
       eventBus.$on(UPDATE_ELEMENT_SIZE, () => {
           this.updateSizes();
@@ -1454,6 +1467,7 @@ export default {
       });
 
       this.editableAreaEl = document.querySelector('.constructor #editor #editable-area');
+      window.addEventListener('resize', this.handleResize);
       window.addEventListener("keyup", this.onKeyUp);
       window.addEventListener("mousemove", this.checkPrintSize)
      // window.addEventListener("touchmove", this.checkPrintSize)
@@ -1473,12 +1487,13 @@ var swapArrayElements = function (arr, indexA, indexB) {
     color: red;
     position: absolute;
     text-align: center;
+    z-index: 3;
   }
 }
 .constructor {
   width: 100%;
   height: 100%;
-
+  z-index: 2;
   @media screen and (max-width: 1200px) {
     width: 100%;
     height: auto;
@@ -1488,8 +1503,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
   }
 }
 
-#editor {
-  touch-action: none;
+#editor {  
   width: 100%;
   height: 100%;
   /*width: auto;*/

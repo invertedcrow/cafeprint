@@ -157,6 +157,7 @@
                 </div>
               </div>
             </div>
+            <div class="sidebar-layers__side-layer"></div>
           </draggable>
         </div>
       </div>

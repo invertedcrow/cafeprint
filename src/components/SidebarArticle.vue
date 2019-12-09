@@ -47,7 +47,7 @@
           <div :key="index" v-if="side.items.length">
             <div class="sidebar-article__prints-side-name">{{side.name}}</div>
             <ul class="sidebar-article__prints-list">
-              <li :key="index" v-for="(el, index) in side.items">
+              <li :key="indexEl" v-for="(el, indexEl) in side.items">
                 <div v-if="el.type === 'text'" class="d-flex justify-content-start">
                   <div class="sidebar-article__prints-list__icon">
                     <span>T</span>
@@ -72,12 +72,12 @@
               >Размер печати {{side.printSize.name}}</div>
               <div class="sidebar-article__printing__item-price">{{printPrice(side)}} UAH</div>
             </div>
-            <div class="sidebar-article__printing__item" v-if="!side.printSize">
-              <div class="sidebar-article__printing__item-name">Стоимость печати</div>
-              <div class="sidebar-article__printing__item-price">{{printPrice3d()}} UAH</div>
-            </div>
           </div>
         </template>
+        <div class="sidebar-article__printing__item" v-if="!base.printSizes.length">
+          <div class="sidebar-article__printing__item-name">Стоимость печати</div>
+          <div class="sidebar-article__printing__item-price">{{printPrice3d()}} UAH</div>
+        </div>
       </div>
       <div class="sidebar-article__prints" v-if="features.length">
         <div class="sidebar-article__group-title">Дополнительно</div>
