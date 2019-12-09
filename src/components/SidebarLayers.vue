@@ -92,7 +92,7 @@
             <div
               class="sidebar-layers__side-layer"
               :key="itemIndex"
-              v-for="(layer, itemIndex) in side.items"
+              v-for="(layer, itemIndex) in draggList[index].items"
             >
               <div v-if="layer.type === 'text'" class="d-flex justify-content-start">
                 <div class="sidebar-layers__side-layer__icon">
@@ -185,7 +185,13 @@ export default {
     },
     change() {
       const items = [];
-      this.draggList.forEach(item => items.push(...item.items));
+      this.draggList.forEach((item, index) => {
+        let list = [...item.items];
+        list.map(lay => {
+          lay.side = this.renderSides[index].id;
+        });
+        items.push(...list);
+      });
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
     },
     duplicateLayer(item) {
