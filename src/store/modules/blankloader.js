@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { BLANKLOAD_GET, GET_BASE } from '../actions.type';
+import { BLANKLOAD_GET, GET_BASE, BLANKLOAD_CART_GET } from '../actions.type';
 import { 
     CONSTRUCTOR_ADD_ITEM, 
     CONSTRUCTOR_SET_LOADING, 
@@ -56,6 +56,14 @@ const actions = {
     context.commit(CONSTRUCTOR_SET_LOADING, false);
     
    },
+   [BLANKLOAD_CART_GET]: async (context, id) => {
+    context.commit(CONSTRUCTOR_SET_LOADING, true);
+    const response = await Vue.axios.get(`constructor-new/clip-arts/cart/${id}`)
+   },
+//    [BLANKLOAD_PROFILE_GET]: async (context, id) => {
+//     context.commit(CONSTRUCTOR_SET_LOADING, true);
+//     const response = await Vue.axios.get(`constructor-new/clip-arts/cart/${id}`)
+//    }
 }
 
 const mutations = {

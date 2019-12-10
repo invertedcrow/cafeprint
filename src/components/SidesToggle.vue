@@ -46,6 +46,7 @@ export default {
 .sides-toggle {
   width: calc(100% - 30px);
   display: none;
+  z-index: 1px;
   @media screen and (max-width: 1200px) {
     display: flex;
   }
