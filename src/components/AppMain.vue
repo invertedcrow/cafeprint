@@ -216,11 +216,6 @@
                 >
                   <template v-if="item.type=='text'">
                     <text
-                      v-bind:key="index"
-                      v-for="(text, index) in item.text"
-                      :x="getTextXPosition(item)"
-                      :y="'0.9em'"
-                      :dy="index + 'em'"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
@@ -228,7 +223,16 @@
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
                       :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
-                    >{{text}}</text>
+                    >  
+                    <tspan  
+                      :y="'0.9em'"
+                      :dy="index + 'em'" 
+                      v-bind:key="index"
+                      v-for="(text, index) in item.text"
+                      :x="getTextXPosition(item)">
+                        {{text}}
+                      </tspan>                    
+                    </text>
                   </template>
 
                   <image
@@ -1413,7 +1417,7 @@ export default {
       updateSizes() {     
         setTimeout(() => {   
             const index     = this.items.indexOf(this.selectedElement);
-            const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           
+            const tSpans    = document.querySelectorAll(`#group-${index} svg > text > tspan`);    
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
             const maxWidth  = widths.length ? Math.max(...widths) : 115;
               if(this.selectedElement && this.selectedElement.fontSize) {
@@ -1424,7 +1428,7 @@ export default {
 
             setTimeout(() => {
               this.sideItems.forEach((item, i) => {
-              const tSpans    = document.querySelectorAll(`#group-${i} svg > text`);           
+              const tSpans    = document.querySelectorAll(`#group-${i} svg > text > tspan`);           
               const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                       
               const maxWidth  = widths.length ? Math.max(...widths) : 115;
                 if(item && item.fontSize) {                  

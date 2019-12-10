@@ -74,11 +74,11 @@ function createTextLayers(context, arr, side) {
             },
             side: side,
             sideName: "Перед",
-            textAnchor: "start",            
+            textAnchor: item.getAttribute('text-anchor'),            
             text: [],       
             font: { name: item.getAttribute('font-family')},          
             color: item.getAttribute('fill') || '#000',
-            bold: item.getAttribute('font-style') == 'bold' ? true : false, 
+            bold: item.getAttribute('font-weight') == 'bold' ? true : false, 
             italic: item.getAttribute('font-style') == 'italic' ? true : false, 
             rotate: 0,    
         }        
