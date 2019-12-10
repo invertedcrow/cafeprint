@@ -3,15 +3,14 @@ import { CONSTRUCTOR_ADD_ITEM } from '../store/mutations.type';
 export default function renderSvg(context, svg, side) {   
     let element = new DOMParser().parseFromString(svg, "text/html");
     let groups = element.getElementById("containerGroupMain");  
-  
+   
     let images = groups.querySelectorAll('image');
     let texts = groups.querySelectorAll('text');
-   
-    if(images) {
+
+    if(images && images.length) {
         createImageLayers(context, images, side)
     }
-   
-    if(texts) {
+    if(texts && texts.length) {
         createTextLayers(context, texts, side)
     }
    

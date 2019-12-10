@@ -27,19 +27,19 @@
 
     <div class="constructor-sidebar__btns" v-if="isValid">
       <button
-        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length"
+        v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length && !editProfileProduct"
         @click.prevent="onGetPriceClicked"
         class="get-price"
       >Узнать стоимость</button>
       <button
         id="popover-select-side"
         class="get-price"
-        v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length"
+        v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length "
       >Сохранить себе</button>
       <button
         id="popover-select-side-admin"
         class="get-price"
-        v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct"
+        v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct && !editProfileProduct"
       >Сохранить</button>
       <button
         id="popover-select-side-product"
@@ -157,7 +157,8 @@ export default {
       "items",
       "isValid",
       "editProduct",
-      "features"
+      "features",
+      "editProfileProduct"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -224,6 +225,8 @@ export default {
       const params = {
         mainblankid: item.mainblank_id,
         preview_side_id: item.id,
+        colormainblank_id: this.color.id,
+        features: this.features,
         sides
       };
       this.$refs.popover.$emit("close");

@@ -19,3 +19,4 @@ export const USER_GET_ROLE         = "getUserRole";
 
 export const BLANKLOAD_GET         = "getBlank";
 export const BLANKLOAD_CART_GET    = "getBlankFromCarts";
+export const BLANKLOAD_PROFILE_GET = "getBlankFromProfile"

@@ -7,7 +7,7 @@
       v-if="!isValid"
       class="main__alert-message"
     >Размер принта превышает допустимый размер печати.</div>
-    <div class="constructor" :style="{borderColor: base.color}">
+    <div class="constructor">
       <svg
         id="editor"
         :viewBox="'0 0 500 500'"

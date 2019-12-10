@@ -4,7 +4,7 @@ import {
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
     CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
-    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES
+    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES
 } from '../mutations.type';
 
 import {
@@ -56,6 +56,8 @@ const initialState = () => ({
     isLoading: true,
     base:  initialBase(),
     editProduct: null,
+    editProfileProduct: null,
+    editCartProduct: null,
     features: []
 });
 
@@ -114,14 +116,19 @@ const getters = {
   maxPrintSize: (state) => state.maxPrintSize,
   isLoading: (state) => state.isLoading,
   isValid: (state) => {
-      let findInvalid = state.base.sides.find(item => item.invalid);
-      if(findInvalid && state.maxPrintSize) {
-          return false
-      }
+        if(state.base) {
+            let findInvalid = state.base.sides.find(item => item.invalid);
+            if(findInvalid && state.maxPrintSize) {
+                return false
+            }
 
       return true
+      }
+      
   },
   editProduct: (state) => state.editProduct,
+  editProfileProduct: (state) => state.editProfileProduct,
+  editCartProduct: (state) => state.editCartProduct,
   baseFeatures: (state) => state.base.features,
   features: (state) => state.features,
 };
@@ -267,6 +274,8 @@ const mutations = {
         }       
     },
     [CONSTRUCTOR_RESET_FEATURES]: (state) => state.features = [],
+    [CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT]: (state, product) => state.editProfileProduct = product,
+    [CONSTRUCTOR_SET_EDIT_CART_PRODUCT]: (state, product) => state.editCartProduct = product,
 };
 
 export default {
