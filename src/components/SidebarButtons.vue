@@ -38,7 +38,7 @@
         class="baseBtn secondary"
         v-for="(item, index) in renderSides"
         :key="index"
-        @click="onSave(item)"
+        @click="onSaveToProfile(item)"
       >{{item.name}}</div>
     </b-popover>
     <b-popover
@@ -83,7 +83,7 @@
 import { mapGetters, mapActions } from "vuex";
 import {
   GET_PRICE,
-  SAVE_SIDES_ELEMS_SAVE,
+  SAVE_ITEM_TO_PROFILE,
   SAVE_TO_CART,
   SAVE_CHANGES,
   SAVE_ADD_PRODUCT,
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      SAVE_SIDES_ELEMS_SAVE,
+      SAVE_ITEM_TO_PROFILE,
       SAVE_TO_CART,
       SAVE_CHANGES,
       SAVE_ADD_PRODUCT
@@ -211,13 +211,17 @@ export default {
       this.$store.dispatch(GET_PRICE, params);
       this.$store.commit("setActiveSidebar", Sidebar.PRICE);
     },
-    onSave(item) {
+    onSaveToProfile(item) {
       let sides = this.sidesElems.slice();
+      let id = this.editProfileProduct;
       sides.forEach(side => {
         side.svg = side.svg
           .replace(/<mask.*mask>/, "")
           .replace(/mask="url\(\#mainMask\)"/g, "")
           .replace(/\<image.*?<\/image>/, "");
+        if (id) {
+          side.isModify = true;
+        }
       });
       const params = {
         mainblankid: item.mainblank_id,
@@ -227,7 +231,8 @@ export default {
         sides
       };
       this.$refs.popover.$emit("close");
-      this.$store.dispatch(SAVE_SIDES_ELEMS_SAVE, params);
+
+      this.$store.dispatch(SAVE_ITEM_TO_PROFILE, { params, id });
     },
     onUpdatePrint(item) {
       let sides = [];

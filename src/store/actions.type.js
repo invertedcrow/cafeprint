@@ -10,7 +10,7 @@ export const GET_FONTS             = "getFonts";
 
 export const GET_PRICE             = "getPrice";
 
-export const SAVE_SIDES_ELEMS_SAVE = "saveToProfile";
+export const SAVE_ITEM_TO_PROFILE = "saveToProfile";
 export const SAVE_TO_CART          = "saveToCart";
 export const SAVE_UPDATE_CART_ITEM = "updateItemCart";
 export const SAVE_CHANGES          = "updatePrint";

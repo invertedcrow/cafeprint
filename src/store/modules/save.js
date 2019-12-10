@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { SAVE_SIDES_ELEMS_SAVE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET, SAVE_UPDATE_CART_ITEM } from '../actions.type';
+import { SAVE_ITEM_TO_PROFILE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET, SAVE_UPDATE_CART_ITEM, SAVE_PROFILE_ITEM_UPDATE } from '../actions.type';
 import { SAVE_SET_SIDES_LIST, CONSTRUCTOR_SET_LOADING } from '../mutations.type'
 import qs  from 'qs';
 import { MODALS, MESSAGE } from '../../consts';
@@ -18,12 +18,17 @@ const getters = {
 }
 
 const actions = {
-    [SAVE_SIDES_ELEMS_SAVE]: async (context, params) => {
+    [SAVE_ITEM_TO_PROFILE]: async (context, data) => {
         context.commit(CONSTRUCTOR_SET_LOADING, true);
-        const encParams = qs.stringify(params);
-        try {
-            const response =  await Vue.axios.post('/constructor-new/save/profile', encParams); 
-            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        const encParams = qs.stringify(data.params);
+        try {           
+            let response;
+            if(data.id) {
+                response =  await Vue.axios.put(`/constructor-new/save/profile/${data.id}`, encParams); 
+            } else {
+                response =  await Vue.axios.post('/constructor-new/save/profile', encParams); 
+            }            
+            context.commit(CONSTRUCTOR_SET_LOADING, false);            
             if(response.data) {
                 eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.SAVE_TO_PROFILE_SUCCES);
             } 
