@@ -1273,13 +1273,14 @@ export default {
               }
               if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
                   const startAngle = item.drag.angle - (Math.atan2(item.drag.my - item.drag.oY, item.drag.mx - item.drag.oX) * (180 / Math.PI));
-
+                   
                   var dx = event.x - item.drag.oX,
                       dy = event.y - item.drag.oY,
                       angle = (Math.atan2(dy, dx) * (180 / Math.PI));
+                 
                   const newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
-                    item.rotate = newAngle % 359;                 
-                               
+                    item.rotate = newAngle % 359;                
+                            
                     item.matrix = "1,0,0,1,0,0";                     
                     item.matrix = `matrix(${Math.cos(item.rotate)},${-Math.sin(item.rotate)},${Math.sin(item.rotate)},${Math.cos(item.rotate)},0,0)`;
                     let cX = item.x + item.width/2;

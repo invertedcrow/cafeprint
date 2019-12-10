@@ -64,7 +64,6 @@ const actions = {
 
     const base =  response.data.colorMainBlank.mainBlank
     const sides = response.data.sides;
-    console.log(response.data)
     let side = base.sides.find(item => item.id == response.data.preview_side_id);
     let color = { 
         id: response.data.colorMainBlank.id,
