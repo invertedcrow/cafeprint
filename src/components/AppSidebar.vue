@@ -340,6 +340,7 @@ export default {
 
 <style lang="scss" scoped>
 .constructor-sidebar {
+  z-index: 5;
   //margin-top: 50px;
   &__btns {
     margin: -5px;

@@ -65,12 +65,16 @@ const actions = {
     const base =  response.data.colorMainBlank.mainBlank
     const sides = response.data.sides;
    
-    let side = base.sides.find(item => item.id == response.data.preview_side_id)
+    let side = base.sides.find(item => item.id == response.data.preview_side_id);
+    let color = { 
+        id: response.data.colorMainBlank.id,
+        color: response.data.colorMainBlank.color
+    };
     context.commit(CONSTRUCTOR_SET_ITEMS, [])
     context.commit(CONSTRUCTOR_SET_EDIT_CART_PRODUCT, id);
     context.commit(CONSTRUCTOR_SET_BASE, base);
     context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side ? side : base.sides[0]);
-    context.commit(CONSTRUCTOR_SET_COLOR, { id: response.data.colorMainBlank.id });
+    context.commit(CONSTRUCTOR_SET_COLOR, color);
    
     context.commit(PRICE_SET_SIZES_LIST, base.sizes);   
     context.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.printSizes);
@@ -93,11 +97,15 @@ const actions = {
     const sides = response.data.sides;
    
     let side = base.sides.find(item => item.id == response.data.preview_side_id);
+    let color = { 
+        id: response.data.colorMainBlank.id,
+        color: response.data.colorMainBlank.color
+    };
     context.commit(CONSTRUCTOR_SET_ITEMS, []);
     context.commit(CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, id);
     context.commit(CONSTRUCTOR_SET_BASE, base);
     context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side ? side : base.sides[0]);
-    context.commit(CONSTRUCTOR_SET_COLOR, { id: response.data.colorMainBlank.id });
+    context.commit(CONSTRUCTOR_SET_COLOR, color);
    
     context.commit(PRICE_SET_SIZES_LIST, base.sizes);   
     context.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.printSizes);
