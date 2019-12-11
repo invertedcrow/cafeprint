@@ -82,7 +82,7 @@ export default {
       width: calc(33% - 6px);
     }
     @media screen and (max-width: 768px) {
-      width: calc(50% - 9px);
+      width: calc(50% - 6px);
     }
     &-hover {
       display: none;

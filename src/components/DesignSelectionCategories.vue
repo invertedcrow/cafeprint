@@ -15,13 +15,14 @@
           <div v-if="item.children">
             <design-category-collapse :category="item" />
           </div>
-          <div
-            v-else
-            class="design-categories__item d-flex align-items-center"
-            @click="setActiveCategory(item)"
-          >
-            <checkbox :checked="isActive(item.id)" />
-            <p>{{item.name}}</p>
+          <div v-else class="d-flex align-items-start flex-column">
+            <div
+              class="design-categories__item d-flex align-items-center"
+              @click="setActiveCategory(item)"
+            >
+              <checkbox :checked="isActive(item.id)" />
+              <p>{{item.name}}</p>
+            </div>
           </div>
         </div>
       </b-collapse>
@@ -52,7 +53,7 @@ export default {
     setActiveCategory(item) {
       item.active = item.active ? false : true;
       let arr = [];
-      
+
       if (this.category_ids) {
         arr = this.category_ids;
       }

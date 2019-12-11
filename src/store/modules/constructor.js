@@ -139,14 +139,22 @@ const actions = {
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
              
         if(state.state.items.length) {
-            let items = [...state.state.items];        
-            let sides = base.data.sides;
-            items.forEach((item) => {
-            const side = sides.find((i) => i.name == item.sideName);               
-            if(side) {
-                item.side = side.id;
+            let renSides = [...state.getters.renderSides]     
+            let sides = [...base.data.sides];           
+
+            let items =[]
+            if(renSides && renSides.length) {
+                sides.forEach((item, i) => {
+                    if(renSides[i]) {
+                        renSides[i].items.forEach((layer) => {
+                            layer.side = item.id
+                            layer.sideName = item.name
+                            items.push(layer)
+                        })
+                    }
+                })
             }
-            })
+           
             state.commit(CONSTRUCTOR_SET_ITEMS, items)
         }      
         

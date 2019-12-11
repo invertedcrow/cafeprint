@@ -346,6 +346,12 @@ export default {
   //margin-top: 50px;
   &__btns {
     margin: -5px;
+    @media screen and (max-width: 440px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
   }
   @media screen and (max-width: 992px) {
     margin-top: 0;

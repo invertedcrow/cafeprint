@@ -1,36 +1,78 @@
 <template>
   <div>
-    <b-modal :id="MODALS.PRODUCTS" hide-footer hide-header modal-class="products-modal xl-modal">
+    <b-modal
+      :id="MODALS.PRODUCTS"
+      hide-footer
+      hide-header
+      size="xl"
+      modal-class="constructor-modal products-modal xl-modal"
+    >
       <modal-products />
     </b-modal>
 
     <!-- @hide="showFilterModal(false)" -->
 
-    <b-modal :id="MODALS.DESIGNS" hide-footer hide-header modal-class="design-modal xl-modal">
+    <b-modal
+      :id="MODALS.DESIGNS"
+      hide-footer
+      hide-header
+      size="xl"
+      modal-class="constructor-modal design-modal xl-modal"
+    >
       <modal-design />
     </b-modal>
 
-    <b-modal :id="MODALS.UPLOAD" modal-class="upload-modal md-modal" hide-footer hide-header>
+    <b-modal
+      :id="MODALS.UPLOAD"
+      modal-class="constructor-modal upload-modal md-modal"
+      hide-footer
+      hide-header
+    >
       <modal-upload />
     </b-modal>
 
-    <b-modal :id="MODALS.INFO" modal-class="info-modal md-modal" hide-footer hide-header>
+    <b-modal
+      :id="MODALS.INFO"
+      modal-class="constructor-modal info-modal md-modal"
+      hide-footer
+      hide-header
+    >
       <modal-info />
     </b-modal>
 
-    <b-modal :id="MODALS.SIZES" modal-class="sizes-modal md-modal" hide-footer hide-header>
+    <b-modal
+      :id="MODALS.SIZES"
+      modal-class="constructor-modal sizes-modal md-modal"
+      hide-footer
+      hide-header
+    >
       <modal-sizes />
     </b-modal>
 
-    <b-modal :id="MODALS.SIZES_READONLY" modal-class="sizes-modal md-modal" hide-footer hide-header>
+    <b-modal
+      :id="MODALS.SIZES_READONLY"
+      modal-class="constructor-modal sizes-modal md-modal"
+      hide-footer
+      hide-header
+    >
       <modal-sizes :readonly="true" />
     </b-modal>
 
-    <b-modal :id="MODALS.MESSAGE" modal-class="message-modal" hide-footer hide-header>
+    <b-modal
+      :id="MODALS.MESSAGE"
+      modal-class="constructor-modal message-modal"
+      hide-footer
+      hide-header
+    >
       <modal-message :message="message" />
     </b-modal>
 
-    <b-modal :id="MODALS.CART_ADDED" modal-class="message-modal" hide-footer hide-header>
+    <b-modal
+      :id="MODALS.CART_ADDED"
+      modal-class="constructor-modal message-modal"
+      hide-footer
+      hide-header
+    >
       <modal-message-cart />
     </b-modal>
   </div>

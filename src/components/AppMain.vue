@@ -170,8 +170,8 @@
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
-                  width="15px"
-                  height="15px"
+                  :width="tools.squaresizeIcon"
+                  :height="tools.squaresizeIcon"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
                   :x="5"
@@ -448,6 +448,7 @@ export default {
               y: 0  
             },
             currSize: null,
+            currBase: null,
             TextAlignment,
             CONSTRUCTOR_HANDLES,
             allItemsParams: null,
@@ -503,15 +504,17 @@ export default {
             
             }
           }
+          this.currBase = val;
         },
-        size: function(val) {  
+        size: function(val) { 
           if(this.currSize && val) {
              let diff = Math.min(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
             if(+this.currSize.width > +val.width) {
                 diff = Math.max(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
             }
-           
-            this.resizeAllLayers(diff);
+            if(this.currBase && this.currBase.id == val.id) {
+               this.resizeAllLayers(diff);
+            }           
           }
           this.currSize = val
         },
@@ -809,6 +812,7 @@ export default {
 
       onMouseDownGroup(eDown, items, handle) {         
           let isCanMove = true;
+           eDown.preventDefault(); 
           eDown.stopPropagation(); 
 
           document.onmouseup = () => {
@@ -823,6 +827,7 @@ export default {
               this.dragging = false;
               this.rotation = false;
               this.scaling = false;
+              this.itemTouch = null;  
               document.ontouchmove = null;
               isCanMove = false;
           };   
@@ -833,7 +838,7 @@ export default {
           const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);         
           const edBounds              = this.editableAreaEl.getBoundingClientRect();          
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();          
-          const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
+          const o = {x: edBounds.left + (item.width / 2), y: edBounds.top + (item.height / 2) };
       
           item.drag = {
               x:        item.x,
@@ -868,7 +873,7 @@ export default {
                  
       },  
        handleMoveGroup(event, handle, selectedElementNode, edBounds) {  
-            
+           this.itemTouch = true;  
            this.selectedLayers.forEach((item, index) => {                
               if (!handle) {
                   this.hideLines();
@@ -1016,6 +1021,8 @@ export default {
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
+          } else {
+            this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
           }
           const selectedElementIndex  = this.sideItems.indexOf(item);
 
@@ -1023,8 +1030,7 @@ export default {
 
           const edBounds              = this.editableAreaEl.getBoundingClientRect();
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();
-          const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
-
+          const o = {x: edBounds.left + (item.width / 2), y: edBounds.top + (item.height / 2) };
           item.drag = {
               x:        !handle ? item.x + item.x*(this.scaleWidth/100 - 1) : item.x,
               y:        !handle ? item.y + item.y*(this.scaleWidth/100 - 1) : item.y,
@@ -1541,6 +1547,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
   }
   @media screen and (max-width: 768px) {
     width: 90%;
+    margin-bottom: 20px;
   }
 }
 
