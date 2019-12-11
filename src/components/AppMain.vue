@@ -7,7 +7,7 @@
       v-if="!isValid"
       class="main__alert-message"
     >Размер принта превышает допустимый размер печати.</div>
-    <div class="constructor" :style="{borderColor: base.color}">
+    <div class="constructor">
       <svg
         id="editor"
         :viewBox="'0 0 500 500'"
@@ -153,7 +153,7 @@
                     d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
                   />
                 </svg>
-              </g> -->
+              </g>-->
 
               <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
@@ -170,8 +170,8 @@
                 <svg
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   class="ctrl-icon"
-                  width="15px"
-                  height="15px"
+                  :width="tools.squaresizeIcon"
+                  :height="tools.squaresizeIcon"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
                   :x="5"
@@ -216,11 +216,6 @@
                 >
                   <template v-if="item.type=='text'">
                     <text
-                      v-bind:key="index"
-                      v-for="(text, index) in item.text"
-                      :x="getTextXPosition(item)"
-                      :y="'0.9em'"
-                      :dy="index + 'em'"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
@@ -228,7 +223,16 @@
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
                       :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
-                    >{{text}}</text>
+                    >  
+                    <tspan  
+                      :y="'0.9em'"
+                      :dy="index + 'em'" 
+                      v-bind:key="index"
+                      v-for="(text, index) in item.text"
+                      :x="getTextXPosition(item)">
+                        {{text}}
+                      </tspan>                    
+                    </text>
                   </template>
 
                   <image
@@ -288,14 +292,13 @@
                     </g>
                   </svg>
                 </svg>
-                <g v-if="selectedElement === item && !selectedLayers.length || item.invalid">
+                <g v-if="selectedElement === item && !selectedLayers.length">
                   <rect
                     :x="item.x"
                     :y="item.y"
                     :width="item.width"
                     :height="item.height"
                     class="ctrl-bounds"
-                    :class="{invalid: item.invalid}"
                   />
                   <g
                     fill="#5e6a7d"
@@ -403,6 +406,15 @@
                     </g>
                   </g>
                 </g>
+                <rect
+                  v-if="item.invalid"
+                  :x="item.x"
+                  :y="item.y"
+                  :width="item.width"
+                  :height="item.height"
+                  class="ctrl-bounds"
+                  :class="{invalid: item.invalid}"
+                />
               </g>
             </g>
           </svg>
@@ -436,6 +448,7 @@ export default {
               y: 0  
             },
             currSize: null,
+            currBase: null,
             TextAlignment,
             CONSTRUCTOR_HANDLES,
             allItemsParams: null,
@@ -491,15 +504,17 @@ export default {
             
             }
           }
+          this.currBase = val;
         },
-        size: function(val) {  
+        size: function(val) { 
           if(this.currSize && val) {
              let diff = Math.min(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
             if(+this.currSize.width > +val.width) {
                 diff = Math.max(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
             }
-           
-            this.resizeAllLayers(diff);
+            if(this.currBase && this.currBase.id == val.id) {
+               this.resizeAllLayers(diff);
+            }           
           }
           this.currSize = val
         },
@@ -570,7 +585,7 @@ export default {
         tools() {
           return {
             squaresize: this.windowWidth < 768 ? 60 : 24,
-            squaresizeIcon: this.windowWidth < 768 ? 45 : 15,
+            squaresizeIcon: this.windowWidth < 768 ? 50 : 15,
             min_height: 10
           }               
       },
@@ -641,39 +656,42 @@ export default {
 
         items.forEach((item, i) => {          
           if(this.size) {
-            if(item.x < +this.sideArea.x) {
+            if(item.x < +this.sideArea.x && (item.x + item.width) < (+this.sideArea.x + +this.sideArea.width)) {
               item.visibleX = +this.sideArea.x;
               item.visibleWidth = item.width - (+this.sideArea.x - item.x)
                if(item.visibleWidth < 0) {
                  item.visibleX = -1;
-              }
-              item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
-            } else if((item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
+              }             
+            } else if((item.x > +this.sideArea.x) && (item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
               item.visibleX = item.x < (+this.sideArea.x + +this.sideArea.width) ? item.x : -1;
-              item.visibleWidth = item.width - ((item.x + item.width) - (+this.sideArea.x + +this.sideArea.width))
-              item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
+              item.visibleWidth = item.width - ((item.x + item.width) - (+this.sideArea.x + +this.sideArea.width))             
+            } else if(item.x < +this.sideArea.x && (item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
+              item.visibleX = +this.sideArea.x;
+              item.visibleWidth = +this.sideArea.width;
             } else {
               item.visibleX = item.x;
               item.visibleWidth = item.width;
-              item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
             }
+            item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
             
-            if(item.y < +this.sideArea.y) {
+            if(item.y < +this.sideArea.y && (item.y + item.height) < (+this.sideArea.y + +this.sideArea.height)) {
               item.visibleY = +this.sideArea.y;
               item.visibleHeight = item.height - (+this.sideArea.y - item.y);
               if(item.visibleHeight < 0) {
                  item.visibleY = -1;
               }
-              item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;
-            } else if((item.y + item.height) > (+this.sideArea.y + +this.sideArea.height)) {
+            } else if((item.y > +this.sideArea.y) && (item.y + item.height) > (+this.sideArea.y + +this.sideArea.height)) {
               item.visibleY = item.y < (+this.sideArea.y + +this.sideArea.height) ? item.y : -1;             
               item.visibleHeight = item.height - ((item.y + item.height) - (+this.sideArea.y + +this.sideArea.height))
-              item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;
+            } else if(item.y < +this.sideArea.y && (item.y + item.height) > (+this.sideArea.y + +this.sideArea.height)) {
+              item.visibleY = +this.sideArea.y;
+              item.visibleHeight = +this.sideArea.height;
             } else {
               item.visibleY = item.y;
               item.visibleHeight = item.height;
-              item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;
-            }           
+            }     
+            item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;    
+
            if(item.visibleX == -1 || item.visibleY == -1) {
               items.splice(i, 1)
             }
@@ -794,6 +812,7 @@ export default {
 
       onMouseDownGroup(eDown, items, handle) {         
           let isCanMove = true;
+           eDown.preventDefault(); 
           eDown.stopPropagation(); 
 
           document.onmouseup = () => {
@@ -808,6 +827,7 @@ export default {
               this.dragging = false;
               this.rotation = false;
               this.scaling = false;
+              this.itemTouch = null;  
               document.ontouchmove = null;
               isCanMove = false;
           };   
@@ -818,7 +838,7 @@ export default {
           const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`);         
           const edBounds              = this.editableAreaEl.getBoundingClientRect();          
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();          
-          const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
+          const o = {x: edBounds.left + (item.width / 2), y: edBounds.top + (item.height / 2) };
       
           item.drag = {
               x:        item.x,
@@ -853,7 +873,7 @@ export default {
                  
       },  
        handleMoveGroup(event, handle, selectedElementNode, edBounds) {  
-            
+           this.itemTouch = true;  
            this.selectedLayers.forEach((item, index) => {                
               if (!handle) {
                   this.hideLines();
@@ -947,31 +967,49 @@ export default {
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
 
-                  let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
-                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
+                //   let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
+                //   let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
 
                 
-                  distance = (distance - centerToDot) * 1.95;
+                //   distance = (distance - centerToDot) * 1.95;
                 
-                  const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.size.width;
-                  const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.size.height; 
+                //   const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.size.width;
+                //   const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.size.height; 
 
-                  // if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
-                  //   return         
-                  // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
-                  //   return
-                  // }
-                   const ratio   = item.drag.h / item.drag.w;    
-                   const diff_before = (+this.sideArea.width - item.width)/2
+                //   // if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
+                //   //   return         
+                //   // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
+                //   //   return
+                //   // }
+                //    const ratio   = item.drag.h / item.drag.w;    
+                //    const diff_before = (+this.sideArea.width - item.width)/2
 
                 
-                  item.width    += distance/20;
-                  item.height   = item.width*ratio; 
-                  const diff_current = (+this.sideArea.width - item.width)/2
+                //   item.width    += distance/20;
+                //   item.height   = item.width*ratio; 
+                //   const diff_current = (+this.sideArea.width - item.width)/2
                  
-                  item.x        = item.x - (diff_before - diff_current),
-                 // item.y        = item.y - (diff_before - diff_current),
-                  item.fontSize = item.fontSize ? item.height / item.text.length : null;
+                //   item.x        = item.x - (diff_before - diff_current),
+                //  // item.y        = item.y - (diff_before - diff_current),
+                //   item.fontSize = item.fontSize ? item.height / item.text.length : null;
+                  if(this.groupParams.width < 20 || this.groupParams.height < 20 ) {
+                    return
+                  }
+
+                  const diff_before_w = (item.width - 500)/2
+                  const diff_before_h = (item.height - 500)/2
+                  const ratio   = item.drag.h / item.drag.w;
+                  item.width = Math.max(item.drag.w + event.x - item.drag.mx, 20);           
+                  item.height   = item.width * ratio;
+                  const diff_current_w = (item.width - 500)/2;
+                  const diff_current_h = (item.height - 500)/2
+                  item.x = item.x + diff_before_w - diff_current_w;
+                  item.y = item.y + diff_before_h - diff_current_h;
+                 
+                  if(item.type == 'text') {
+                    item.fontSize = item.height / item.text.length;
+                  }
+                  item =  this.checkItemPosition(item);
                   
               }
               })
@@ -983,6 +1021,8 @@ export default {
           this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, item);
           if (item.type === 'text') {
               this.$store.commit('setActiveSidebar', Sidebar.TEXT);
+          } else {
+            this.$store.commit('setActiveSidebar', Sidebar.PRODUCT);
           }
           const selectedElementIndex  = this.sideItems.indexOf(item);
 
@@ -990,8 +1030,7 @@ export default {
 
           const edBounds              = this.editableAreaEl.getBoundingClientRect();
           const elBounds              = selectedElementNode.querySelector('rect').getBoundingClientRect();
-          const o = {x: edBounds.left + item.x + (item.width / 2), y: edBounds.top + item.y + (item.height / 2) };
-
+          const o = {x: edBounds.left + (item.width / 2), y: edBounds.top + (item.height / 2) };
           item.drag = {
               x:        !handle ? item.x + item.x*(this.scaleWidth/100 - 1) : item.x,
               y:        !handle ? item.y + item.y*(this.scaleWidth/100 - 1) : item.y,
@@ -1240,13 +1279,14 @@ export default {
               }
               if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
                   const startAngle = item.drag.angle - (Math.atan2(item.drag.my - item.drag.oY, item.drag.mx - item.drag.oX) * (180 / Math.PI));
-
+                   
                   var dx = event.x - item.drag.oX,
                       dy = event.y - item.drag.oY,
                       angle = (Math.atan2(dy, dx) * (180 / Math.PI));
+                 
                   const newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
-                    item.rotate = newAngle % 359;                 
-                               
+                    item.rotate = newAngle % 359;                
+                            
                     item.matrix = "1,0,0,1,0,0";                     
                     item.matrix = `matrix(${Math.cos(item.rotate)},${-Math.sin(item.rotate)},${Math.sin(item.rotate)},${Math.cos(item.rotate)},0,0)`;
                     let cX = item.x + item.width/2;
@@ -1255,35 +1295,42 @@ export default {
                     item.matrix = toSVG(rotateDEG(item.rotate, cX, cY))                    
               }
               if (handle === CONSTRUCTOR_HANDLES.SCALE) {
-                  let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
-                  let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
+                // item.width = Math.max(item.drag.w + event.x - item.drag.mx, 20);
+                // item.height = Math.max(item.drag.h + event.y - item.drag.my, 20);
 
-                  // TODO Не знаю почему 1.95, но оно неплохо работает
-                  distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
-                  if(this.size) {
-                    const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.size.width;
-                    const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.size.height; 
-                  }                    
+                  // let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
+                  // let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
+
+                  // // TODO Не знаю почему 1.95, но оно неплохо работает
+                  // distance = (distance - centerToDot) * 1.95; // * (distance / centerToDot) ??? fix
+                  // if(this.size) {
+                  //   const realItemsWidth = (item.drag.w + distance)/this.sideArea.width*this.size.width;
+                  //   const realItemsHeight = (item.drag.h + distance)/this.sideArea.height*this.size.height; 
+                  // }                    
                
-                  if((item.drag.w + distance) < 1 || (item.drag.h + distance) < 1) {
-                    return
-                  }
+                  // if((item.drag.w + distance) < 1 || (item.drag.h + distance) < 1) {
+                  //   return
+                  // }
                   // if(item.drag.w + distance > 500 || item.drag.h + distance * ratio > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {                  
                   //    this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
                   //   return         
                   // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
                   //   return
                   // }
-
+                  const diff_before_w = (item.width - 500)/2
+                  const diff_before_h = (item.height - 500)/2
                   const ratio   = item.drag.h / item.drag.w;
-                  item.width    = item.drag.w + distance;
-                  item.height   = item.drag.h + distance * ratio;
-                  item.x        = item.drag.x + (distance * -1) / 2;
-                  item.y        = item.drag.y + (distance * -1 * ratio) / 2;
+                  item.width = Math.max(item.drag.w + event.x - item.drag.mx, 20);           
+                  item.height   = item.width * ratio;
+                  const diff_current_w = (item.width - 500)/2;
+                  const diff_current_h = (item.height - 500)/2
+                  item.x = item.x + diff_before_w - diff_current_w;
+                  item.y = item.y + diff_before_h - diff_current_h;
                  
                   if(item.type == 'text') {
                     item.fontSize = item.height / item.text.length;
                   }
+                   item =  this.checkItemPosition(item)
               }
           },
       hideLines() {
@@ -1377,7 +1424,7 @@ export default {
       updateSizes() {     
         setTimeout(() => {   
             const index     = this.items.indexOf(this.selectedElement);
-            const tSpans    = document.querySelectorAll(`#group-${index} svg > text`);           
+            const tSpans    = document.querySelectorAll(`#group-${index} svg > text > tspan`);    
             const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                   
             const maxWidth  = widths.length ? Math.max(...widths) : 115;
               if(this.selectedElement && this.selectedElement.fontSize) {
@@ -1388,7 +1435,7 @@ export default {
 
             setTimeout(() => {
               this.sideItems.forEach((item, i) => {
-              const tSpans    = document.querySelectorAll(`#group-${i} svg > text`);           
+              const tSpans    = document.querySelectorAll(`#group-${i} svg > text > tspan`);           
               const widths    = Array.from(tSpans).map(x => x.getComputedTextLength());                       
               const maxWidth  = widths.length ? Math.max(...widths) : 115;
                 if(item && item.fontSize) {                  
@@ -1500,10 +1547,11 @@ var swapArrayElements = function (arr, indexA, indexB) {
   }
   @media screen and (max-width: 768px) {
     width: 90%;
+    margin-bottom: 20px;
   }
 }
 
-#editor {  
+#editor {
   width: 100%;
   height: 100%;
   /*width: auto;*/

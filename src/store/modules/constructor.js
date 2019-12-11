@@ -4,7 +4,7 @@ import {
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
     CONSTRUCTOR_SET_PRINT_SIZE, PRICE_SET_ITEM, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
-    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES
+    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES
 } from '../mutations.type';
 
 import {
@@ -56,6 +56,8 @@ const initialState = () => ({
     isLoading: true,
     base:  initialBase(),
     editProduct: null,
+    editProfileProduct: null,
+    editCartProduct: null,
     features: []
 });
 
@@ -114,14 +116,19 @@ const getters = {
   maxPrintSize: (state) => state.maxPrintSize,
   isLoading: (state) => state.isLoading,
   isValid: (state) => {
-      let findInvalid = state.base.sides.find(item => item.invalid);
-      if(findInvalid && state.maxPrintSize) {
-          return false
-      }
+        if(state.base) {
+            let findInvalid = state.base.sides.find(item => item.invalid);
+            if(findInvalid && state.maxPrintSize) {
+                return false
+            }
 
       return true
+      }
+      
   },
   editProduct: (state) => state.editProduct,
+  editProfileProduct: (state) => state.editProfileProduct,
+  editCartProduct: (state) => state.editCartProduct,
   baseFeatures: (state) => state.base.features,
   features: (state) => state.features,
 };
@@ -132,14 +139,22 @@ const actions = {
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
              
         if(state.state.items.length) {
-            let items = [...state.state.items];        
-            let sides = base.data.sides;
-            items.forEach((item) => {
-            const side = sides.find((i) => i.name == item.sideName);               
-            if(side) {
-                item.side = side.id;
+            let renSides = [...state.getters.renderSides]     
+            let sides = [...base.data.sides];           
+
+            let items =[]
+            if(renSides && renSides.length) {
+                sides.forEach((item, i) => {
+                    if(renSides[i]) {
+                        renSides[i].items.forEach((layer) => {
+                            layer.side = item.id
+                            layer.sideName = item.name
+                            items.push(layer)
+                        })
+                    }
+                })
             }
-            })
+           
             state.commit(CONSTRUCTOR_SET_ITEMS, items)
         }      
         
@@ -267,6 +282,8 @@ const mutations = {
         }       
     },
     [CONSTRUCTOR_RESET_FEATURES]: (state) => state.features = [],
+    [CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT]: (state, product) => state.editProfileProduct = product,
+    [CONSTRUCTOR_SET_EDIT_CART_PRODUCT]: (state, product) => state.editCartProduct = product,
 };
 
 export default {

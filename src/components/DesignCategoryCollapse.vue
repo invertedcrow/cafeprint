@@ -20,21 +20,25 @@
               <div class="filter__category-title">{{subItem.name}}</div>
             </div>
             <b-collapse v-model="subItem.open" class="filter__subCategory">
-              <div
-                v-for="(cat, catIndex) in subItem.children"
-                :key="catIndex"
-                class="filter__subCategory-item d-flex"
-                @click="setActiveCategory(cat)"
-              >
-                <checkbox :checked="isActive(cat.id)" />
-                <p>{{cat.name}}</p>
+              <div class="d-flex flex-column align-items-start">
+                <div
+                  v-for="(cat, catIndex) in subItem.children"
+                  :key="catIndex"
+                  class="filter__subCategory-item d-flex"
+                  @click="setActiveCategory(cat)"
+                >
+                  <checkbox :checked="isActive(cat.id)" />
+                  <p>{{cat.name}}</p>
+                </div>
               </div>
             </b-collapse>
           </div>
         </div>
-        <div v-else class="filter__subCategory-item d-flex" @click="setActiveCategory(subItem)">
-          <checkbox :checked="isActive(subItem.id)" />
-          <p>{{subItem.name}}</p>
+        <div v-else class="d-flex flex-column align-items-start">
+          <div class="filter__subCategory-item d-flex" @click="setActiveCategory(subItem)">
+            <checkbox :checked="isActive(subItem.id)" />
+            <p>{{subItem.name}}</p>
+          </div>
         </div>
       </div>
     </b-collapse>

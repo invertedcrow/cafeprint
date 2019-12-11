@@ -3,15 +3,14 @@ import { CONSTRUCTOR_ADD_ITEM } from '../store/mutations.type';
 export default function renderSvg(context, svg, side) {   
     let element = new DOMParser().parseFromString(svg, "text/html");
     let groups = element.getElementById("containerGroupMain");  
-  
+   
     let images = groups.querySelectorAll('image');
     let texts = groups.querySelectorAll('text');
-   
-    if(images) {
+
+    if(images && images.length) {
         createImageLayers(context, images, side)
     }
-   
-    if(texts) {
+    if(texts && texts.length) {
         createTextLayers(context, texts, side)
     }
    
@@ -75,11 +74,11 @@ function createTextLayers(context, arr, side) {
             },
             side: side,
             sideName: "Перед",
-            textAnchor: "start",            
+            textAnchor: item.getAttribute('text-anchor'),            
             text: [],       
             font: { name: item.getAttribute('font-family')},          
             color: item.getAttribute('fill') || '#000',
-            bold: item.getAttribute('font-style') == 'bold' ? true : false, 
+            bold: item.getAttribute('font-weight') == 'bold' ? true : false, 
             italic: item.getAttribute('font-style') == 'italic' ? true : false, 
             rotate: 0,    
         }        

@@ -20,7 +20,8 @@ import {
   GET_FONTS,
   USER_GET_ROLE,
   BLANKLOAD_GET,
-  BLANKLOAD_CART_GET
+  BLANKLOAD_CART_GET,
+  BLANKLOAD_PROFILE_GET
 } from "./store/actions.type";
 import { USER_ROLE } from "./consts";
 export default {
@@ -54,17 +55,21 @@ export default {
     }
   },
   mounted() {
-    const url = new URL(window.location);
-    const id = url.searchParams.get("product");
     let init = true;
+    const url = new URL(window.location);
 
+    const id = url.searchParams.get("product");
     const uid = url.searchParams.get("cart-item");
+    const save_uid = url.searchParams.get("save_uid");
 
     if (id) {
       this.$store.dispatch(BLANKLOAD_GET, id);
       init = false;
     } else if (uid) {
       this.$store.dispatch(BLANKLOAD_CART_GET, uid);
+      init = false;
+    } else if (save_uid) {
+      this.$store.dispatch(BLANKLOAD_PROFILE_GET, save_uid);
       init = false;
     }
     this.$store.dispatch(GET_BASES_CATEGORIES);

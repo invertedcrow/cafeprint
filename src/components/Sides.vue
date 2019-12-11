@@ -42,13 +42,6 @@
                       :y="0"
                     />
                     <text
-                      :height="item.height"
-                      :width="item.width"
-                      :x="getTextXPosition(item)"
-                      :y="item.height/item.text.length"
-                      v-bind:key="index"
-                      v-for="(text, index) in item.text"
-                      :dy="index + 'em'"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
@@ -56,7 +49,15 @@
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
                       :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
-                    >{{text}}</text>
+                    >
+                      <tspan
+                        :y="'0.9em'"
+                        :dy="index + 'em'"
+                        v-bind:key="index"
+                        v-for="(text, index) in item.text"
+                        :x="getTextXPosition(item)"
+                      >{{text}}</tspan>
+                    </text>
                   </svg>
                 </g>
               </g>

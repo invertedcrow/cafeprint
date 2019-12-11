@@ -84,6 +84,9 @@ export default {
   &__subCategory {
     margin-left: 17px;
     margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
     cursor: pointer;
     p {
       margin-left: 12px;

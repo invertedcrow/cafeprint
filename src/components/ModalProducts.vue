@@ -73,7 +73,8 @@ export default {
 .product-selection {
   display: flex;
   justify-content: space-between;
-  max-height: 750px;
+  height: 750px;
+  max-height: 90vh;
   &__filter-pane {
     width: 190px;
     flex-shrink: 0;
@@ -88,7 +89,6 @@ export default {
   }
   @media screen and (max-width: 768px) {
     flex-direction: column;
-    max-height: 1200px;
     &__filter-pane {
       width: 100%;
     }

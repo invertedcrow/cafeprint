@@ -49,6 +49,9 @@
     </div>
     <hr class="sidebar-product__line-colors-bottom" />
 
+    <div>
+      <features v-if="base.features && base.features.length" />
+    </div>
     <div class="sidebar-product__modal-controls">
       <div v-if="base.sizes && base.sizes.length">
         <a @click="showSizesModal()">
@@ -71,7 +74,6 @@
           <span>Размеры основы</span>
         </a>
       </div>
-      <features v-if="base.features && base.features.length" />
       <hr />
 
       <div class="sidebar-product__layers">
@@ -159,6 +161,9 @@ export default {
     }
     svg {
       margin-right: 13px;
+      @media screen and (max-width: 380px) {
+        margin-right: 8px;
+      }
     }
     &:hover {
       cursor: pointer;
@@ -219,6 +224,9 @@ export default {
       hr {
         display: none;
       }
+    }
+    @media screen and (max-width: 380px) {
+      font-size: 15px;
     }
   }
 }

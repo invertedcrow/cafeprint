@@ -1,5 +1,6 @@
 <template>
   <div class="d-flex flex-column">
+      <div class="modal-title xsvisible">Категории товаров</div>
     <div class="modal-head">
       <div class="modal-head__close" @click="onHide()">
         <svg
@@ -18,8 +19,7 @@
           />
         </svg>
       </div>
-    </div>
-    <div class="modal-title xsvisible mb-3">Категории товаров</div>
+    </div>  
     <perfect-scrollbar>
       <div class="design d-flex justify-content-between">
         <div class="design__search-pane d-flex flex-column">
@@ -73,8 +73,9 @@ export default {
   }
 }
 .design {
-  max-height: 750px;
+  height: 750px;
   // overflow: hidden;
+  max-height: 90vh;
   .modal-title {
     margin-bottom: 20px;
     &.xsvisible {
@@ -95,12 +96,10 @@ export default {
     top: 45%;
     height: 100px;
   }
-  @media screen and (max-width: 992px) {
-    max-height: calc(100vh - 150px);
-  }
   @media screen and (max-width: 768px) {
     flex-direction: column;
-    max-height: 800px;
+    height: 750px;
+    max-height: calc(100vh - 200px);
     &__search-pane {
       width: 100%;
       padding-right: 18px;
