@@ -42,6 +42,7 @@
                       :y="0"
                     />
                     <text
+                      v-if="item.type=='text'"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
