@@ -222,16 +222,15 @@
                       :font-weight="item.bold ? 'bold' : 'normal'"
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
-                      :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
-                    >  
-                    <tspan  
-                      :y="'0.9em'"
-                      :dy="index + 'em'" 
-                      v-bind:key="index"
-                      v-for="(text, index) in item.text"
-                      :x="getTextXPosition(item)">
-                        {{text}}
-                      </tspan>                    
+                    >
+                      <tspan
+                        :y="'0.9em'"
+                        :dy="index + 'em'"
+                        v-bind:key="index"
+                        :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
+                        v-for="(text, index) in item.text"
+                        :x="getTextXPosition(item)"
+                      >{{text}}</tspan>
                     </text>
                   </template>
 
@@ -512,8 +511,9 @@ export default {
             if(+this.currSize.width > +val.width) {
                 diff = Math.max(+this.currSize.width/+val.width, +this.currSize.height/+val.height)
             }
-            if(this.currBase && this.currBase.id == val.id) {
-               this.resizeAllLayers(diff);
+           
+            if(!this.currBase || (this.currBase && this.currBase.id == this.base.id)) {             
+              this.resizeAllLayers(diff);
             }           
           }
           this.currSize = val
@@ -653,42 +653,59 @@ export default {
           if(!items.length) {
               return null
           }      
+        
 
-        items.forEach((item, i) => {          
+        const area = this.editableAreaEl.getBoundingClientRect();
+       
+        items.forEach((item, i) => {     
+           const selectedElementIndex  = this.sideItems.indexOf(item);
+           const selectedElementNode   = document.querySelector(`#group-${selectedElementIndex}`).parentNode;         
+           const element              = selectedElementNode.querySelector('rect').getBoundingClientRect(); 
           if(this.size) {
-            if(item.x < +this.sideArea.x && (item.x + item.width) < (+this.sideArea.x + +this.sideArea.width)) {
-              item.visibleX = +this.sideArea.x;
-              item.visibleWidth = item.width - (+this.sideArea.x - item.x)
+            let coefW = +this.sideArea.width/area.width;
+            let coefH = +this.sideArea.height/area.height;
+            if(element.left < area.left && (element.left + element.width) < (area.left + area.width)) {
+              item.visibleX = area.left;
+              item.invalid = true;
+              item.visibleWidth = (element.width - (area.left - element.left))*coefW;
+             
                if(item.visibleWidth < 0) {
                  item.visibleX = -1;
               }             
-            } else if((item.x > +this.sideArea.x) && (item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
-              item.visibleX = item.x < (+this.sideArea.x + +this.sideArea.width) ? item.x : -1;
-              item.visibleWidth = item.width - ((item.x + item.width) - (+this.sideArea.x + +this.sideArea.width))             
-            } else if(item.x < +this.sideArea.x && (item.x + item.width) > (+this.sideArea.x + +this.sideArea.width)) {
-              item.visibleX = +this.sideArea.x;
-              item.visibleWidth = +this.sideArea.width;
+            } else if((element.left > area.left) && (element.left + element.width) > (area.left + area.width)) {
+              item.visibleX = element.left < (area.left + area.width) ? element.left : -1;
+              item.visibleWidth = (element.width - ((element.left + element.width) - (area.left + area.width)))*coefW;
+              item.invalid = true;             
+            } else if(element.left < area.left && (element.left + element.width) > (area.left + area.width)) {
+              item.visibleX = area.left;
+              item.invalid = true;
+              item.visibleWidth = area.width*coefW;
             } else {
-              item.visibleX = item.x;
-              item.visibleWidth = item.width;
+              item.visibleX = element.left;
+              item.visibleWidth = element.width*coefW;
+              item.invalid = false;
             }
             item.real_width = item.visibleWidth/this.sideArea.width*this.size.width;
             
-            if(item.y < +this.sideArea.y && (item.y + item.height) < (+this.sideArea.y + +this.sideArea.height)) {
-              item.visibleY = +this.sideArea.y;
-              item.visibleHeight = item.height - (+this.sideArea.y - item.y);
+            if(element.top < area.top && (element.top + element.height) < (area.top + area.height)) {
+              item.visibleY = area.top;
+              item.visibleHeight = (item.height - (area.top - element.top))*coefH;
+              item.invalid = true;
               if(item.visibleHeight < 0) {
                  item.visibleY = -1;
               }
-            } else if((item.y > +this.sideArea.y) && (item.y + item.height) > (+this.sideArea.y + +this.sideArea.height)) {
-              item.visibleY = item.y < (+this.sideArea.y + +this.sideArea.height) ? item.y : -1;             
-              item.visibleHeight = item.height - ((item.y + item.height) - (+this.sideArea.y + +this.sideArea.height))
-            } else if(item.y < +this.sideArea.y && (item.y + item.height) > (+this.sideArea.y + +this.sideArea.height)) {
-              item.visibleY = +this.sideArea.y;
-              item.visibleHeight = +this.sideArea.height;
+            } else if((element.top > area.top) && (element.top + element.height) > (area.top + area.height)) {
+              item.visibleY = element.top < (area.top + area.height) ? element.top : -1;             
+              item.visibleHeight = (element.height - ((element.top + element.height) - (area.top + area.height)))*coefH;
+              item.invalid = true;
+            } else if(element.top < area.top && (element.top + element.height) > (area.top + area.height)) {
+              item.visibleY = area.top;
+              item.visibleHeight = area.height*coefH;
+               item.invalid = true;
             } else {
-              item.visibleY = item.y;
-              item.visibleHeight = item.height;
+              item.visibleY = element.top;
+              item.visibleHeight = element.height*coefH;
+              item.invalid = item.invalid ? true : false;
             }     
             item.real_height = item.visibleHeight/this.sideArea.height*this.size.height;    
 
@@ -749,15 +766,10 @@ export default {
           }
         })
 
-        if(printSize.id && !this.checkItemPosition(this.allItemsParams).invalid) {
+        if(printSize.id) {
           this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {printSize, sideId: this.side.id});
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
-        } else if(!this.checkItemPosition(this.allItemsParams).invalid) {
-            this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false}) 
         } else {
-          this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})  
-        }      
-        if(!printSize.id) {
           this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true}); 
           this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, { printSize: null, sideId: this.side.id });
         }  
@@ -1128,28 +1140,28 @@ export default {
                   }
 
                     if (left < 0) {
-                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
-                      item.invalid = true;
+                      //this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
+                   ///   item.invalid = true;
                       this.lines.left = true;    
                     }
                     if (right > edBounds.width) {
-                     this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
-                      item.invalid = true;
+                     //this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
+                     // item.invalid = true;
                       this.lines.right = true;
                     }                  
                     if (top < 0) {
-                    this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
-                     item.invalid = true;
+                    //this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true})
+                     //item.invalid = true;
                       this.lines.top = true;
                     }
                     if (bottom > edBounds.height) {
-                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
-                      item.invalid = true;
+                      //this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: true});
+                      //item.invalid = true;
                       this.lines.bottom = bottom;
                     }
                     if (top > 0 && bottom < edBounds.height && left > 0 && right < edBounds.width || !this.maxPrintSize) {                    
-                      this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false})  
-                      item.invalid = false; 
+                     // this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {id: this.side.id, invalid: false})  
+                     // item.invalid = false; 
                       
                     }
                  
