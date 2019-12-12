@@ -21,7 +21,7 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar>
+    <perfect-scrollbar :options="{suppressScrollY: hideScroll}">
       <div class="product-selection">
         <div class="product-selection__filter-pane">
           <product-filter />
@@ -45,6 +45,11 @@ export default {
     ProductFilter,
     ProductSelectionList
   },
+  data() {
+    return {
+      hideScroll: window.innerWidth > 768 ? true : false
+    };
+  },
   computed: {
     getActiveCategory() {
       return this.$store.state.filter.category;
@@ -54,6 +59,13 @@ export default {
     onHide() {
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener("resize", () => {
+        this.hideScroll = window.innerWidth > 768 ? true : false;
+      });
+    });
   }
 };
 </script>

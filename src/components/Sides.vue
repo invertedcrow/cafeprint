@@ -42,18 +42,19 @@
                       :y="0"
                     />
                     <text
+                      v-if="item.type=='text'"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
                       :font-weight="item.bold ? 'bold' : 'normal'"
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
-                      :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
                     >
                       <tspan
                         :y="'0.9em'"
                         :dy="index + 'em'"
                         v-bind:key="index"
+                        :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
                         v-for="(text, index) in item.text"
                         :x="getTextXPosition(item)"
                       >{{text}}</tspan>

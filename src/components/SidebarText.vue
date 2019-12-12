@@ -348,9 +348,15 @@ export default {
     },
     updateInput(e) {
       e.stopPropagation();
-      this.selectedElement.text = this.text.split("\n");
+      let index = this.items.indexOf(this.selectedElement);
+      let listItems = this.items.slice();
+      let el = { ...this.selectedElement };
+      el.text = e.target.value.split("\n");
+      listItems[index] = el;
+
       setTimeout(() => {
-        this.$store.commit(CONSTRUCTOR_SET_ITEMS, this.items);
+        this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, el);
+        this.$store.commit(CONSTRUCTOR_SET_ITEMS, listItems);
       });
     },
     fontSelect() {
