@@ -15,6 +15,7 @@ export const SAVE_TO_CART          = "saveToCart";
 export const SAVE_UPDATE_CART_ITEM = "updateItemCart";
 export const SAVE_CHANGES          = "updatePrint";
 export const SAVE_ADD_PRODUCT      = "productAdd";
+export const UPDATE_CART_COUNT     = "updateCartCount";
 
 export const USER_GET_ROLE         = "getUserRole";
 

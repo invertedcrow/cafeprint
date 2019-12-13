@@ -36,7 +36,7 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar>
+    <perfect-scrollbar ref="scrollContainer">
       <div class="sidebar-layers__layers">
         <div :key="index" v-for="(side, index) in renderSides">
           <div class="sidebar-layers__side-head">
@@ -85,9 +85,9 @@
           <draggable
             :list="draggList[index].items"
             group="sides"
-            @start="drag=true"
+            @start="startDrag"
             @change="change"
-            @end="drag=false"
+            @end="endDrag"
           >
             <div
               class="sidebar-layers__side-layer"
@@ -157,7 +157,9 @@
                 </div>
               </div>
             </div>
-            <div class="sidebar-layers__side-layer"></div>
+            <div class="sidebar-layers__side-layer empty-space d-flex justify-content-center">
+              <div v-if="drag">Перетащите сюда</div>
+            </div>
           </draggable>
         </div>
       </div>
@@ -179,10 +181,29 @@ export default {
     Checkbox,
     draggable
   },
+  data() {
+    return {
+      drag: false
+    };
+  },
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM]),
     close() {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
+    },
+    startDrag() {
+      this.drag = true;
+      // console.log("start");
+      // console.log(this.$refs.scrollContainer);
+      // this.$refs.scrollContainer.$el.addEventListener("ps-scroll-y", e => {
+      //   console.log("ps scroll catched!!!");
+      //   if (this.drag) {
+      //     console.log(e);
+      //   }
+      // });
+    },
+    endDrag() {
+      this.drag = false;
     },
     change() {
       const items = [];
@@ -196,6 +217,7 @@ export default {
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
     },
     duplicateLayer(item) {
+      alert("duplicate layer clicked");
       this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
     },
     removeItem(index, itemIndex) {
@@ -282,6 +304,14 @@ export default {
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
+      position: relative;
+      z-index: 4;
+
+      &.empty-space {
+        font-size: 14px;
+        font-weight: 300;
+        color: #72b425;
+      }
       &__icon {
         width: 35px;
         height: 35px;
@@ -299,7 +329,7 @@ export default {
         height: 35px;
         overflow: hidden;
         line-height: 1.3;
-        padding-right: 10px;
+        padding-right: 83px;
         font-family: "MuseoSansCyrl", sans-serif;
         font-weight: 300;
         font-size: 14px;
@@ -313,6 +343,9 @@ export default {
         justify-content: space-between;
         align-items: center;
         width: 80px;
+        position: absolute;
+        right: 10px;
+        z-index: 5;
         svg {
           fill: #747474;
           height: 20px;
