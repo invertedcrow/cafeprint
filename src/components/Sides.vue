@@ -51,7 +51,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.9em'"
+                        :y="'0.7em'"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"

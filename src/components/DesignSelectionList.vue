@@ -8,8 +8,11 @@
           v-for="item in list"
           :key="item.id"
         >
-          <div class="design__item-img d-flex justify-content-center align-items-center">
-            <img :src="imgUrl(item)" />
+          <div
+            class="design__item-img d-flex justify-content-center align-items-center"
+            :ref="'el' + item.id"
+          >
+            <img :src="imgUrl(item)" :ref="item.id" @load="getAverageColor(item)" />
           </div>
           <div class="design__item-title" :title="item.name">{{item.name}}</div>
           <div class="design__item-hover">
@@ -30,6 +33,7 @@ import { MODALS, API_URL } from "../consts";
 import { eventBus } from "../main";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { GET_DESIGN, GET_DESIGN_ITEM } from "../store/actions.type";
+import ColorThief from "color-thief";
 
 import Spinner from "./Spinner";
 export default {
@@ -56,6 +60,23 @@ export default {
       if (filter.limit == this.designList.length) {
         filter.limit = +filter.limit + 10;
         this.$store.dispatch(GET_DESIGN, filter);
+      }
+    },
+    getAverageColor(item) {
+      item.substrate = false;
+
+      let colorThief = new ColorThief();
+      let color = colorThief.getColor(this.$refs[item.id][0]);
+      let current = 0;
+      if (color && color.length) {
+        color.forEach(value => {
+          current += value;
+        });
+        if (current > 763) {
+          this.$refs["el" + item.id][0].style.background = "#e9e9e9";
+        }
+      } else {
+        this.$refs["el" + item.id][0].style.background = "#e9e9e9";
       }
     }
   },
@@ -91,6 +112,9 @@ export default {
       height: 100%;
       height: 125px;
       margin-bottom: 20px;
+      .substrate {
+        background-color: whitesmoke;
+      }
       img {
         max-width: 100%;
         max-height: 100%;

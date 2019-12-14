@@ -120,6 +120,7 @@ export default {
       letter-spacing: 0.14px;
       cursor: pointer;
       margin-left: 5px;
+      margin-right: 10px;
     }
   }
 
@@ -133,6 +134,7 @@ export default {
     &-item {
       align-items: center;
       margin-bottom: 15px;
+      margin-right: 10px;
     }
     p {
       margin-left: 12px;

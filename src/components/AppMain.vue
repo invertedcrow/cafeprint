@@ -224,7 +224,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.9em'"
+                        :y="'0.7em'"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
@@ -502,8 +502,7 @@ export default {
              })
             
             }
-          }
-          this.currBase = val;
+          }          
         },
         size: function(val) { 
           if(this.currSize && val) {
@@ -516,6 +515,7 @@ export default {
               this.resizeAllLayers(diff);
             }           
           }
+          this.currBase = this.base;
           this.currSize = val
         },
         addText: function (val) {

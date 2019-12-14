@@ -5,10 +5,15 @@ import { API_URL } from "../consts";
 export default function setup() {
   // variant 1
   axios.defaults.headers.common['Authorization'] = "Basic bWZlc3Q6bWZlc3Rvd25lcg==";
+
+   const tokenElement = document.querySelector('[name="csrf-token"]');
+   const token = tokenElement.getAttribute("content");
+   axios.defaults.headers.common['x-csrf-token'] = token;
+   axios.defaults.headers.common['x-requested-with'] = "XMLHttpRequest";
+
   axios.interceptors.request.use(
     function(config) {
-      // const tokenElement = document.querySelector('[name="csrf-token"]');
-      // const token = tokenElement.getAttribute("content");
+     
 
       const username = 'mfest';
       const password = 'mfestowner';

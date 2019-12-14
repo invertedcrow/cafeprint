@@ -83,6 +83,7 @@ export default {
     }
     @media screen and (max-width: 768px) {
       width: calc(50% - 6px);
+      height: 300px;
     }
     &-hover {
       display: none;
