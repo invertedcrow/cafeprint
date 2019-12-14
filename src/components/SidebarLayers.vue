@@ -36,7 +36,7 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar ref="scrollContainer">
+    <perfect-scrollbar ref="scrollContainer" :options="{suppressScrollX: true}">
       <div class="sidebar-layers__layers">
         <div :key="index" v-for="(side, index) in renderSides">
           <div class="sidebar-layers__side-head">
@@ -108,13 +108,17 @@
               </div>
 
               <div class="sidebar-layers__side-layer__tools">
-                <div @click="onSelectLayer(index, itemIndex)">
+                <div
+                  @click="onSelectLayer(index, itemIndex)"
+                  @touchstart="onSelectLayer(index, itemIndex)"
+                >
                   <checkbox :checked="layer.selected" />
                 </div>
 
                 <div
                   title="Дублировать"
                   @click="duplicateLayer({...layer, x: layer.x + 10, y: layer.y + 10})"
+                  @touchstart="duplicateLayer({...layer, x: layer.x + 10, y: layer.y + 10})"
                 >
                   <svg
                     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -143,7 +147,11 @@
                     <rect x="471.04" y="262.349" width="40.96" height="110.182" />
                   </svg>
                 </div>
-                <div title="Удалить" @click="removeItem(index, itemIndex)">
+                <div
+                  title="Удалить"
+                  @click="removeItem(index, itemIndex)"
+                  @touchstart="removeItem(index, itemIndex)"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="512pt"
@@ -183,7 +191,9 @@ export default {
   },
   data() {
     return {
-      drag: false
+      drag: false,
+      lastTouchY: 0,
+      directTop: false
     };
   },
   methods: {
@@ -193,17 +203,29 @@ export default {
     },
     startDrag() {
       this.drag = true;
-      // console.log("start");
-      // console.log(this.$refs.scrollContainer);
-      // this.$refs.scrollContainer.$el.addEventListener("ps-scroll-y", e => {
-      //   console.log("ps scroll catched!!!");
-      //   if (this.drag) {
-      //     console.log(e);
-      //   }
-      // });
+
+      this.$refs.scrollContainer.$el.addEventListener("ps-scroll-y", e => {
+        if (this.drag) {
+          document.ontouchmove = event => {
+            if (this.lastTouchY > event.changedTouches[0].clientY) {
+              this.directTop = true;
+            } else {
+              this.directTop = false;
+            }
+            this.lastTouchY = event.changedTouches[0].clientY;
+          };
+
+          if (this.directTop) {
+            this.$refs.scrollContainer.$el.scrollTop--;
+          } else {
+            this.$refs.scrollContainer.$el.scrollTop++;
+          }
+        }
+      });
     },
     endDrag() {
       this.drag = false;
+      this.lastTouchY = 0;
     },
     change() {
       const items = [];
@@ -217,7 +239,6 @@ export default {
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
     },
     duplicateLayer(item) {
-      alert("duplicate layer clicked");
       this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
     },
     removeItem(index, itemIndex) {
