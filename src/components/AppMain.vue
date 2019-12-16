@@ -689,7 +689,7 @@ export default {
             
             if(element.top < area.top && (element.top + element.height) < (area.top + area.height)) {
               item.visibleY = area.top;
-              item.visibleHeight = (item.height - (area.top - element.top))*coefH;
+              item.visibleHeight = (element.height - (area.top - element.top))*coefH;
               item.invalid = true;
               if(item.visibleHeight < 0) {
                  item.visibleY = -1;
@@ -740,8 +740,8 @@ export default {
           let realDiffWidth = this.size.width/this.side.real_width;
           let realDiffHeight = this.size.height/this.side.real_height;
       
-          this.allItemsParams.realItemsWidth = this.allItemsParams.width/+this.sideArea.width*this.size.width;
-          this.allItemsParams.realItemsHeight = this.allItemsParams.height/+this.sideArea.height*this.size.height; 
+          this.allItemsParams.realItemsWidth = this.allItemsParams.width/area.width*this.size.width;
+          this.allItemsParams.realItemsHeight = this.allItemsParams.height/area.height*this.size.height; 
          
        }
       
