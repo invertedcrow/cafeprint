@@ -21,13 +21,13 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar :options="{suppressScrollY: hideScroll}">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd" :options="{suppressScrollY: hideScroll}">
       <div class="product-selection">
         <div class="product-selection__filter-pane">
           <product-filter />
         </div>
         <div class="product-selection__center-block d-flex flex-column justify-content-between">
-          <product-selection-list />
+          <product-selection-list :reach="reachEnd" @onLoadList="reachEnd = false" />
         </div>
       </div>
     </perfect-scrollbar>
@@ -47,7 +47,8 @@ export default {
   },
   data() {
     return {
-      hideScroll: window.innerWidth > 768 ? true : false
+      hideScroll: window.innerWidth > 768 ? true : false,
+      reachEnd: false
     };
   },
   computed: {
@@ -58,6 +59,11 @@ export default {
   methods: {
     onHide() {
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
+    },
+    onReachEnd() {
+      if (this.reachEnd) return;
+
+      this.reachEnd = true;
     }
   },
   mounted() {

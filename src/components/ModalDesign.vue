@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column">
-      <div class="modal-title xsvisible">Категории товаров</div>
+    <div class="modal-title xsvisible">Категории товаров</div>
     <div class="modal-head">
       <div class="modal-head__close" @click="onHide()">
         <svg
@@ -19,8 +19,8 @@
           />
         </svg>
       </div>
-    </div>  
-    <perfect-scrollbar>
+    </div>
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="design d-flex justify-content-between">
         <div class="design__search-pane d-flex flex-column">
           <div class="modal-title">Категории товаров</div>
@@ -28,7 +28,11 @@
           <design-selection-categories />
         </div>
         <div class="design__list d-flex">
-          <design-selection-list :list="designList" />
+          <design-selection-list
+            :list="designList"
+            :reach="reachEnd"
+            @onLoadList="reachEnd = false"
+          />
         </div>
       </div>
     </perfect-scrollbar>
@@ -48,12 +52,22 @@ export default {
     DesignSelectionCategories,
     DesignSelectionList
   },
+  data() {
+    return {
+      reachEnd: false
+    };
+  },
   computed: {
     ...mapGetters(["designList"])
   },
   methods: {
     onHide() {
       eventBus.$emit("hideModal", MODALS.DESIGNS);
+    },
+    onReachEnd() {
+      if (this.reachEnd) return;
+
+      this.reachEnd = true;
     }
   }
 };

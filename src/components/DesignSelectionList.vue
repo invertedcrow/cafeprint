@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <spinner v-if="isDesignListLoading" />
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd" v-if="list.length">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd('inside')" v-if="list.length">
       <div class="design d-flex flex-wrap">
         <div
           class="design__item d-flex flex-column align-items-center justify-content-between"
@@ -40,7 +40,12 @@ export default {
   components: {
     Spinner
   },
-  props: ["list"],
+  props: ["list", "reach"],
+  data() {
+    return {
+      windowWidth: window.innerWidth
+    };
+  },
   methods: {
     ...mapMutations(["addImg"]),
     ...mapActions([GET_DESIGN_ITEM]),
@@ -55,12 +60,17 @@ export default {
         item.preview_print;
       return link;
     },
-    onReachEnd() {
+    onReachEnd(param) {
+      if (param == "inside" && this.windowWidth < 768) return;
+
       let filter = { ...this.designFilter };
       if (filter.limit == this.designList.length) {
         filter.limit = +filter.limit + 10;
         this.$store.dispatch(GET_DESIGN, filter);
       }
+    },
+    handleResize() {
+      this.windowWidth = window.innerWidth;
     },
     getAverageColor(item) {
       item.substrate = false;
@@ -80,8 +90,23 @@ export default {
       }
     }
   },
+  mounted() {
+    window.addEventListener("resize", this.handleResize);
+  },
   computed: {
     ...mapGetters(["designFilter", "designList", "isDesignListLoading"])
+  },
+  watch: {
+    reach(val) {
+      if (val) {
+        this.onReachEnd("outside");
+      }
+    },
+    isDesignListLoading(val) {
+      if (!val) {
+        this.$emit("onLoadList", true);
+      }
+    }
   }
 };
 </script>

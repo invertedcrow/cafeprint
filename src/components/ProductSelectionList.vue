@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex h-100">
     <spinner v-if="isProductsListLoading" />
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd('inside')">
       <div class="list d-flex flex-wrap justify-content-start">
         <div
           class="list__item d-flex flex-column justify-content-between"
@@ -34,15 +34,26 @@ export default {
   components: {
     Spinner
   },
+  props: ["reach"],
+  data() {
+    return {
+      windowWidth: window.innerWidth
+    };
+  },
   methods: {
     ...mapActions([GET_BASE, GET_BASES_LIST]),
-    onReachEnd() {
+    onReachEnd(param) {
+      if (param == "inside" && this.windowWidth < 768) return;
+
       const params = this.filterParams;
       if (params.limit == this.bases.length) {
         params.limit = +params.limit + 10;
 
         this.$store.dispatch(GET_BASES_LIST, params);
       }
+    },
+    handleResize() {
+      this.windowWidth = window.innerWidth;
     },
     onChoose(id) {
       // let filter = this.$store.state.filter;
@@ -57,8 +68,23 @@ export default {
       return API_URL + imgURL;
     }
   },
+  mounted() {
+    window.addEventListener("resize", this.handleResize);
+  },
   computed: {
     ...mapGetters(["bases", "filterParams", "isProductsListLoading"])
+  },
+  watch: {
+    reach(val) {
+      if (val) {
+        this.onReachEnd("outside");
+      }
+    },
+    isProductsListLoading(val) {
+      if (!val) {
+        this.$emit("onLoadList", true);
+      }
+    }
   }
 };
 </script>
