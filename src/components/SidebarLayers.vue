@@ -182,7 +182,8 @@ import { mapGetters, mapMutations } from "vuex";
 import draggable from "vuedraggable";
 import {
   CONSTRUCTOR_SET_ITEMS,
-  CONSTRUCTOR_ADD_ITEM
+  CONSTRUCTOR_ADD_ITEM,
+  CONSTRUCTOR_SET_SELECTED_SIDE
 } from "../store/mutations.type";
 export default {
   components: {
@@ -197,7 +198,11 @@ export default {
     };
   },
   methods: {
-    ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM]),
+    ...mapMutations([
+      CONSTRUCTOR_SET_ITEMS,
+      CONSTRUCTOR_ADD_ITEM,
+      CONSTRUCTOR_SET_SELECTED_SIDE
+    ]),
     close() {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
     },
@@ -229,14 +234,17 @@ export default {
     },
     change() {
       const items = [];
+      let side = null;
       this.draggList.forEach((item, index) => {
         let list = [...item.items];
         list.map(lay => {
           lay.side = this.renderSides[index].id;
+          side = this.renderSides[index];
         });
         items.push(...list);
       });
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
+      this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
     },
     duplicateLayer(item) {
       this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);

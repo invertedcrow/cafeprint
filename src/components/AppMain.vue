@@ -498,7 +498,7 @@ export default {
                 }
                 return this.checkItemPosition(item)                
               });
-             
+              this.updateSizes();
              })
             
             }
