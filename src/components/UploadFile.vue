@@ -45,7 +45,22 @@ export default {
         previewTemplate: this.templatePreview(),
         uploadMultiple: true,
         parallelUploads: 5,
-        acceptedFiles: ".png, .jpg, .jpeg, .svg"
+        acceptedFiles: ".png, .jpg, .jpeg, .svg",
+        accept: (file, done) => {
+          file.text().then(text => {
+            let textSlice = text.slice(0, 20);
+            if (
+              textSlice.indexOf("JFIF") == -1 &&
+              textSlice.indexOf("Exif") == -1 &&
+              textSlice.indexOf("PNG") == -1 &&
+              textSlice.indexOf("svg") == -1
+            ) {
+              done("Изображение не может быть загружено");
+            } else {
+              done();
+            }
+          });
+        }
       }
     };
   },

@@ -76,7 +76,11 @@
           class="sidebar-price__info-item"
         >Минимальная стоимость изделия: {{productMinPrice.item_total}} UAH</div>
         <!-- <div class="sidebar-price__info-discount">скидка от 10 единиц -10%</div> -->
-        <button @click="onDetailsClicked" class="sidebar-price__info-details">Подробнее</button>
+        <button
+          v-if="totalPrice"
+          @click="onDetailsClicked"
+          class="sidebar-price__info-details"
+        >Подробнее</button>
       </div>
     </perfect-scrollbar>
     <hr />
@@ -87,7 +91,7 @@
       </div>
 
       <div class="d-flex align-items-end">
-        <button @click="onAddToCart" class="get-price">Добавить в корзину</button>
+        <button @click="onAddToCart" :disabled="!totalPrice" class="get-price">Добавить в корзину</button>
       </div>
     </div>
   </div>
@@ -286,6 +290,12 @@ export default {
     &:focus,
     &:active {
       outline: none;
+    }
+  }
+  button.get-price {
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
   }
 }
