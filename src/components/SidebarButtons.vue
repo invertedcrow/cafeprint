@@ -1,30 +1,35 @@
 <template>
   <div class="constructor-sidebar__btns">
     <button
-      v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length && !editProfileProduct && !editCartProduct"
+      v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length && !editProfileProduct && !editCartProduct && !editOrderProduct"
       @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
     <button
       id="popover-select-side"
       class="get-price"
-      v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length && !editCartProduct"
+      v-show="this.sidesElems.length && userRole != USER_ROLE.guest && items.length && !editCartProduct && !editOrderProduct"
     >Сохранить себе</button>
     <button
       id="popover-select-side"
       class="get-price"
       @click="saveChangesToCartItem"
-      v-show="editCartProduct"
+      v-show="editCartProduct && !editOrderProduct"
     >Сохранить изменения</button>
     <button
       id="popover-select-side-admin"
       class="get-price"
-      v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct && !editProfileProduct && !editCartProduct"
+      v-show="editOrderProduct"
+    >Сохранить изменения</button>
+    <button
+      id="popover-select-side-admin"
+      class="get-price"
+      v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct && !editProfileProduct && !editCartProduct && !editOrderProduct"
     >Сохранить</button>
     <button
       id="popover-select-side-product"
       class="get-price"
-      v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && !editCartProduct"
+      v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && !editCartProduct && !editOrderProduct"
     >Добавить продукт</button>
     <b-popover
       ref="popover"
@@ -87,7 +92,8 @@ import {
   SAVE_TO_CART,
   SAVE_CHANGES,
   SAVE_ADD_PRODUCT,
-  SAVE_UPDATE_CART_ITEM
+  SAVE_UPDATE_CART_ITEM,
+  SAVE_UPDATE_ORDER_ITEM
 } from "../store/actions.type";
 
 import {
@@ -125,7 +131,8 @@ export default {
       "editProduct",
       "features",
       "editProfileProduct",
-      "editCartProduct"
+      "editCartProduct",
+      "editOrderProduct"
     ]),
     activeSidebar() {
       return this.$store.state.activeSidebar;
@@ -277,7 +284,7 @@ export default {
           sides: sides,
           //  sides: this.sidesElems,
           previewSideId: item.id,
-          productid: this.editProduct,
+          productid: this.editProduct || this.editOrderProduct,
           // sizePrint: this.printSize.id,
           // size: this.size.id,
 
@@ -286,8 +293,12 @@ export default {
         },
         selected_color: 85
       };
-
-      this.$store.dispatch(SAVE_CHANGES, params);
+      if (this.editOrderProduct) {
+        params.id = this.editOrderProduct;
+        this.$store.dispatch(SAVE_UPDATE_ORDER_ITEM, params);
+      } else {
+        this.$store.dispatch(SAVE_CHANGES, params);
+      }
     },
     onCreateproduct(item) {
       let sides = [];
