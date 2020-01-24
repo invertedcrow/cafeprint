@@ -17,6 +17,7 @@ export const CONSTRUCTOR_SET_SIDE_INVALID   = 'setInvalidSide';
 export const CONSTRUCTOR_SET_EDIT_PRODUCT   = 'setEditProduct';
 export const CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT = 'setEditProfileProduct';
 export const CONSTRUCTOR_SET_EDIT_CART_PRODUCT = 'setEditCartProduct';
+export const CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT = 'setEditOrderProduct';
 export const CONSTRUCTOR_SET_FEATURES       = 'setFeatures';
 export const CONSTRUCTOR_RESET_FEATURES     = 'resetFeatures';
 

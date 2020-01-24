@@ -21,7 +21,8 @@ import {
   USER_GET_ROLE,
   BLANKLOAD_GET,
   BLANKLOAD_CART_GET,
-  BLANKLOAD_PROFILE_GET
+  BLANKLOAD_PROFILE_GET,
+  BLANKLOAD_ORDER_GET
 } from "./store/actions.type";
 import { USER_ROLE } from "./consts";
 export default {
@@ -43,7 +44,8 @@ export default {
       GET_FONTS,
       USER_GET_ROLE,
       BLANKLOAD_GET,
-      BLANKLOAD_CART_GET
+      BLANKLOAD_CART_GET,
+      BLANKLOAD_ORDER_GET
     ]),
     checkUserRole() {
       if (
@@ -61,6 +63,7 @@ export default {
     const id = url.searchParams.get("product");
     const uid = url.searchParams.get("cart-item");
     const save_uid = url.searchParams.get("save_uid");
+    const order_id = url.searchParams.get("order_product");
 
     if (id) {
       this.$store.dispatch(BLANKLOAD_GET, id);
@@ -70,6 +73,9 @@ export default {
       init = false;
     } else if (save_uid) {
       this.$store.dispatch(BLANKLOAD_PROFILE_GET, save_uid);
+      init = false;
+    } else if (order_id) {
+      this.$store.dispatch(BLANKLOAD_ORDER_GET, order_id);
       init = false;
     }
     this.$store.dispatch(GET_BASES_CATEGORIES);

@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { SAVE_ITEM_TO_PROFILE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET, SAVE_UPDATE_CART_ITEM, SAVE_PROFILE_ITEM_UPDATE, UPDATE_CART_COUNT } from '../actions.type';
+import { SAVE_ITEM_TO_PROFILE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET, SAVE_UPDATE_CART_ITEM, SAVE_PROFILE_ITEM_UPDATE, UPDATE_CART_COUNT, SAVE_UPDATE_ORDER_ITEM } from '../actions.type';
 import { SAVE_SET_SIDES_LIST, CONSTRUCTOR_SET_LOADING } from '../mutations.type'
 import qs  from 'qs';
 import { MODALS, MESSAGE } from '../../consts';
@@ -60,6 +60,24 @@ const actions = {
             context.commit(CONSTRUCTOR_SET_LOADING, false);
             if(response.data) {
                 eventBus.$emit("showModal", MODALS.CART_ADDED);
+            }   
+        } catch(e) {
+            eventBus.$emit("showModal", MODALS.MESSAGE, e.response.data.message);
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+        }  
+    },
+    [SAVE_UPDATE_ORDER_ITEM]: async (context, params) => {
+        console.log('SAVE ORDER ')
+        console.log(params)
+        context.commit(CONSTRUCTOR_SET_LOADING, true);
+        const tokenElement = document.querySelector('[name="csrf-token"]');
+        const _csrf = tokenElement.getAttribute("content");
+       // const encParams = qs.stringify(data.params);
+        try {
+            const response =  await Vue.axios.put(`constructor-new/save/order-product/${params.id}`, {data: params.data, selected_color: params.selected_color, _csrf });  
+            context.commit(CONSTRUCTOR_SET_LOADING, false);
+            if(response.data) {
+                eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
             }   
         } catch(e) {
             eventBus.$emit("showModal", MODALS.MESSAGE, e.response.data.message);

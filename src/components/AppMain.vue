@@ -637,7 +637,7 @@ export default {
         this.windowWidth = window.innerWidth;
       },      
       filterBySide(items) {
-         return items.filter(x => x.side === this.side.id) || []
+         return items.filter(x => x.side == this.side.id) || []
       },
       isReachMax() {
         if(this.maxPrintSize) {

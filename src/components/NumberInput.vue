@@ -5,7 +5,7 @@
         <rect width="15" height="1" rx="0.5" fill="#011129" />
       </svg>
     </button>
-    <input :value="innerValue" @keypress="onKeyPress" @keyup="onKeyUp" />
+    <input :value="innerValue" @keypress="onKeyPress" @keyup="onKeyUp" maxlength="4" />
     <button @click="increment">
       <svg
         xmlns:xlink="http://www.w3.org/1999/xlink"

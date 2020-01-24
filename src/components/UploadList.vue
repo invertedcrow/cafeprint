@@ -47,7 +47,7 @@ export default {
       return link;
     },
     onSelectImg(img) {
-      this.addImg(img);
+      this.addImg({ ...img });
       eventBus.$emit("hideModal", MODALS.UPLOAD);
     },
     onRemoveFile(index) {

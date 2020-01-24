@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { BLANKLOAD_GET, GET_BASE, BLANKLOAD_CART_GET, BLANKLOAD_PROFILE_GET } from '../actions.type';
+import { BLANKLOAD_GET, GET_BASE, BLANKLOAD_CART_GET, BLANKLOAD_PROFILE_GET, BLANKLOAD_ORDER_GET } from '../actions.type';
 import { 
     CONSTRUCTOR_ADD_ITEM, 
     CONSTRUCTOR_SET_LOADING, 
@@ -12,7 +12,8 @@ import {
     CONSTRUCTOR_SET_EDIT_PRODUCT,
     CONSTRUCTOR_SET_ITEMS,
     CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT,
-    CONSTRUCTOR_SET_EDIT_CART_PRODUCT } from '../mutations.type';
+    CONSTRUCTOR_SET_EDIT_CART_PRODUCT,
+    CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT } from '../mutations.type';
 
 import renderSvg from '../../utils/renderSvg';
 
@@ -118,7 +119,38 @@ const actions = {
     })  
 
     context.commit(CONSTRUCTOR_SET_LOADING, false);
-   }
+   },
+   [BLANKLOAD_ORDER_GET]: async (context, id) => {
+    context.commit(CONSTRUCTOR_SET_LOADING, true);
+    const response = await Vue.axios.get(`constructor-new/clip-arts/order/${id}`);
+
+    const base =  response.data.colorMainBlank.mainBlank
+    const sides = response.data.sides;
+   
+    let side = base.sides.find(item => item.id == response.data.preview_side_id);
+    let color = { 
+        id: response.data.colorMainBlank.id,
+        color: response.data.colorMainBlank.color
+    };
+    context.commit(CONSTRUCTOR_SET_ITEMS, []);
+    context.commit(CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT, id);
+    context.commit(CONSTRUCTOR_SET_BASE, base);
+    context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side ? side : base.sides[0]);
+    context.commit(CONSTRUCTOR_SET_COLOR, color);
+   
+    context.commit(PRICE_SET_SIZES_LIST, base.sizes);   
+    context.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.printSizes);
+    context.commit(CONSTRUCTOR_SET_SIZE, base.sizes[0]);
+
+    sides.forEach(item => {  
+        setTimeout(() => {
+            renderSvg(context, item.svg, item.sideId);
+        })
+        
+    })  
+
+    context.commit(CONSTRUCTOR_SET_LOADING, false);
+   },
 }
 
 const mutations = {
