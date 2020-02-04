@@ -272,7 +272,7 @@
 <script>
 import Color from "./Color";
 import SideSelect from "./SideSelect";
-import NumberInput from "./NumberInput";
+//import NumberInput from "./NumberInput";
 import { Sidebar, TextAlignment } from "../consts";
 import { eventBus } from "../main";
 import {
@@ -290,7 +290,7 @@ import { UPDATE_ELEMENT_SIZE } from "../eventBus.type";
 export default {
   components: {
     Color,
-    NumberInput,
+    //NumberInput,
     SideSelect
   },
   data() {

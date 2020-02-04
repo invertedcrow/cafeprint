@@ -18,7 +18,7 @@ export default function renderSvg(context, svg, side) {
 
 function createImageLayers(context, arr, side) {
     let layer = {}
-    let edArea = document.getElementById('editable-area');
+    //let edArea = document.getElementById('editable-area');
     arr.forEach(item => {
         layer = {
             width: +item.getAttribute('width'),
@@ -57,7 +57,7 @@ function createImageLayers(context, arr, side) {
 
 function createTextLayers(context, arr, side) {
     let layer = {}
-    let edArea = document.getElementById('editable-area');   
+    //let edArea = document.getElementById('editable-area');   
     arr.forEach(item => {
         layer = {
             width: +item.parentNode.getAttribute('width'),

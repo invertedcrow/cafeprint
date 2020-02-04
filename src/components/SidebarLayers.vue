@@ -209,7 +209,7 @@ export default {
     startDrag() {
       this.drag = true;
 
-      this.$refs.scrollContainer.$el.addEventListener("ps-scroll-y", e => {
+      this.$refs.scrollContainer.$el.addEventListener("ps-scroll-y", () => {
         if (this.drag) {
           document.ontouchmove = event => {
             if (this.lastTouchY > event.changedTouches[0].clientY) {

@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { SAVE_ITEM_TO_PROFILE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET, SAVE_UPDATE_CART_ITEM, SAVE_PROFILE_ITEM_UPDATE, UPDATE_CART_COUNT, SAVE_UPDATE_ORDER_ITEM } from '../actions.type';
+import { SAVE_ITEM_TO_PROFILE, SAVE_TO_CART, SAVE_CHANGES, SAVE_ADD_PRODUCT, BLANKLOAD_GET, SAVE_UPDATE_CART_ITEM,  UPDATE_CART_COUNT, SAVE_UPDATE_ORDER_ITEM } from '../actions.type';
 import { SAVE_SET_SIDES_LIST, CONSTRUCTOR_SET_LOADING } from '../mutations.type'
 import qs  from 'qs';
 import { MODALS, MESSAGE } from '../../consts';
@@ -67,8 +67,8 @@ const actions = {
         }  
     },
     [SAVE_UPDATE_ORDER_ITEM]: async (context, params) => {
-        console.log('SAVE ORDER ')
-        console.log(params)
+        // console.log('SAVE ORDER ')
+        // console.log(params)
         context.commit(CONSTRUCTOR_SET_LOADING, true);
         const tokenElement = document.querySelector('[name="csrf-token"]');
         const _csrf = tokenElement.getAttribute("content");
@@ -123,7 +123,7 @@ const actions = {
         }  
     },
 
-    [UPDATE_CART_COUNT]: async (context, params) => {    
+    [UPDATE_CART_COUNT]: async () => {    
         const response =  await Vue.axios.post('/mfest/infopage/ajax-get-count-cart');     
         let elementsCount = document.querySelectorAll('.header__cart-numbers');
         elementsCount.forEach(el => {

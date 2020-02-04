@@ -47,7 +47,7 @@
 
 <script>
 import Checkbox from "./Checkbox";
-import { mapMutations, mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { GET_DESIGN } from "../store/actions.type";
 
 export default {

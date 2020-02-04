@@ -135,7 +135,7 @@ export default {
     },
     onAddToCart() {
       const items = [];
-      this.sizesList.forEach((size, i) => {
+      this.sizesList.forEach((size) => {
         let item = {};
         let print_sizes = [];
         let svg = [];
@@ -154,7 +154,7 @@ export default {
             svgItem.svg = svgItem.svg
               .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
               .replace(/<mask.*mask>/, "")
-              .replace(/mask="url\(\#mainMask\)"/g, "");
+              .replace(/mask="url\(#mainMask\)"/g, "");
             svg.push(svgItem);
           }
         });

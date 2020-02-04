@@ -424,7 +424,7 @@
 </template>
 
 <script>
-import {scale, rotate, translate, compose, applyToPoint, fromString, rotateDEG, transform, toSVG } from 'transformation-matrix';
+import { rotateDEG, toSVG } from 'transformation-matrix';
 import {eventBus} from '../main';
 import {TextAlignment, CONSTRUCTOR_HANDLES, Sidebar, API_URL} from '../consts';
 import { mapGetters, mapMutations } from 'vuex';
@@ -435,7 +435,7 @@ const defaultProps = {
     a: 1
 };
 
-const SCALE = 1.5;
+//const SCALE = 1.5;
 
 export default {
     data() {
@@ -566,7 +566,7 @@ export default {
         }
     },
     created() {
-        this.$store.subscribe((mutation, state) => {
+        this.$store.subscribe((mutation) => {
             if (mutation.type === CONSTRUCTOR_SET_ITEMS) {
                 this.updateSizes();
             }
@@ -613,7 +613,7 @@ export default {
                 height: Math.max(...arrH),
              };
             
-            items.forEach((item, i) => {  
+            items.forEach((item) => {  
                 if(item.x > params.x && (item.x - params.x + item.width) > params.width) {
                    params.width = item.x - params.x + item.width
                 }                 
@@ -645,7 +645,7 @@ export default {
         }
         return false;
       },
-       checkPrintSize(e) {        
+       checkPrintSize() {        
           let printSize = {name: ''};         
           const printsSizes = this.base.printSizes;
           let items = this.sideItems.slice();
@@ -729,7 +729,7 @@ export default {
 
          
        if(this.size) {
-          items.forEach((item, i) => {
+          items.forEach((item) => {
               if(item.visibleX > this.allItemsParams.x && (item.visibleX - this.allItemsParams.x + item.visibleWidth) > this.allItemsParams.width) {
                 this.allItemsParams.width = +item.visibleX - +this.allItemsParams.x + +item.visibleWidth              
               }                 
@@ -737,8 +737,8 @@ export default {
                 this.allItemsParams.height = item.visibleY - this.allItemsParams.y + item.visibleHeight                }
            })
 
-          let realDiffWidth = this.size.width/this.side.real_width;
-          let realDiffHeight = this.size.height/this.side.real_height;
+          // let realDiffWidth = this.size.width/this.side.real_width;
+          // let realDiffHeight = this.size.height/this.side.real_height;
       
           this.allItemsParams.realItemsWidth = this.allItemsParams.width/area.width*this.size.width;
           this.allItemsParams.realItemsHeight = this.allItemsParams.height/area.height*this.size.height; 
@@ -843,7 +843,7 @@ export default {
               document.ontouchmove = null;
               isCanMove = false;
           };   
-          items.forEach((item, i) => {
+          items.forEach((item) => {
            
           const selectedElementIndex  = this.sideItems.indexOf(item);
 
@@ -886,7 +886,7 @@ export default {
       },  
        handleMoveGroup(event, handle, selectedElementNode, edBounds) {  
            this.itemTouch = true;  
-           this.selectedLayers.forEach((item, index) => {                
+           this.selectedLayers.forEach((item) => {                
               if (!handle) {
                   this.hideLines();
                   const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
@@ -1076,7 +1076,7 @@ export default {
               document.onmousemove = null;
           };
 
-          document.ontouchend = (e) => { 
+          document.ontouchend = () => { 
               this.dragging = false;
               this.rotation = false;
               this.scaling = false;
@@ -1103,7 +1103,7 @@ export default {
               this.itemTouch = true;  
               if (!handle) {
                   this.hideLines();
-                  const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
+                //  const elBounds = selectedElementNode.querySelector('rect').getBoundingClientRect();
 
                   // Границы после перемещения мышкой. Зависит от положения мышки.
                   const left    = item.drag.left - ((event.x - item.drag.mx) * -1);
@@ -1112,10 +1112,10 @@ export default {
                   const bottom  = item.drag.bottom - ((event.y - item.drag.my) * -1);
 
                   // Границы реального объекта на момент перемещения. Не зависит от положения мышки.
-                  const boundLeft   = elBounds.left - edBounds.left;
-                  const boundRight  = elBounds.right - edBounds.left;
-                  const boundTop    = elBounds.top - edBounds.top;
-                  const boundBottom = elBounds.bottom - edBounds.top;                 
+                  //const boundLeft   = elBounds.left - edBounds.left;
+                  //const boundRight  = elBounds.right - edBounds.left;
+                  //const boundTop    = elBounds.top - edBounds.top;
+                 // const boundBottom = elBounds.bottom - edBounds.top;                 
                  // const isMax = this.isReachMax();
                  // const all = this.allItemsParams;                 
 

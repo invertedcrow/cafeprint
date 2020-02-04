@@ -97,9 +97,7 @@ import {
 } from "../store/actions.type";
 
 import {
-  PRICE_SET_ITEM,
-  PRICE_RESET,
-  SAVE_SET_SIDES_LIST
+  PRICE_SET_ITEM  
 } from "../store/mutations.type";
 
 import { Sidebar, USER_ROLE } from "../consts";
@@ -163,7 +161,7 @@ export default {
           svgItem.svg = svgItem.svg
             .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
             .replace(/<mask.*mask>/, "")
-            .replace(/mask="url\(\#mainMask\)"/g, "");
+            .replace(/mask="url\(#mainMask\)"/g, "");
           svg.push(svgItem);
         }
       });
@@ -224,8 +222,8 @@ export default {
       sides.forEach(side => {
         side.svg = side.svg
           .replace(/<mask.*mask>/, "")
-          .replace(/mask="url\(\#mainMask\)"/g, "")
-          .replace(/\<image.*?<\/image>/, "");
+          .replace(/mask="url\(#mainMask\)"/g, "")
+          .replace(/<image.*?<\/image>/, "");
         if (id) {
           side.isModify = true;
         }
@@ -251,7 +249,7 @@ export default {
 
         let svg = svgSide.svg
           .replace(/<mask.*mask>/, "")
-          .replace(/mask="url\(\#mainMask\)"/g, "")
+          .replace(/mask="url\(#mainMask\)"/g, "")
           //.replace(/\<image.*?<\/image>/, "");
           .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
         if (side.items.length) {
@@ -311,7 +309,7 @@ export default {
 
         let svg = svgSide.svg
           .replace(/<mask.*mask>/, "")
-          .replace(/mask="url\(\#mainMask\)"/g, "")
+          .replace(/mask="url\(#mainMask\)"/g, "")
           //.replace(/\<image.*?<\/image>/, "");
           .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
         if (side.items.length && side.printSize) {
