@@ -1,7 +1,6 @@
 import Vue from "vue";
-import { BLANKLOAD_GET, GET_BASE, BLANKLOAD_CART_GET, BLANKLOAD_PROFILE_GET, BLANKLOAD_ORDER_GET } from '../actions.type';
-import { 
-    CONSTRUCTOR_ADD_ITEM, 
+import { BLANKLOAD_GET, BLANKLOAD_CART_GET, BLANKLOAD_PROFILE_GET, BLANKLOAD_ORDER_GET } from '../actions.type';
+import {      
     CONSTRUCTOR_SET_LOADING, 
     CONSTRUCTOR_SET_BASE, 
     CONSTRUCTOR_SET_SELECTED_SIDE, 
@@ -31,7 +30,7 @@ const actions = {
    [BLANKLOAD_GET]: async (context, id) => {
     context.commit(CONSTRUCTOR_SET_LOADING, true);
     const response = await Vue.axios.get(`constructor-new/clip-arts/products/${id}`)
-    let blankLayers = [];
+    
     const base = response.data.mainBlank;
     const prints = response.data.prints;
     context.commit(CONSTRUCTOR_SET_ITEMS, [])

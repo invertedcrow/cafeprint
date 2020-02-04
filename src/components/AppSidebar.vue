@@ -39,7 +39,7 @@ import SidebarArticle from "./SidebarArticle";
 import SidebarLayers from "./SidebarLayers";
 import SidebarButtons from "./SidebarButtons";
 import { mapGetters } from "vuex";
-import { eventBus } from "../main";
+//import { eventBus } from "../main";
 
 export default {
   components: {

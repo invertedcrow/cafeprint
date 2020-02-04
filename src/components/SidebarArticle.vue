@@ -114,7 +114,7 @@
 
 <script>
 import { Sidebar } from "../consts";
-import { eventBus } from "../main";
+//import { eventBus } from "../main";
 import { mapGetters } from "vuex";
 
 export default {
