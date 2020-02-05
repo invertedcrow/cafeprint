@@ -40,11 +40,12 @@ export default {
   methods: {
     ...mapMutations([PRICE_SET_ITEM]),
     onKeyUp(evt) {
+      evt.target.value = +evt.target.value;
       this.innerValue = evt.target.value;
       this.emit();
     },
     onKeyPress(evt) {
-      const pattern = this.pattern || /[0-9.]+/;
+      const pattern = this.pattern || /[0-9]+/;
       if (!pattern.test(evt.key)) {
         evt.preventDefault();
       }
