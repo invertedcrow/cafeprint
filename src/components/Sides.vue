@@ -35,6 +35,9 @@
                   >
                     <image
                       v-if="item.type=='img'"
+                      class="image control"
+                      :data-id="`id${Date.now()}`"
+                      :data-layername="item.name"
                       :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                       :height="item.height"
                       :width="item.width"
@@ -43,6 +46,9 @@
                     />
                     <text
                       v-if="item.type=='text'"
+                      class="text control"
+                      :data-layername="item.name"
+                      :data-id="`id${Date.now()}`"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"

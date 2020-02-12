@@ -1385,6 +1385,7 @@ export default {
               font: {name: "CyrillicHover"},
               fontSize: 20,
               node: null,
+              name: 'Текст',
               color: this.color.color.includes('FFF') ? "#000" : "#fff",
               bold: false,
               italic: false,
