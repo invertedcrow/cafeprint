@@ -29,15 +29,16 @@ const getters = {
 const actions = {
    [BLANKLOAD_GET]: async (context, id) => {
     context.commit(CONSTRUCTOR_SET_LOADING, true);
-    const response = await Vue.axios.get(`constructor-new/clip-arts/products/${id}`)
-    
+    const response = await Vue.axios.get(`constructor-new/clip-arts/products/${id}`)   
     const base = response.data.mainBlank;
     const prints = response.data.prints;
+    const color = response.data.preview_colormainblank_id;
+    const blankColor = base.colorMainBlanks.find(item => item.id == color);    
     context.commit(CONSTRUCTOR_SET_ITEMS, [])
     context.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, id);
     context.commit(CONSTRUCTOR_SET_BASE, base);
     context.commit(CONSTRUCTOR_SET_SELECTED_SIDE, base.sides[0]);
-    context.commit(CONSTRUCTOR_SET_COLOR, base.colors[0]);
+    context.commit(CONSTRUCTOR_SET_COLOR, blankColor || base.colors[0]);
    
     context.commit(PRICE_SET_SIZES_LIST, base.sizes);   
     context.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.printSizes);
