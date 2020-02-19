@@ -192,27 +192,15 @@
             </g>
           </g>
           <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
-            <g v-for="(item, index) in sideItems" :key="index">
-              <g
-                ref="groupEls"
-                :id="'group-'+index"
-                :transform="item.matrix ? item.matrix : ''"
-                @mousedown="onMouseDown($event,item)"
-                @touchstart="onMouseDown($event,item)"
-              >
-                <rect
-                  :x="item.x"
-                  :y="item.y"
-                  :width="item.width"
-                  :height="item.height"
-                  fill="transparent"
-                />
-                <svg
+            <template v-for="(item, index) in sideItems"  >
+              <svg
+                  v-if="item"
+                  :key="index"
                   :height="item.height"
                   :width="item.width"
                   :x="item.x"
                   :y="item.y"
-                  :opacity="base.layers_opacity"
+                  :opacity="0.15"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -233,7 +221,6 @@
                       >{{text}}</tspan>
                     </text>
                   </template>
-
                   <image
                     v-if="item.type=='img'"
                     :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
@@ -243,55 +230,18 @@
                     :width="item.width"
                     @load="item.spinner = false"
                   />
-
-                  <svg
-                    v-if="item.type=='img' && item.spinner == true"
-                    :x="(item.width/2 - 20)"
-                    :y="(item.height/2 - 20)"
-                    width="40"
-                    height="40"
-                    viewBox="0 0 38 38"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <defs>
-                      <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
-                        <stop stop-color="#72b425" stop-opacity="0" offset="0%" />
-                        <stop stop-color="#72b425" stop-opacity=".631" offset="63.146%" />
-                        <stop stop-color="#72b425" offset="100%" />
-                      </linearGradient>
-                    </defs>
-                    <g fill="none" fill-rule="evenodd">
-                      <g transform="translate(1 1)">
-                        <path
-                          d="M36 18c0-9.94-8.06-18-18-18"
-                          id="Oval-2"
-                          stroke="url(#a)"
-                          stroke-width="2"
-                        >
-                          <animateTransform
-                            attributeName="transform"
-                            type="rotate"
-                            from="0 18 18"
-                            to="360 18 18"
-                            dur="0.9s"
-                            repeatCount="indefinite"
-                          />
-                        </path>
-                        <circle fill="#fff" cx="36" cy="18" r="1">
-                          <animateTransform
-                            attributeName="transform"
-                            type="rotate"
-                            from="0 18 18"
-                            to="360 18 18"
-                            dur="0.9s"
-                            repeatCount="indefinite"
-                          />
-                        </circle>
-                      </g>
-                    </g>
-                  </svg>
-                </svg>
-                <g v-if="selectedElement === item && !selectedLayers.length">
+              </svg>
+              <rect
+                  :key="index"
+                  v-if="item.invalid"
+                  :x="item.x"
+                  :y="item.y"
+                  :width="item.width"
+                  :height="item.height"
+                  class="ctrl-bounds"
+                  :class="{invalid: item.invalid}"
+                />
+             <g :key="index" :transform="item.matrix ? item.matrix : ''"  v-if="selectedElement === item && !selectedLayers.length" >
                   <rect
                     :x="item.x"
                     :y="item.y"
@@ -299,7 +249,7 @@
                     :height="item.height"
                     class="ctrl-bounds"
                   />
-                  <g
+                  <g                 
                     fill="#5e6a7d"
                     font-size="12px"
                     :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
@@ -405,15 +355,106 @@
                     </g>
                   </g>
                 </g>
+                </template>
+            <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)">
+              <g
+                ref="groupEls"
+                :id="'group-'+index"
+                :transform="item.matrix ? item.matrix : ''"
+                @mousedown="onMouseDown($event,item)"
+                @touchstart="onMouseDown($event,item)"
+              >
                 <rect
-                  v-if="item.invalid"
                   :x="item.x"
                   :y="item.y"
                   :width="item.width"
                   :height="item.height"
-                  class="ctrl-bounds"
-                  :class="{invalid: item.invalid}"
+                  fill="transparent"
                 />
+                <svg
+                  :height="item.height"
+                  :width="item.width"
+                  :x="item.x"
+                  :y="item.y"
+                  :opacity="base.layers_opacity"
+                >
+                  <template v-if="item.type=='text'">
+                    <text
+                      :font-family="item.font.name"
+                      :font-size="item.fontSize"
+                      :text-anchor="item.textAnchor"
+                      :font-weight="item.bold ? 'bold' : 'normal'"
+                      :font-style="item.italic ? 'italic' : 'normal'"
+                      :fill="item.color"
+                    >
+                      <tspan
+                        :y="'0.7em'"
+                        :dy="index + 'em'"
+                        v-bind:key="index"
+                        :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
+                        v-for="(text, index) in item.text"
+                        :x="getTextXPosition(item)"
+                      >{{text}}</tspan>
+                    </text>
+                  </template>
+
+                  <image
+                    v-if="item.type=='img'"
+                    :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
+                    :x="0"
+                    :y="0"
+                    :height="item.height"
+                    :width="item.width"
+                    @load="item.spinner = false"
+                  />
+
+                  <svg
+                    v-if="item.type=='img' && item.spinner == true"
+                    :x="(item.width/2 - 20)"
+                    :y="(item.height/2 - 20)"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 38 38"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
+                        <stop stop-color="#72b425" stop-opacity="0" offset="0%" />
+                        <stop stop-color="#72b425" stop-opacity=".631" offset="63.146%" />
+                        <stop stop-color="#72b425" offset="100%" />
+                      </linearGradient>
+                    </defs>
+                    <g fill="none" fill-rule="evenodd">
+                      <g transform="translate(1 1)">
+                        <path
+                          d="M36 18c0-9.94-8.06-18-18-18"
+                          id="Oval-2"
+                          stroke="url(#a)"
+                          stroke-width="2"
+                        >
+                          <animateTransform
+                            attributeName="transform"
+                            type="rotate"
+                            from="0 18 18"
+                            to="360 18 18"
+                            dur="0.9s"
+                            repeatCount="indefinite"
+                          />
+                        </path>
+                        <circle fill="#fff" cx="36" cy="18" r="1">
+                          <animateTransform
+                            attributeName="transform"
+                            type="rotate"
+                            from="0 18 18"
+                            to="360 18 18"
+                            dur="0.9s"
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                      </g>
+                    </g>
+                  </svg>
+                </svg>    
               </g>
             </g>
           </svg>
