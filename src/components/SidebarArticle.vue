@@ -33,7 +33,7 @@
     </div>
     <perfect-scrollbar>
       <div class="sidebar-article__prints">
-        <div class="sidebar-article__group-title">Стоимость изделия</div>
+        <div class="sidebar-article__group-title">Стоимость основы</div>
         <div class="sidebar-article__item-price__item">
           <div class="sidebar-article__item-price__item-name">{{base.name}}</div>
           <div class="sidebar-article__item-price__item-price">{{article.base_price}} UAH</div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="sidebar-article__prints-list__price">
                   <span v-if="el.price > 0">{{el.price}} UAH</span>
-                  <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span>
+                  <!-- <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span> -->
                 </div>
               </li>
             </ul>
@@ -92,7 +92,7 @@
               </div>
               <div class="sidebar-article__prints-list__price">
                 <span v-if="feature.feature_price > 0">{{feature.feature_price}} UAH</span>
-                <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span>
+                <!-- <span v-else class="sidebar-article__prints-list__price-free">Бесплатно</span> -->
               </div>
             </li>
           </ul>

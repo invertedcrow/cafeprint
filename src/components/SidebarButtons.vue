@@ -1,7 +1,7 @@
 <template>
   <div class="constructor-sidebar__btns">
     <button
-      v-if="activeSidebar !== Sidebar.PRICE && this.sidesElems.length && items.length && !editProfileProduct && !editCartProduct && !editOrderProduct"
+      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editProfileProduct && !editCartProduct && !editOrderProduct"
       @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
@@ -96,9 +96,7 @@ import {
   SAVE_UPDATE_ORDER_ITEM
 } from "../store/actions.type";
 
-import {
-  PRICE_SET_ITEM  
-} from "../store/mutations.type";
+import { PRICE_SET_ITEM } from "../store/mutations.type";
 
 import { Sidebar, USER_ROLE } from "../consts";
 

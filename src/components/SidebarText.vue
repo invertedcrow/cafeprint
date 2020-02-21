@@ -35,7 +35,7 @@
     </div>
 
     <div class="sidebar-text__input">
-      <textarea v-model="text" @keyup.prevent="updateInput" placeholder="Your text here..."></textarea>
+      <textarea v-model="text" @keyup.prevent="updateInput" placeholder="Ваш текст..."></textarea>
     </div>
     <div class="sidebar-text__tools">
       <button @click="setFontBold" class="sidebar-text__tools-item" :class="{'active': isBold}">
@@ -430,7 +430,12 @@ export default {
     },
     onSelectSide(side) {
       this.showSideSelect = false;
+      let list = this.items.slice();
+      const i = list.indexOf(this.selectedElement);
       this.selectedElement.side = side.id;
+      list[i] = this.selectedElement;
+      this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
+      this.$store.commit(CONSTRUCTOR_SET_ITEMS, list);
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
     }
   }

@@ -253,7 +253,7 @@ export default {
       const sides = [...this.draggList];
       let items = [];
       sides[index].items.splice(itemIndex, 1);
-      sides.forEach(item => items.push(...item.items));
+      sides.forEach(item => items.push(...item.items.reverse()));
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
     },
     onSelectLayer(index, itemIndex) {
@@ -269,7 +269,11 @@ export default {
     ...mapGetters(["renderSides"]),
     draggList: {
       get() {
-        return this.renderSides;
+        let sidesList = this.renderSides.slice();
+        sidesList.forEach(item => {
+          if (item.items) item.items.reverse();
+        });
+        return sidesList;
       }
     }
   },
