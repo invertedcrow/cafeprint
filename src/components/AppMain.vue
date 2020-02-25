@@ -203,6 +203,7 @@
                   :x="item.x"
                   :y="item.y"
                   :opacity="0.15"
+                  :class="{'svgText': item.type=='text'}"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -214,7 +215,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.7em'"
+                        :y="0"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
@@ -380,6 +381,7 @@
                   :x="item.x"
                   :y="item.y"
                   :opacity="base.layers_opacity"
+                  :class="{'svgText': item.type=='text'}"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -391,7 +393,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.7em'"
+                        :y="0"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
@@ -906,9 +908,8 @@ export default {
 
           // let realDiffWidth = this.size.width/this.side.real_width;
           // let realDiffHeight = this.size.height/this.side.real_height;
-      
-          this.allItemsParams.realItemsWidth = this.allItemsParams.width/area.width*this.size.width;
-          this.allItemsParams.realItemsHeight = this.allItemsParams.height/area.height*this.size.height; 
+          this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
+          this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
          
        }
       
@@ -916,7 +917,6 @@ export default {
         printsSizes.forEach((size) => {    
           let verticalSize = null;    
           let horizontalSize = null; 
-             
           if( this.allItemsParams.realItemsHeight <= size.real_height && this.allItemsParams.realItemsWidth <= size.real_width) {
             verticalSize = size;
           } 
@@ -1737,7 +1737,10 @@ var swapArrayElements = function (arr, indexA, indexB) {
   /*width: auto;*/
   /*height: 80vh;*/
   /*align-self: center;*/
-
+  .svgText {
+    overflow: visible; 
+    dominant-baseline: text-before-edge;
+  }
   text {
     cursor: default;
     -webkit-user-select: none;

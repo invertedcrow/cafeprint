@@ -2,7 +2,7 @@
   <div class="filter d-flex flex-column h-100">
     <div class="modal-title">Категории товаров</div>
     <div class="divider"></div>
-    <div class="filter__sub-title">Все товары</div>
+    <div class="filter__sub-title" @click="onLoadAllProducts()">Все товары</div>
     <perfect-scrollbar>
       <product-filter-collapse v-for="(item, index) in categories" :key="index" :category="item" />
     </perfect-scrollbar>
@@ -13,6 +13,7 @@
 <script>
 import { mapGetters } from "vuex";
 import ProductFilterCollapse from "./ProductFilterCollapse";
+import { GET_BASES_LIST } from "@/store/actions.type";
 
 export default {
   components: {
@@ -20,6 +21,11 @@ export default {
   },
   computed: {
     ...mapGetters(["categories"])
+  },
+  methods: {
+    onLoadAllProducts() {
+      this.$store.dispatch(GET_BASES_LIST, { limit: 10 });
+    }
   }
 };
 </script>
@@ -39,6 +45,7 @@ export default {
     letter-spacing: 0.14px;
     margin-left: 16px;
     margin-bottom: 30px;
+    cursor: pointer;
   }
   @media screen and (max-width: 768px) {
     padding-right: 22px;

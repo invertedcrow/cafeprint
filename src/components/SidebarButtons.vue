@@ -96,7 +96,7 @@ import {
   SAVE_UPDATE_ORDER_ITEM
 } from "../store/actions.type";
 
-import { PRICE_SET_ITEM } from "../store/mutations.type";
+import { PRICE_SET_ITEM, PRICE_RESET } from "../store/mutations.type";
 
 import { Sidebar, USER_ROLE } from "../consts";
 
@@ -176,6 +176,7 @@ export default {
       this.$store.dispatch(SAVE_UPDATE_CART_ITEM, { params, id });
     },
     onGetPriceClicked() {
+      this.$store.commit(PRICE_RESET);
       let items = [];
       this.baseSizes.forEach(size => {
         let sides = [];

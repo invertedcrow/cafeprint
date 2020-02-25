@@ -35,7 +35,12 @@
     </div>
 
     <div class="sidebar-text__input">
-      <textarea v-model="text" @keyup.prevent="updateInput" placeholder="Ваш текст..."></textarea>
+      <textarea
+        id="textarea"
+        v-model="text"
+        @keyup.prevent="updateInput"
+        placeholder="Ваш текст..."
+      ></textarea>
     </div>
     <div class="sidebar-text__tools">
       <button @click="setFontBold" class="sidebar-text__tools-item" :class="{'active': isBold}">
@@ -344,6 +349,17 @@ export default {
     initText() {
       if (this.selectedElement && this.selectedElement.type == "text") {
         this.text = this.selectedElement.text.join("\n") || "";
+
+        if (
+          this.selectedElement.text[0] == "Текст" &&
+          this.selectedElement.text.length == 1
+        ) {
+          setTimeout(() => {
+            let ta = document.getElementById("textarea");
+            ta.focus();
+            ta.select();
+          }, 0);
+        }
       }
     },
     updateInput(e) {
