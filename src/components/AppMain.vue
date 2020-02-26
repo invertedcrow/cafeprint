@@ -193,14 +193,17 @@
           </g>
           <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
             <template v-for="(item, index) in sideItems"  >
+               <!-- <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)"> -->
+              <g :key="'r' + side.id + index" :transform="item.matrix ? item.matrix : ''">
               <svg
                   v-if="item"
-                  :key="index"
+                  :key="'q' + side.id + index"
                   :height="item.height"
                   :width="item.width"
                   :x="item.x"
                   :y="item.y"
                   :opacity="0.15"
+                  :class="{'svgText': item.type=='text'}"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -212,7 +215,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.7em'"
+                        :y="0"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
@@ -232,7 +235,7 @@
                   />
               </svg>
               <rect
-                  :key="index"
+                  
                   v-if="item.invalid"
                   :x="item.x"
                   :y="item.y"
@@ -241,6 +244,7 @@
                   class="ctrl-bounds"
                   :class="{invalid: item.invalid}"
                 />
+                </g>
              <g :key="index" :transform="item.matrix ? item.matrix : ''"  v-if="selectedElement === item && !selectedLayers.length" >
                   <rect
                     :x="item.x"
@@ -377,6 +381,7 @@
                   :x="item.x"
                   :y="item.y"
                   :opacity="base.layers_opacity"
+                  :class="{'svgText': item.type=='text'}"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -388,7 +393,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.7em'"
+                        :y="0"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
@@ -454,7 +459,130 @@
                       </g>
                     </g>
                   </svg>
-                </svg>    
+                </svg>  
+                <g v-if="selectedElement === item && !selectedLayers.length">
+                  <rect
+                    :x="item.x"
+                    :y="item.y"
+                    :width="item.width"
+                    :height="item.height"
+                    class="ctrl-bounds"
+                  />
+                  <g
+                    fill="#5e6a7d"
+                    font-size="12px"
+                    :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
+                  >
+                    <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
+                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
+                    <text
+                      v-if="item.height > 40 && item.real_height > 0 && !rotation"
+                      :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
+                    >{{round(item.real_height)}} см</text>
+                    <text
+                      v-if="item.width > 37 && item.real_width > 0 && !rotation"
+                    >{{round(item.real_width)}} см</text>
+                  </g>
+                  <g>
+                    <g
+                      @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
+                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
+                      :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
+                    >
+                      <rect
+                        class="ctrl-rect"
+                        :width="tools.squaresize"
+                        :x="item.x"
+                        :y="item.y"
+                        :height="tools.squaresize"
+                      />
+                      <svg
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        class="ctrl-icon"
+                        :width="tools.squaresizeIcon"
+                        :height="tools.squaresizeIcon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        version="1.1"
+                        :x="(+item.x + 5)"
+                        :y="(+item.y + 3)"
+                        viewBox="0 0 76.398 76.398"
+                        style="enable-background:new 0 0 76.398 76.398;"
+                        xml:space="preserve"
+                      >
+                        <path
+                          d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
+                        />
+                      </svg>
+                    </g>
+                    <g
+                      @click="removeActiveItem()"
+                      @touchstart="removeActiveItem()"
+                      :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'"
+                    >
+                      <rect
+                        class="ctrl-rect"
+                        :x="item.x"
+                        :y="item.y"
+                        :width="tools.squaresize"
+                        :height="tools.squaresize"
+                      />
+                      <svg
+                        class="ctrl-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        :height="tools.squaresizeIcon"
+                        viewBox="-18 0 511 512"
+                        :width="tools.squaresizeIcon"
+                        fill="#757575"
+                        :x="(+item.x + 5)"
+                        :y="(+item.y + 3)"
+                      >
+                        <path
+                          d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"
+                        />
+                      </svg>
+                    </g>
+
+                    <g
+                      @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
+                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
+                      :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
+                    >
+                      <rect
+                        class="ctrl-rect"
+                        :x="item.x"
+                        :y="item.y"
+                        :width="tools.squaresize"
+                        :height="tools.squaresize"
+                      />
+                      <svg
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        class="ctrl-icon"
+                        :width="tools.squaresizeIcon"
+                        :height="tools.squaresizeIcon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        version="1.1"
+                        :x="(+item.x + 5)"
+                        :y="(+item.y + 4)"
+                        viewBox="0 0 472.774 472.774"
+                        xml:space="preserve"
+                      >
+                        <polygon
+                          transform="rotate(-45 236.387 236.387)"
+                          points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
+                        />
+                      </svg>
+                    </g>
+                  </g>
+                </g>
+                <rect
+                  v-if="item.invalid"
+                  :x="item.x"
+                  :y="item.y"
+                  :width="item.width"
+                  :height="item.height"
+                  class="ctrl-bounds"
+                  :class="{invalid: item.invalid}"
+                />  
               </g>
             </g>
           </svg>
@@ -780,9 +908,8 @@ export default {
 
           // let realDiffWidth = this.size.width/this.side.real_width;
           // let realDiffHeight = this.size.height/this.side.real_height;
-      
-          this.allItemsParams.realItemsWidth = this.allItemsParams.width/area.width*this.size.width;
-          this.allItemsParams.realItemsHeight = this.allItemsParams.height/area.height*this.size.height; 
+          this.allItemsParams.realItemsWidth = this.allItemsParams.width/this.sideArea.width*this.size.width;
+          this.allItemsParams.realItemsHeight = this.allItemsParams.height/this.sideArea.height*this.size.height; 
          
        }
       
@@ -790,7 +917,6 @@ export default {
         printsSizes.forEach((size) => {    
           let verticalSize = null;    
           let horizontalSize = null; 
-             
           if( this.allItemsParams.realItemsHeight <= size.real_height && this.allItemsParams.realItemsWidth <= size.real_width) {
             verticalSize = size;
           } 
@@ -1420,7 +1546,7 @@ export default {
               textAnchor: "start",
               x: 150 + ((this.sideItems.length + 2) % 20) * 10,
               y: 150 + ((this.sideItems.length + 2) % 20) * 10,
-              text: ["Your text here"],
+              text: ["Текст"],
               width: 132,
               height: 25,
               font: {name: "CyrillicHover"},
@@ -1611,7 +1737,10 @@ var swapArrayElements = function (arr, indexA, indexB) {
   /*width: auto;*/
   /*height: 80vh;*/
   /*align-self: center;*/
-
+  .svgText {
+    overflow: visible; 
+    dominant-baseline: text-before-edge;
+  }
   text {
     cursor: default;
     -webkit-user-select: none;

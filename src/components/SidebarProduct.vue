@@ -113,7 +113,8 @@ import { eventBus } from "../main";
 import { mapGetters, mapMutations } from "vuex";
 import {
   CONSTRUCTOR_SET_COLOR,
-  SIDEBAR_SET_ACTIVE
+  SIDEBAR_SET_ACTIVE,
+  CONSTRUCTOR_SET_SELECTED_ITEM
 } from "../store/mutations.type";
 export default {
   components: {
@@ -124,11 +125,16 @@ export default {
     ...mapGetters(["base", "color", "size", "printSize", "side"])
   },
   methods: {
-    ...mapMutations([CONSTRUCTOR_SET_COLOR, SIDEBAR_SET_ACTIVE]),
+    ...mapMutations([
+      CONSTRUCTOR_SET_COLOR,
+      SIDEBAR_SET_ACTIVE,
+      CONSTRUCTOR_SET_SELECTED_ITEM
+    ]),
     setActiveColor(color) {
       this.$store.commit(CONSTRUCTOR_SET_COLOR, color);
     },
     selectSidebarLayers() {
+      this.$store.commit(CONSTRUCTOR_SET_SELECTED_ITEM, null);
       this.$store.commit(SIDEBAR_SET_ACTIVE, Sidebar.LAYERS);
     },
     showInfoModal() {

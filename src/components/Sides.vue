@@ -32,6 +32,7 @@
                     :x="item.x"
                     :y="item.y"
                     :opacity="base.layers_opacity"
+                    :class="{'svgText': item.type=='text'}"
                   >
                     <image
                       v-if="item.type=='img'"
@@ -57,7 +58,7 @@
                       :fill="item.color"
                     >
                       <tspan
-                        :y="'0.7em'"
+                        :y="0"
                         :dy="index + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
@@ -178,6 +179,10 @@ export default {
   padding-right: 10px;
   user-select: none;
   &__item {
+    .svgText {
+      overflow: visible;
+      dominant-baseline: text-before-edge;
+    }
     width: 100px;
     height: 100px;
     border: 1px solid transparent;

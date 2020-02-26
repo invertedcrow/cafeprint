@@ -62,6 +62,7 @@ export default {
     },
     onReachEnd(param) {
       if (param == "inside" && this.windowWidth < 768) return;
+      if (param == "outside" && this.windowWidth > 768) return;
 
       let filter = { ...this.designFilter };
       if (filter.limit == this.designList.length) {
