@@ -32,7 +32,7 @@
                     :x="item.x"
                     :y="item.y"
                     :opacity="base.layers_opacity"
-                    :class="{'svgText': item.type=='text'}"
+                    :style="{'overflow': item.type=='text' ? 'visible' : 'hidden'}"
                   >
                     <image
                       v-if="item.type=='img'"
@@ -56,6 +56,8 @@
                       :font-weight="item.bold ? 'bold' : 'normal'"
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
+                      overflow="visible"
+                      dominant-baseline="text-before-edge"
                     >
                       <tspan
                         :y="0"
@@ -115,6 +117,9 @@ export default {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
     },
     imgUrl(url) {
+      if (url.startsWith("http")) {
+        return url;
+      }
       let link = API_URL + (url[0] == "/" ? "" : "/") + url;
       return link;
     },
@@ -179,10 +184,6 @@ export default {
   padding-right: 10px;
   user-select: none;
   &__item {
-    .svgText {
-      overflow: visible;
-      dominant-baseline: text-before-edge;
-    }
     width: 100px;
     height: 100px;
     border: 1px solid transparent;

@@ -203,7 +203,7 @@
                   :x="item.x"
                   :y="item.y"
                   :opacity="0.15"
-                  :class="{'svgText': item.type=='text'}"
+                  :style="{'overflow': item.type=='text' ? 'visible' : 'hidden'}"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -213,6 +213,8 @@
                       :font-weight="item.bold ? 'bold' : 'normal'"
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
+                      overflow="visible"
+                      dominant-baseline="text-before-edge"
                     >
                       <tspan
                         :y="0"
@@ -380,8 +382,8 @@
                   :width="item.width"
                   :x="item.x"
                   :y="item.y"
-                  :opacity="base.layers_opacity"
-                  :class="{'svgText': item.type=='text'}"
+                  :opacity="base.layers_opacity" 
+                  :style="{'overflow': item.type=='text' ? 'visible' : 'hidden'}"                 
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -391,6 +393,8 @@
                       :font-weight="item.bold ? 'bold' : 'normal'"
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
+                      overflow="visible"
+                      dominant-baseline="text-before-edge"
                     >
                       <tspan
                         :y="0"
@@ -798,7 +802,10 @@ export default {
     },
   methods: {   
       ...mapMutations([CONSTRUCTOR_SET_ITEMS, CONSTRUCTOR_ADD_ITEM, CONSTRUCTOR_SET_SELECTED_ITEM]),  
-      imgUrl(url) {
+      imgUrl(url) {       
+        if(url.startsWith('http')) {
+            return url
+        }       
         let link = API_URL + (url[0] == "/" ? "" : "/") + url;        
         return link;
       },
@@ -1736,11 +1743,7 @@ var swapArrayElements = function (arr, indexA, indexB) {
   height: 100%;
   /*width: auto;*/
   /*height: 80vh;*/
-  /*align-self: center;*/
-  .svgText {
-    overflow: visible; 
-    dominant-baseline: text-before-edge;
-  }
+  /*align-self: center;*/  
   text {
     cursor: default;
     -webkit-user-select: none;
