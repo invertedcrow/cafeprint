@@ -124,6 +124,11 @@ hr {
   stroke: #333;
 }
 
+.area-white {
+    .area {
+      stroke: #fff;
+    }
+  }
 .scroll-btn {
   z-index: 5 !important;
 }

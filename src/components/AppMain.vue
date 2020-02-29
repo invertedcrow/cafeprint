@@ -28,7 +28,7 @@
           :width="image.width"
           :height="image.height"
         />
-        <g id="maskRect" v-html="side.svg_area" />
+        <g id="maskRect" v-html="side.svg_area" :class="{'area-white': color && color.color && color.color.includes('000')}"/>
 
         <g>
           <polygon
@@ -115,7 +115,7 @@
             </template>
           </g>-->
 
-          <g v-if="selectedLayers.length">
+          <g v-if="selectedLayers.length && selectedLayersSide == side.id">
             <rect
               :x="+groupParams.x"
               :y="+groupParams.y"
@@ -751,7 +751,7 @@ export default {
         })        
     },
     computed: {
-        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize", "color", "isValid"]),
+        ...mapGetters(["selectedElement", "items", "side", "base", "selectedLayers", "baseImg", "size", "maxPrintSize", "color", "isValid", "selectedLayersSide"]),
         sideItems() {        
           return this.filterBySide(this.items)
         },

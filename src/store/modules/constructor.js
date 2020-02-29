@@ -4,7 +4,7 @@ import {
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
     CONSTRUCTOR_SET_PRINT_SIZE, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
-    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES, CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT
+    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES, CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT, CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE
 } from '../mutations.type';
 
 import {
@@ -47,6 +47,7 @@ const initialState = () => ({
     items: [],
     selectedElement: {},
     selectedLayers: [],
+    selectedLayersSide: null,
     side: {id: 123},
     size: {},
     printSize: {},
@@ -133,6 +134,7 @@ const getters = {
   editOrderProduct: (state) => state.editOrderProduct,
   baseFeatures: (state) => state.base.features,
   features: (state) => state.features,
+  selectedLayersSide: (state) => state.selectedLayersSide
 };
 
 const actions = {
@@ -287,6 +289,7 @@ const mutations = {
     [CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT]: (state, product) => state.editProfileProduct = product,
     [CONSTRUCTOR_SET_EDIT_CART_PRODUCT]: (state, product) => state.editCartProduct = product,
     [CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT]: (state, product) => state.editOrderProduct = product,
+    [CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE]: (state, id) => state.selectedLayersSide = id,
 };
 
 export default {
