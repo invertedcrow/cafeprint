@@ -20,6 +20,7 @@ export const CONSTRUCTOR_SET_EDIT_CART_PRODUCT = 'setEditCartProduct';
 export const CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT = 'setEditOrderProduct';
 export const CONSTRUCTOR_SET_FEATURES       = 'setFeatures';
 export const CONSTRUCTOR_RESET_FEATURES     = 'resetFeatures';
+export const CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE = 'CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE';
 
 export const DESIGN_SET_CATEGORIES          = 'setCategories';
 export const DESIGN_SET_ACTIVE_CATEGORIES   = 'setActiveCategory';

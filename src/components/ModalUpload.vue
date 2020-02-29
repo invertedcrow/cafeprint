@@ -45,7 +45,7 @@
         <b-tab :title="titleTab" active>
           <upload-file />
         </b-tab>
-        <b-tab title="Загруженные изображения">
+        <b-tab :title="titleTab2">
           <upload-list />
         </b-tab>
       </b-tabs>
@@ -66,7 +66,9 @@ export default {
   data() {
     return {
       selectedItem: null,
-      titleTab: window.innerWidth > 768 ? "Загрузить свое" : "Загрузить"
+      titleTab: window.innerWidth > 768 ? "Загрузить свое" : "Загрузить",
+      titleTab2:
+        window.innerWidth > 397 ? "Загруженные изображения" : "Загруженные"
     };
   },
   computed: {
@@ -79,6 +81,8 @@ export default {
       window.addEventListener("resize", () => {
         this.titleTab =
           window.innerWidth > 768 ? "Загрузить свое" : "Загрузить";
+        this.titleTab2 =
+          window.innerWidth > 397 ? "Загруженные изображения" : "Загруженные";
       });
     });
   },
