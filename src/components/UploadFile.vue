@@ -9,7 +9,6 @@
             :useCustomSlot="true"
             :thumbnailMethod="null"
             :options="dropzoneOptions"
-            @vdropzone-files-added="isDisabledUpload = true"
             @vdropzone-complete-multiple="onLoadFile"
           >
             <div class="dropzone__content">Перетащите файлы сюда...</div>
@@ -20,7 +19,7 @@
 
     <div class="upload__btn-wrapper">
       <div class="upload__btn-wrapper__text">Выбрать файлы</div>
-      <button class="baseBtn" :disabled="isDisabledUpload" @click="onAddFile()">Выбрать изображение</button>
+      <button class="baseBtn" @click="onAddFile()">Выбрать изображение</button>
     </div>
   </div>
 </template>
@@ -40,7 +39,6 @@ export default {
   data() {
     return {
       length: 0,
-      isDisabledUpload: false,
       dropzoneOptions: {
         url: `${API_URL}/constructor-new/temp-files`,
         thumbnailMethod: "contain",
@@ -100,7 +98,6 @@ export default {
         });
 
         eventBus.$emit("hideModal", MODALS.UPLOAD);
-        this.isDisabledUpload = false;
       }, 500);
     },
     templatePreview() {

@@ -1470,7 +1470,10 @@ export default {
                       dy = event.y - item.drag.oY,
                       angle = (Math.atan2(dy, dx) * (180 / Math.PI));
                  
-                  const newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
+                  let newAngle = angle + startAngle < 0 ? 360 - Math.abs(angle + startAngle) : angle + startAngle;
+                    if(item.width < 75) {
+                      newAngle *= 2
+                    }
                     item.rotate = newAngle % 359;                
                             
                     item.matrix = "1,0,0,1,0,0";                     
