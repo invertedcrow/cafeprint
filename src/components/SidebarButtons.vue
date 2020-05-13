@@ -1,7 +1,7 @@
 <template>
   <div class="constructor-sidebar__btns">
     <button
-      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editProfileProduct && !editCartProduct && !editOrderProduct"
+      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editProfileProduct && !editOrderProduct"
       @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
@@ -22,7 +22,7 @@
       v-show="editOrderProduct"
     >Сохранить изменения</button>
     <button
-      id="popover-select-side-admin"
+      id="popover-select-side-admin-save"
       class="get-price"
       v-show="(userRole == USER_ROLE.admin || userRole == USER_ROLE.printer) && items.length && editProduct && !editProfileProduct && !editCartProduct && !editOrderProduct"
     >Сохранить</button>
@@ -51,6 +51,21 @@
       custom-class="sides-popover"
       placement="top"
       target="popover-select-side-admin"
+      triggers="focus"
+      title="Выберите сторону которую отображать на превью"
+    >
+      <div
+        class="baseBtn secondary"
+        v-for="(item, index) in renderSides"
+        :key="index"
+        @click="onUpdatePrint(item)"
+      >{{item.name}}</div>
+    </b-popover>
+    <b-popover
+      ref="popover"
+      custom-class="sides-popover"
+      placement="top"
+      target="popover-select-side-admin-save"
       triggers="focus"
       title="Выберите сторону которую отображать на превью"
     >
