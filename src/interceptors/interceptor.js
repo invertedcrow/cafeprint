@@ -15,8 +15,8 @@ export default function setup() {
     function(config) {
      
 
-      const username = 'mfest';
-      const password = 'mfestowner';
+      // const username = 'mfest';
+      // const password = 'mfestowner';
       // variant 2
       // const basicAuth = 'Basic ' + btoa(username + ':' + password);   
       // config.headers["Authorization"] = basicAuth;
