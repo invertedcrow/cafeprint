@@ -54,14 +54,14 @@
             :width="sideArea.width"
           />
 
-          <!-- <g>
+          <g>
             <template v-if="dragging && selectedElement">
               <line
                 v-if="lines.centerH"
                 x1="-2000"
                 x2="2000"
-                :y1="sideArea.height / 2"
-                :y2="sideArea.height / 2"
+                :y1="+sideArea.y + +sideArea.height / 2"
+                :y2="+sideArea.y + +sideArea.height / 2"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
@@ -70,8 +70,8 @@
                 v-if="lines.top"
                 x1="-2000"
                 x2="2000"
-                y1="0"
-                y2="0"
+                :y1="+sideArea.y"
+                :y2="+sideArea.y"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
@@ -80,16 +80,16 @@
                 v-if="lines.bottom"
                 x1="-2000"
                 x2="2000"
-                :y1="sideArea.height"
-                :y2="sideArea.height"
+                :y1="+sideArea.height + +sideArea.y"
+                :y2="+sideArea.height + +sideArea.y"
                 stroke="#007bff"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
               />
               <line
                 v-if="lines.centerV"
-                :x1="sideArea.width/2"
-                :x2="sideArea.width/2"
+                :x1="+sideArea.x + +sideArea.width/2"
+                :x2="+sideArea.x + +sideArea.width/2"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -98,8 +98,8 @@
               />
               <line
                 v-if="lines.left"
-                x1="0"
-                x2="0"
+                :x1="+sideArea.x"
+                :x2="+sideArea.x"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -108,8 +108,8 @@
               />
               <line
                 v-if="lines.right"
-                :x1="sideArea.width"
-                :x2="sideArea.width"
+                :x1="+sideArea.x + +sideArea.width"
+                :x2="+sideArea.x + +sideArea.width"
                 y1="-2000"
                 y2="2000"
                 stroke="#007bff"
@@ -117,7 +117,7 @@
                 vector-effect="non-scaling-stroke"
               />
             </template>
-          </g>-->
+          </g>
 
           <g v-if="selectedLayers.length && selectedLayersSide == side.id">
             <rect
@@ -1487,21 +1487,21 @@ export default {
           // item.invalid = false;
         }
 
-        // const centerX = (this.sideArea.width) / 2;
-        // const centerY = (this.sideArea.height) / 2;
-        // const oX = (left + right) / 2;
-        // const oY = (top + bottom) / 2;
+        const centerX = edBounds.width / 2;
+        const centerY = edBounds.height / 2;
+        const oX = (left + right) / 2;
+        const oY = (top + bottom) / 2;
 
         // // Прилипание к центральным линиям
-        // if (oY > centerY - 5 && oY < centerY + 5) {
-        //     item.y = centerY - (item.height / 2);
-        //     this.lines.centerH = true;
-        // }
+        if (oY > centerY - 5 && oY < centerY + 5) {
+          // item.y = centerY - item.height / 2;
+          this.lines.centerH = true;
+        }
 
-        // if (oX > centerX - 5 && oX < centerX + 5) {
-        //     item.x = centerX - (item.width / 2);
-        //     this.lines.centerV = true;
-        // }
+        if (oX > centerX - 5 && oX < centerX + 5) {
+          // item.x = centerX - item.width / 2;
+          this.lines.centerV = true;
+        }
 
         // // Верх и горизонтальный центр
         // if (bottom > centerY - 5 && bottom < centerY + 5) {
