@@ -1103,6 +1103,8 @@ export default {
     round(value) {
       if (value) {
         return value.toFixed(1);
+      } else {
+        return 0;
       }
     },
     resetSelected() {
@@ -1495,11 +1497,13 @@ export default {
         // // Прилипание к центральным линиям
         if (oY > centerY - 5 && oY < centerY + 5) {
           // item.y = centerY - item.height / 2;
+          item.y =
+            +this.sideArea.y + +this.sideArea.height / 2 - item.height / 2;
           this.lines.centerH = true;
         }
 
         if (oX > centerX - 5 && oX < centerX + 5) {
-          // item.x = centerX - item.width / 2;
+          item.x = +this.sideArea.x + +this.sideArea.width / 2 - item.width / 2;
           this.lines.centerV = true;
         }
 
@@ -1630,6 +1634,16 @@ export default {
         //   newAngle *= 2;
         // }
         item.rotate = newAngle % 359;
+
+        if (item.rotate > 357 || item.rotate < 3) {
+          item.rotate = 0;
+        } else if (item.rotate > 177 && item.rotate < 183) {
+          item.rotate = 180;
+        } else if (item.rotate > 87 && item.rotate < 93) {
+          item.rotate = 90;
+        } else if (item.rotate > 267 && item.rotate < 273) {
+          item.rotate = 270;
+        }
 
         item.matrix = "1,0,0,1,0,0";
         item.matrix = `matrix(${Math.cos(item.rotate)},${-Math.sin(

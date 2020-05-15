@@ -352,7 +352,8 @@ export default {
 
         if (
           this.selectedElement.text[0] == "Текст" &&
-          this.selectedElement.text.length == 1
+          this.selectedElement.text.length == 1 &&
+          window.innerWidth > 767
         ) {
           setTimeout(() => {
             let ta = document.getElementById("textarea");
