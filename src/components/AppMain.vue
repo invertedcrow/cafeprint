@@ -1127,6 +1127,7 @@ export default {
         this.rotation = false;
         this.scaling = false;
         document.onmousemove = null;
+        this.updateSizes();
       };
 
       document.ontouchend = () => {
@@ -1136,6 +1137,7 @@ export default {
         this.itemTouch = null;
         document.ontouchmove = null;
         isCanMove = false;
+        this.updateSizes();
       };
       items.forEach(item => {
         const selectedElementIndex = this.sideItems.indexOf(item);
@@ -1326,7 +1328,21 @@ export default {
           item.y = item.y + diff_before_h - diff_current_h;
 
           if (item.type == "text") {
-            item.fontSize = item.height / item.text.length;
+            const index = this.items.indexOf(item);
+            const tSpans = document.querySelectorAll(
+              `#group-${index} svg > text > tspan`
+            );
+            let addHeight = 2;
+            if (tSpans && tSpans.length) {
+              if (tSpans[0] && tSpans[0].getBBox()) {
+                addHeight =
+                  tSpans[0].getBBox().height / item.text.length - item.fontSize;
+                if (addHeight < 0) {
+                  addHeight = 0;
+                }
+              }
+            }
+            item.fontSize = (item.height - addHeight) / item.text.length;
           }
           item = this.checkItemPosition(item);
         }
@@ -1387,6 +1403,7 @@ export default {
         this.rotation = false;
         this.scaling = false;
         document.onmousemove = null;
+        this.updateSizes();
       };
 
       document.ontouchend = () => {
@@ -1396,6 +1413,7 @@ export default {
         this.itemTouch = null;
         document.ontouchmove = null;
         isCanMove = false;
+        this.updateSizes();
       };
 
       document.onmousemove = event => {
@@ -1688,7 +1706,21 @@ export default {
         item.y = item.y + diff_before_h - diff_current_h;
 
         if (item.type == "text") {
-          item.fontSize = item.height / item.text.length;
+          const index = this.items.indexOf(item);
+          const tSpans = document.querySelectorAll(
+            `#group-${index} svg > text > tspan`
+          );
+          let addHeight = 2;
+          if (tSpans && tSpans.length) {
+            if (tSpans[0] && tSpans[0].getBBox()) {
+              addHeight +=
+                tSpans[0].getBBox().height / item.text.length - item.fontSize;
+              if (addHeight < 2) {
+                addHeight = 2;
+              }
+            }
+          }
+          item.fontSize = (item.height - addHeight) / item.text.length;
         }
         item = this.checkItemPosition(item);
       }
@@ -1805,11 +1837,25 @@ export default {
         const tSpans = document.querySelectorAll(
           `#group-${index} svg > text > tspan`
         );
-        const widths = Array.from(tSpans).map(x => x.getComputedTextLength());
+        let addHeight = 2;
+        const widths = Array.from(tSpans).map((x, i) => {
+          if (i == 0 && x.getBBox()) {
+            addHeight +=
+              x.getBBox().height / this.selectedElement.text.length -
+              this.selectedElement.fontSize;
+            if (addHeight < 0) {
+              addHeight = 0;
+            }
+          }
+          return x.getComputedTextLength();
+        });
         const maxWidth = widths.length ? Math.max(...widths) : 115;
         if (this.selectedElement && this.selectedElement.fontSize) {
           this.selectedElement.height =
-            this.selectedElement.fontSize * this.selectedElement.text.length;
+            this.selectedElement.fontSize * this.selectedElement.text.length +
+            addHeight;
+          this.selectedElement.height +=
+            this.selectedElement.text.length > 1 ? addHeight : 0;
           this.selectedElement.width = maxWidth;
           this.selectedElement = this.checkItemPosition(this.selectedElement);
         }
@@ -1819,12 +1865,21 @@ export default {
             const tSpans = document.querySelectorAll(
               `#group-${i} svg > text > tspan`
             );
-            const widths = Array.from(tSpans).map(x =>
-              x.getComputedTextLength()
-            );
+            let addHeight = 2;
+            const widths = Array.from(tSpans).map((x, i) => {
+              if (i == 0 && x.getBBox()) {
+                addHeight +=
+                  x.getBBox().height / item.text.length - item.fontSize;
+                if (addHeight < 0) {
+                  addHeight = 0;
+                }
+              }
+              return x.getComputedTextLength();
+            });
             const maxWidth = widths.length ? Math.max(...widths) : 115;
             if (item && item.fontSize) {
-              item.height = item.fontSize * item.text.length;
+              item.height = item.fontSize * item.text.length + addHeight;
+              item.height += item.text.length > 1 ? addHeight : 0;
               item.width = maxWidth;
               item = this.checkItemPosition(item);
             }
