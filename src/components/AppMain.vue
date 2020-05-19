@@ -1123,21 +1123,25 @@ export default {
       eDown.stopPropagation();
 
       document.onmouseup = () => {
+        if (this.scaling) {
+          this.updateSizes();
+        }
         this.dragging = false;
         this.rotation = false;
         this.scaling = false;
         document.onmousemove = null;
-        this.updateSizes();
       };
 
       document.ontouchend = () => {
+        if (this.scaling) {
+          this.updateSizes();
+        }
         this.dragging = false;
         this.rotation = false;
         this.scaling = false;
         this.itemTouch = null;
         document.ontouchmove = null;
         isCanMove = false;
-        this.updateSizes();
       };
       items.forEach(item => {
         const selectedElementIndex = this.sideItems.indexOf(item);
@@ -1328,7 +1332,7 @@ export default {
           item.y = item.y + diff_before_h - diff_current_h;
 
           if (item.type == "text") {
-            const index = this.items.indexOf(item);
+            const index = this.sideItems.indexOf(item);
             const tSpans = document.querySelectorAll(
               `#group-${index} svg > text > tspan`
             );
@@ -1399,21 +1403,25 @@ export default {
       }
 
       document.onmouseup = () => {
+        if (this.scaling) {
+          this.updateSizes();
+        }
         this.dragging = false;
         this.rotation = false;
         this.scaling = false;
         document.onmousemove = null;
-        this.updateSizes();
       };
 
       document.ontouchend = () => {
+        if (this.scaling) {
+          this.updateSizes();
+        }
         this.dragging = false;
         this.rotation = false;
         this.scaling = false;
         this.itemTouch = null;
         document.ontouchmove = null;
         isCanMove = false;
-        this.updateSizes();
       };
 
       document.onmousemove = event => {
@@ -1706,7 +1714,7 @@ export default {
         item.y = item.y + diff_before_h - diff_current_h;
 
         if (item.type == "text") {
-          const index = this.items.indexOf(item);
+          const index = this.sideItems.indexOf(item);
           const tSpans = document.querySelectorAll(
             `#group-${index} svg > text > tspan`
           );
@@ -1766,7 +1774,7 @@ export default {
         x: 150 + ((this.sideItems.length + 2) % 20) * 10,
         y: 150 + ((this.sideItems.length + 2) % 20) * 10,
         text: ["Текст"],
-        width: 132,
+        width: 48,
         height: 25,
         font: { name: "CyrillicHover" },
         fontSize: 20,
@@ -1832,60 +1840,60 @@ export default {
       return item;
     },
     updateSizes() {
-      setTimeout(() => {
-        const index = this.items.indexOf(this.selectedElement);
-        const tSpans = document.querySelectorAll(
-          `#group-${index} svg > text > tspan`
-        );
-        let addHeight = 2;
-        const widths = Array.from(tSpans).map((x, i) => {
-          if (i == 0 && x.getBBox()) {
-            addHeight +=
-              x.getBBox().height / this.selectedElement.text.length -
-              this.selectedElement.fontSize;
-            if (addHeight < 0) {
-              addHeight = 0;
-            }
-          }
-          return x.getComputedTextLength();
-        });
-        const maxWidth = widths.length ? Math.max(...widths) : 115;
-        if (this.selectedElement && this.selectedElement.fontSize) {
-          this.selectedElement.height =
-            this.selectedElement.fontSize * this.selectedElement.text.length +
-            addHeight;
-          this.selectedElement.height +=
-            this.selectedElement.text.length > 1 ? addHeight : 0;
-          this.selectedElement.width = maxWidth;
-          this.selectedElement = this.checkItemPosition(this.selectedElement);
-        }
+      //setTimeout(() => {
+      // const index = this.items.indexOf(this.selectedElement);
+      // const tSpans = document.querySelectorAll(
+      //   `#group-${index} svg > text > tspan`
+      // );
+      // let addHeight = 2;
+      // const widths = Array.from(tSpans).map((x, i) => {
+      //   if (i == 0 && x.getBBox()) {
+      //     addHeight +=
+      //       x.getBBox().height / this.selectedElement.text.length -
+      //       this.selectedElement.fontSize;
+      //     if (addHeight < 0) {
+      //       addHeight = 0;
+      //     }
+      //   }
+      //   return x.getComputedTextLength();
+      // });
+      // const maxWidth = widths.length ? Math.max(...widths) : 115;
+      // if (this.selectedElement && this.selectedElement.fontSize) {
+      //   this.selectedElement.height =
+      //     this.selectedElement.fontSize * this.selectedElement.text.length +
+      //     addHeight;
+      //   this.selectedElement.height +=
+      //     this.selectedElement.text.length > 1 ? addHeight : 0;
+      //   this.selectedElement.width = maxWidth;
+      //   this.selectedElement = this.checkItemPosition(this.selectedElement);
+      // }
 
-        setTimeout(() => {
-          this.sideItems.forEach((item, i) => {
-            const tSpans = document.querySelectorAll(
-              `#group-${i} svg > text > tspan`
-            );
-            let addHeight = 2;
-            const widths = Array.from(tSpans).map((x, i) => {
-              if (i == 0 && x.getBBox()) {
-                addHeight +=
-                  x.getBBox().height / item.text.length - item.fontSize;
-                if (addHeight < 0) {
-                  addHeight = 0;
-                }
+      setTimeout(() => {
+        this.sideItems.forEach((item, i) => {
+          const tSpans = document.querySelectorAll(
+            `#group-${i} svg > text > tspan`
+          );
+          let addHeight = 2;
+          const widths = Array.from(tSpans).map((x, i) => {
+            if (i == 0 && x.getBBox()) {
+              addHeight +=
+                x.getBBox().height / item.text.length - item.fontSize;
+              if (addHeight < 0) {
+                addHeight = 0;
               }
-              return x.getComputedTextLength();
-            });
-            const maxWidth = widths.length ? Math.max(...widths) : 115;
-            if (item && item.fontSize) {
-              item.height = item.fontSize * item.text.length + addHeight;
-              item.height += item.text.length > 1 ? addHeight : 0;
-              item.width = maxWidth;
-              item = this.checkItemPosition(item);
             }
+            return x.getComputedTextLength();
           });
-        }, 100);
-      });
+          const maxWidth = widths.length ? Math.max(...widths) : 115;
+          if (item && item.fontSize) {
+            item.height = item.fontSize * item.text.length + addHeight;
+            item.height += item.text.length > 1 ? addHeight : 0;
+            item.width = maxWidth;
+            item = this.checkItemPosition(item);
+          }
+        });
+      }, 100);
+      // });
     },
     moveUp() {
       if (
