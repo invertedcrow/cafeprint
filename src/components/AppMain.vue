@@ -713,7 +713,7 @@ export default {
 
         if (
           !this.currBase ||
-          (this.currBase && this.currBase.id == this.base.id)
+          (this.currBase && this.currBase.id == this.base.id && diff != 1)
         ) {
           this.resizeAllLayers(diff);
         }
@@ -743,6 +743,8 @@ export default {
 
       let element = new DOMParser().parseFromString(val.svg_area, "text/xml");
       this.sideArea.tag = element.documentElement.tagName;
+
+      this.getRealSideAreaSize();
 
       if (this.sideArea.tag == "rect") {
         this.sideArea.width = element.documentElement.getAttribute("width");
@@ -793,7 +795,8 @@ export default {
       "maxPrintSize",
       "color",
       "isValid",
-      "selectedLayersSide"
+      "selectedLayersSide",
+      "baseSizes"
     ]),
     sideItems() {
       return this.filterBySide(this.items);
@@ -878,12 +881,39 @@ export default {
       }
       return false;
     },
+    getRealSideAreaSize() {
+      let realSideWidth = this.side.real_width;
+      let realSideHeight = this.side.real_height;
+      if (this.side.real_for_size_id) {
+        let realForSize = this.baseSizes.find(
+          item => item.id == this.side.real_for_size_id
+        );
+        if (realForSize) {
+          realSideWidth =
+            (this.side.real_width * +this.size.width) / +realForSize.width;
+          realSideHeight =
+            (this.side.real_height * +this.size.height) / +realForSize.height;
+        }
+      }
+      this.sideArea.real_width = realSideWidth;
+      this.sideArea.real_height = realSideHeight;
+      this.sideArea.real_for_size_id = this.side.real_for_size_id;
+    },
     checkPrintSize() {
       let printSize = { name: "" };
       const printsSizes = this.base.printSizes;
       let items = this.sideItems.slice();
 
       if (!items.length) {
+        if (this.base.sides.length) {
+          this.base.sides.forEach(side => {
+            this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {
+              id: side.id,
+              invalid: false
+            });
+          });
+        }
+
         return null;
       }
 
@@ -936,7 +966,8 @@ export default {
             item.invalid = false;
           }
           item.real_width =
-            (item.visibleWidth / this.sideArea.width) * this.size.width;
+            (item.visibleWidth / this.sideArea.width) *
+            this.sideArea.real_width; // * this.size.width;
 
           if (
             element.top < area.top &&
@@ -973,7 +1004,8 @@ export default {
             item.invalid = item.invalid ? true : false;
           }
           item.real_height =
-            (item.visibleHeight / this.sideArea.height) * this.size.height;
+            (item.visibleHeight / this.sideArea.height) *
+            this.sideArea.real_height;
 
           if (item.visibleX == -1 || item.visibleY == -1) {
             items.splice(i, 1);
@@ -984,41 +1016,43 @@ export default {
       let arrY = items.map(item => item.visibleY);
       let arrW = items.map(item => item.visibleWidth);
       let arrH = items.map(item => item.visibleHeight);
+      let arrX2 = items.map(item => item.visibleX + item.visibleWidth);
+      let arrY2 = items.map(item => item.visibleY + item.visibleHeight);
 
       this.allItemsParams = {
         x: Math.min(...arrX),
         y: Math.min(...arrY),
         width: Math.max(...arrW),
-        height: Math.max(...arrH)
+        height: Math.max(...arrH),
+        x2: Math.max(...arrX2),
+        y2: Math.max(...arrY2)
       };
-
       if (this.size) {
-        items.forEach(item => {
-          if (
-            item.visibleX > this.allItemsParams.x &&
-            item.visibleX - this.allItemsParams.x + item.visibleWidth >
-              this.allItemsParams.width
-          ) {
-            this.allItemsParams.width =
-              +item.visibleX - +this.allItemsParams.x + +item.visibleWidth;
-          }
-          if (
-            item.visibleY > this.allItemsParams.y &&
-            item.visibleY - this.allItemsParams.y + item.visibleHeight >
-              this.allItemsParams.height
-          ) {
-            this.allItemsParams.height =
-              item.visibleY - this.allItemsParams.y + item.visibleHeight;
-          }
-        });
+        if (area.x > this.allItemsParams.x) {
+          this.allItemsParams.x = area.x;
+        }
+        if (area.right < this.allItemsParams.x2) {
+          this.allItemsParams.x2 = area.right;
+        }
 
-        // let realDiffWidth = this.size.width/this.side.real_width;
-        // let realDiffHeight = this.size.height/this.side.real_height;
+        this.allItemsParams.width =
+          this.allItemsParams.x2 - this.allItemsParams.x;
+
+        if (area.y > this.allItemsParams.y) {
+          this.allItemsParams.y = area.y;
+        }
+        if (area.bottom < this.allItemsParams.y2) {
+          this.allItemsParams.y2 = area.bottom;
+        }
+        this.allItemsParams.height =
+          this.allItemsParams.y2 - this.allItemsParams.y;
+
         this.allItemsParams.realItemsWidth =
-          (this.allItemsParams.width / this.sideArea.width) * this.size.width;
+          (this.allItemsParams.width / this.sideArea.width) *
+          this.sideArea.real_width;
         this.allItemsParams.realItemsHeight =
           (this.allItemsParams.height / this.sideArea.height) *
-          this.size.height;
+          this.sideArea.real_height;
       }
 
       printsSizes.forEach(size => {
@@ -1050,10 +1084,13 @@ export default {
       });
 
       if (printSize.id) {
-        this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {
-          printSize,
-          sideId: this.side.id
-        });
+        let oldId = this.side.printSize ? this.side.printSize.id : null;
+        if (oldId != printSize.id) {
+          this.$store.commit(CONSTRUCTOR_SET_PRINT_SIZE, {
+            printSize,
+            sideId: this.side.id
+          });
+        }
         this.$store.commit(CONSTRUCTOR_SET_SIDE_INVALID, {
           id: this.side.id,
           invalid: false
@@ -1149,6 +1186,9 @@ export default {
         const selectedElementNode = document.querySelector(
           `#group-${selectedElementIndex}`
         );
+        if (!selectedElementNode) {
+          return;
+        }
         const edBounds = this.editableAreaEl.getBoundingClientRect();
         const elBounds = selectedElementNode
           .querySelector("rect")
@@ -1351,6 +1391,7 @@ export default {
           item = this.checkItemPosition(item);
         }
       });
+      this.checkPrintSize();
     },
     onMouseDown(eDown, item, handle) {
       eDown.preventDefault();
@@ -1367,7 +1408,9 @@ export default {
       const selectedElementNode = document.querySelector(
         `#group-${selectedElementIndex}`
       );
-
+      if (!selectedElementNode) {
+        return;
+      }
       const edBounds = this.editableAreaEl.getBoundingClientRect();
       const elBounds = selectedElementNode
         .querySelector("rect")
@@ -1430,7 +1473,6 @@ export default {
       };
 
       document.ontouchmove = event => {
-        this.checkPrintSize();
         event.x = event.changedTouches[0].clientX;
         event.y = event.changedTouches[0].clientY;
         event.clientX = event.changedTouches[0].clientX;
@@ -1732,6 +1774,7 @@ export default {
         }
         item = this.checkItemPosition(item);
       }
+      this.checkPrintSize();
     },
     hideLines() {
       this.lines.left = false;
@@ -1764,6 +1807,9 @@ export default {
         this.sideItems[this.sideItems.length - 1]
       );
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
+      this.$nextTick(() => {
+        this.checkPrintSize();
+      });
     },
     createTextField() {
       return {
@@ -1892,6 +1938,7 @@ export default {
             item = this.checkItemPosition(item);
           }
         });
+        this.checkPrintSize();
       }, 100);
       // });
     },
@@ -1925,6 +1972,9 @@ export default {
       if (this.selectedElement) {
         this.$store.commit(CONSTRUCTOR_DELETE_ITEM, this.selectedElement);
       }
+      this.$nextTick(() => {
+        this.checkPrintSize();
+      });
     },
 
     onKeyUp(event) {
@@ -1965,7 +2015,7 @@ export default {
     );
     window.addEventListener("resize", this.handleResize);
     window.addEventListener("keyup", this.onKeyUp);
-    window.addEventListener("mousemove", this.checkPrintSize);
+    //  window.addEventListener("mousemove", this.checkPrintSize);
     // window.addEventListener("touchmove", this.checkPrintSize)
   }
 };
