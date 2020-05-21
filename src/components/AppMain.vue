@@ -936,8 +936,7 @@ export default {
           ) {
             item.visibleX = area.left;
             item.invalid = true;
-            item.visibleWidth =
-              (element.width - (area.left - element.left)) * coefW;
+            item.visibleWidth = element.width - (area.left - element.left);
 
             if (item.visibleWidth < 0) {
               item.visibleX = -1;
@@ -949,9 +948,8 @@ export default {
             item.visibleX =
               element.left < area.left + area.width ? element.left : -1;
             item.visibleWidth =
-              (element.width -
-                (element.left + element.width - (area.left + area.width))) *
-              coefW;
+              element.width -
+              (element.left + element.width - (area.left + area.width));
             item.invalid = true;
           } else if (
             element.left < area.left &&
@@ -959,14 +957,14 @@ export default {
           ) {
             item.visibleX = area.left;
             item.invalid = true;
-            item.visibleWidth = area.width * coefW;
+            item.visibleWidth = area.width;
           } else {
             item.visibleX = element.left;
-            item.visibleWidth = element.width * coefW;
+            item.visibleWidth = element.width;
             item.invalid = false;
           }
           item.real_width =
-            (item.visibleWidth / this.sideArea.width) *
+            ((item.visibleWidth * coefW) / this.sideArea.width) *
             this.sideArea.real_width; // * this.size.width;
 
           if (
@@ -974,8 +972,7 @@ export default {
             element.top + element.height < area.top + area.height
           ) {
             item.visibleY = area.top;
-            item.visibleHeight =
-              (element.height - (area.top - element.top)) * coefH;
+            item.visibleHeight = element.height - (area.top - element.top);
             item.invalid = true;
             if (item.visibleHeight < 0) {
               item.visibleY = -1;
@@ -987,24 +984,23 @@ export default {
             item.visibleY =
               element.top < area.top + area.height ? element.top : -1;
             item.visibleHeight =
-              (element.height -
-                (element.top + element.height - (area.top + area.height))) *
-              coefH;
+              element.height -
+              (element.top + element.height - (area.top + area.height));
             item.invalid = true;
           } else if (
             element.top < area.top &&
             element.top + element.height > area.top + area.height
           ) {
             item.visibleY = area.top;
-            item.visibleHeight = area.height * coefH;
+            item.visibleHeight = area.height;
             item.invalid = true;
           } else {
             item.visibleY = element.top;
-            item.visibleHeight = element.height * coefH;
+            item.visibleHeight = element.height;
             item.invalid = item.invalid ? true : false;
           }
           item.real_height =
-            (item.visibleHeight / this.sideArea.height) *
+            ((item.visibleHeight * coefH) / this.sideArea.height) *
             this.sideArea.real_height;
 
           if (item.visibleX == -1 || item.visibleY == -1) {
@@ -1048,10 +1044,9 @@ export default {
           this.allItemsParams.y2 - this.allItemsParams.y;
 
         this.allItemsParams.realItemsWidth =
-          (this.allItemsParams.width / this.sideArea.width) *
-          this.sideArea.real_width;
+          (this.allItemsParams.width / area.width) * this.sideArea.real_width;
         this.allItemsParams.realItemsHeight =
-          (this.allItemsParams.height / this.sideArea.height) *
+          (this.allItemsParams.height / area.height) *
           this.sideArea.real_height;
       }
 
