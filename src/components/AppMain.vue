@@ -1225,6 +1225,8 @@ export default {
     },
     handleMoveGroup(event, handle, selectedElementNode, edBounds) {
       this.itemTouch = true;
+      let groupCenterY = this.groupParams.y + this.groupParams.height / 2;
+      let groupCenterX = this.groupParams.x + this.groupParams.width / 2;
       this.selectedLayers.forEach(item => {
         if (!handle) {
           this.hideLines();
@@ -1329,42 +1331,27 @@ export default {
           item.matrix = toSVG(rotateDEG(item.rotate, cX, cY));
         }
         if (handle === CONSTRUCTOR_HANDLES.SCALE) {
-          //   let centerToDot = Math.sqrt(Math.pow(item.drag.oX - item.drag.mx, 2) + Math.pow(item.drag.oY - item.drag.my, 2));
-          //   let distance    = Math.sqrt(Math.pow(event.clientX - item.drag.oX, 2) + Math.pow(event.clientY - item.drag.oY, 2));
-
-          //   distance = (distance - centerToDot) * 1.95;
-
-          //   const realItemsWidth = (item.drag.w + item.drag.w*distance/100)/this.sideArea.width*this.size.width;
-          //   const realItemsHeight = (item.drag.h + item.drag.h*distance/100)/this.sideArea.height*this.size.height;
-
-          //   // if(item.drag.w + item.drag.w*distance/100 > 500 || item.drag.h + item.drag.h*distance/100 > 500 || (this.maxPrintSize && (realItemsWidth >= this.maxPrintSize.real_width || realItemsHeight >= this.maxPrintSize.real_height)) ) {
-          //   //   return
-          //   // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
-          //   //   return
-          //   // }
-          //    const ratio   = item.drag.h / item.drag.w;
-          //    const diff_before = (+this.sideArea.width - item.width)/2
-
-          //   item.width    += distance/20;
-          //   item.height   = item.width*ratio;
-          //   const diff_current = (+this.sideArea.width - item.width)/2
-
-          //   item.x        = item.x - (diff_before - diff_current),
-          //  // item.y        = item.y - (diff_before - diff_current),
-          //   item.fontSize = item.fontSize ? item.height / item.text.length : null;
           if (this.groupParams.width < 20 || this.groupParams.height < 20) {
             return;
           }
 
-          const diff_before_w = (item.width - 500) / 2;
-          const diff_before_h = (item.height - 500) / 2;
+          let difCenterBeforeX = groupCenterY - item.x + item.width / 2;
+          let difCenterBeforeY = groupCenterY - item.y + item.height / 2;
+
+          const diff_before_w = item.width / 2;
           const ratio = item.drag.h / item.drag.w;
           item.width = Math.max(item.drag.w + event.x - item.drag.mx, 20);
           item.height = item.width * ratio;
-          const diff_current_w = (item.width - 500) / 2;
-          const diff_current_h = (item.height - 500) / 2;
-          item.x = item.x + diff_before_w - diff_current_w;
-          item.y = item.y + diff_before_h - diff_current_h;
+
+          const diff_current_w = item.width / 2;
+
+          let coefScale = diff_current_w / diff_before_w;
+
+          let difCenterAfterY = difCenterBeforeY * coefScale;
+          let difCenterAfterX = difCenterBeforeX * coefScale;
+          console.log(difCenterAfterX, difCenterBeforeX);
+          item.x -= difCenterAfterX - difCenterBeforeX;
+          item.y -= difCenterAfterY - difCenterBeforeY;
 
           if (item.type == "text") {
             const index = this.sideItems.indexOf(item);
