@@ -821,32 +821,31 @@ export default {
         return null;
       }
 
-      let arrX = items.map(item => item.x);
-      let arrY = items.map(item => item.y);
-      let arrW = items.map(item => item.width);
-      let arrH = items.map(item => item.height);
-      const params = {
-        x: Math.min(...arrX),
-        y: Math.min(...arrY),
-        width: Math.max(...arrW),
-        height: Math.max(...arrH)
-      };
+      let area = this.editableAreaEl.getBoundingClientRect();
+      items.forEach((item, i) => {
+        const selectedElementIndex = this.sideItems.indexOf(item);
+        const selectedElementNode = document.querySelector(
+          `#group-${selectedElementIndex}`
+        ).parentNode;
+        const element = selectedElementNode
+          .querySelector("rect")
+          .getBoundingClientRect();
 
-      items.forEach(item => {
-        if (
-          item.x > params.x &&
-          item.x - params.x + item.width > params.width
-        ) {
-          params.width = item.x - params.x + item.width;
-        }
-        if (
-          item.y > params.y &&
-          item.y - params.y + item.height > params.height
-        ) {
-          params.height = item.y - params.y + item.height;
-        }
+        item.el = element;
       });
 
+      let coefToSide = +this.sideArea.width / area.width;
+
+      let arrX = items.map(item => item.el.x);
+      let arrY = items.map(item => item.el.y);
+      let arrX2 = items.map(item => item.el.x + item.el.width);
+      let arrY2 = items.map(item => item.el.y + item.el.height);
+      const params = {
+        x: (Math.min(...arrX) - area.x) * coefToSide + +this.sideArea.x,
+        y: (Math.min(...arrY) - area.y) * coefToSide + +this.sideArea.y,
+        width: (Math.max(...arrX2) - Math.min(...arrX)) * coefToSide,
+        height: (Math.max(...arrY2) - Math.min(...arrY)) * coefToSide
+      };
       return params;
     },
     lastLayer() {
@@ -1335,8 +1334,8 @@ export default {
             return;
           }
 
-          let difCenterBeforeX = groupCenterY - item.x + item.width / 2;
-          let difCenterBeforeY = groupCenterY - item.y + item.height / 2;
+          let difCenterBeforeX = (groupCenterX - item.x + item.width / 2) / 2;
+          let difCenterBeforeY = (groupCenterY - item.y + item.height / 2) / 2;
 
           const diff_before_w = item.width / 2;
           const ratio = item.drag.h / item.drag.w;
@@ -1349,26 +1348,11 @@ export default {
 
           let difCenterAfterY = difCenterBeforeY * coefScale;
           let difCenterAfterX = difCenterBeforeX * coefScale;
-          console.log(difCenterAfterX, difCenterBeforeX);
           item.x -= difCenterAfterX - difCenterBeforeX;
           item.y -= difCenterAfterY - difCenterBeforeY;
 
           if (item.type == "text") {
-            const index = this.sideItems.indexOf(item);
-            const tSpans = document.querySelectorAll(
-              `#group-${index} svg > text > tspan`
-            );
-            let addHeight = 2;
-            if (tSpans && tSpans.length) {
-              if (tSpans[0] && tSpans[0].getBBox()) {
-                addHeight =
-                  tSpans[0].getBBox().height / item.text.length - item.fontSize;
-                if (addHeight < 0) {
-                  addHeight = 0;
-                }
-              }
-            }
-            item.fontSize = (item.height - addHeight) / item.text.length;
+            item.fontSize *= coefScale;
           }
           item = this.checkItemPosition(item);
         }
