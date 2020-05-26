@@ -119,82 +119,6 @@
             </template>
           </g>
 
-          <g v-if="selectedLayers.length && selectedLayersSide == side.id">
-            <rect
-              :x="+groupParams.x"
-              :y="+groupParams.y"
-              :width="groupParams.width"
-              :height="groupParams.height"
-              class="ctrl-bounds group-bound"
-            />
-            <g>
-              <!-- <g
-                @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
-                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
-                :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
-              >
-                <rect
-                  class="ctrl-rect"
-                  :x="0"
-                  :y="0"
-                  :width="tools.squaresize"
-                  :height="tools.squaresize"
-                />
-                <svg
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  class="ctrl-icon"
-                  width="15px"
-                  height="18px"
-                  xmlns="http://www.w3.org/2000/svg"
-                  version="1.1"
-                  :x="4"
-                  :y="3"
-                  viewBox="0 0 76.398 76.398"
-                  style="enable-background:new 0 0 76.398 76.398;"
-                  xml:space="preserve"
-                >
-                  <path
-                    d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
-                  />
-                </svg>
-              </g>-->
-
-              <g
-                @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
-                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
-                :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
-              >
-                <rect
-                  class="ctrl-rect"
-                  :x="0"
-                  :y="0"
-                  :width="tools.squaresize"
-                  :height="tools.squaresize"
-                />
-                <svg
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  class="ctrl-icon"
-                  :width="tools.squaresizeIcon"
-                  :height="tools.squaresizeIcon"
-                  xmlns="http://www.w3.org/2000/svg"
-                  version="1.1"
-                  :x="5"
-                  :y="5"
-                  viewBox="0 0 472.774 472.774"
-                  xml:space="preserve"
-                >
-                  <polygon
-                    transform="rotate(45 236.387 236.387)"
-                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
-                  />
-                  <polygon
-                    transform="rotate(-45 236.387 236.387)"
-                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
-                  />
-                </svg>
-              </g>
-            </g>
-          </g>
           <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
             <template v-for="(item, index) in sideItems">
               <!-- <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)"> -->
@@ -597,6 +521,82 @@
               </g>
             </g>
           </svg>
+          <g v-if="selectedLayers.length && selectedLayersSide == side.id">
+            <rect
+              :x="+groupParams.x"
+              :y="+groupParams.y"
+              :width="groupParams.width"
+              :height="groupParams.height"
+              class="ctrl-bounds group-bound"
+            />
+            <g>
+              <!-- <g
+                @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
+                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
+                :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
+              >
+                <rect
+                  class="ctrl-rect"
+                  :x="0"
+                  :y="0"
+                  :width="tools.squaresize"
+                  :height="tools.squaresize"
+                />
+                <svg
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  class="ctrl-icon"
+                  width="15px"
+                  height="18px"
+                  xmlns="http://www.w3.org/2000/svg"
+                  version="1.1"
+                  :x="4"
+                  :y="3"
+                  viewBox="0 0 76.398 76.398"
+                  style="enable-background:new 0 0 76.398 76.398;"
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
+                  />
+                </svg>
+              </g>-->
+
+              <g
+                @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
+                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
+                :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
+              >
+                <rect
+                  class="ctrl-rect"
+                  :x="0"
+                  :y="0"
+                  :width="tools.squaresize"
+                  :height="tools.squaresize"
+                />
+                <svg
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  class="ctrl-icon"
+                  :width="tools.squaresizeIcon"
+                  :height="tools.squaresizeIcon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  version="1.1"
+                  :x="5"
+                  :y="5"
+                  viewBox="0 0 472.774 472.774"
+                  xml:space="preserve"
+                >
+                  <polygon
+                    transform="rotate(45 236.387 236.387)"
+                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
+                  />
+                  <polygon
+                    transform="rotate(-45 236.387 236.387)"
+                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
+                  />
+                </svg>
+              </g>
+            </g>
+          </g>
         </g>
       </svg>
     </div>
@@ -1937,6 +1937,7 @@ export default {
     removeActiveItem() {
       if (this.selectedElement) {
         this.$store.commit(CONSTRUCTOR_DELETE_ITEM, this.selectedElement);
+        this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
       }
       this.$nextTick(() => {
         this.checkPrintSize();

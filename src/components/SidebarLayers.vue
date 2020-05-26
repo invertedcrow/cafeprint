@@ -241,6 +241,7 @@ export default {
         let list = [...item.items];
         list.map(lay => {
           lay.side = this.renderSides[index].id;
+          lay.selected = false;
           side = this.renderSides[index];
         });
         items.push(...list);
@@ -249,7 +250,7 @@ export default {
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
     },
     duplicateLayer(item) {
-      this.$store.commit(CONSTRUCTOR_ADD_ITEM, item);
+      this.$store.commit(CONSTRUCTOR_ADD_ITEM, { ...item, selected: false });
     },
     removeItem(index, itemIndex) {
       const sides = [...this.draggList];
