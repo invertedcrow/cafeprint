@@ -767,6 +767,16 @@ export default {
         this.sideArea.width = Math.max(...arrX) - Math.min(...arrX);
         this.sideArea.height = Math.max(...arrY) - Math.min(...arrY);
       }
+    },
+    selectedElement: function(val) {
+      if (!val) {
+        let emptyItemText = this.items.find(
+          item => item.type == "text" && !item.width
+        );
+        if (emptyItemText) {
+          this.$store.commit(CONSTRUCTOR_DELETE_ITEM, emptyItemText);
+        }
+      }
     }
   },
   created() {
