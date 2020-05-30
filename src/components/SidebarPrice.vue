@@ -90,7 +90,7 @@
         <div class="sidebar-price__summary-sum">Итого: {{totalPrice}} UAH</div>
       </div>
 
-      <div class="d-flex align-items-end">
+      <div class="d-flex align-items-end" v-if="!editCartProduct">
         <button @click="onAddToCart" :disabled="!totalPrice" class="get-price">Добавить в корзину</button>
       </div>
     </div>
@@ -135,7 +135,7 @@ export default {
     },
     onAddToCart() {
       const items = [];
-      this.sizesList.forEach((size) => {
+      this.sizesList.forEach(size => {
         let item = {};
         let print_sizes = [];
         let svg = [];
@@ -187,7 +187,8 @@ export default {
       "isPriceLoading",
       "base",
       "sidesElems",
-      "color"
+      "color",
+      "editCartProduct"
     ])
   },
   components: {

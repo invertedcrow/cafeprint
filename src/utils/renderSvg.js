@@ -92,6 +92,10 @@ function createTextLayers(context, arr, side) {
             layer.fontSize = layer.height / layer.text.length;
         }
        
+        if(item.getAttribute('font-size') && item.getAttribute('font-size') != 24) {
+            layer.fontSize = item.getAttribute('font-size');
+        } 
+
         if(item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform').includes('matrix')) {            
             layer.matrix = item.parentNode.parentNode.getAttribute('transform');
             const matrix = item.parentNode.parentNode.getAttribute('transform').match(/(-?\d{1,}\.?\d?){1,}/g)
