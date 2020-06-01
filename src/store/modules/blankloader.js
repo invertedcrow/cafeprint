@@ -63,13 +63,18 @@ const actions = {
     context.commit(CONSTRUCTOR_SET_LOADING, true);
     const response = await Vue.axios.get(`constructor-new/clip-arts/cart/${id}`)
 
-    const base =  response.data.colorMainBlank.mainBlank
+    const base =  response.data.colorMainBlank.mainBlank;
+    const size_id = response.data.size_id;
     const sides = response.data.sides;
     let side = base.sides.find(item => item.id == response.data.preview_side_id);
     let color = { 
         id: response.data.colorMainBlank.id,
         color: response.data.colorMainBlank.color
     };
+    let size = base.sizes.find(item => item.id == size_id);
+    if(!size) {
+        size = base.sizes[0]
+    }
     context.commit(CONSTRUCTOR_SET_ITEMS, [])
     context.commit(CONSTRUCTOR_SET_EDIT_CART_PRODUCT, id);
     context.commit(CONSTRUCTOR_SET_BASE, base);
@@ -78,7 +83,7 @@ const actions = {
    
     context.commit(PRICE_SET_SIZES_LIST, base.sizes);   
     context.commit(CONSTRUCTOR_SET_MAX_PRINT_SIZE, base.printSizes);
-    context.commit(CONSTRUCTOR_SET_SIZE, base.sizes[0]);
+    context.commit(CONSTRUCTOR_SET_SIZE, size);
 
     sides.forEach(item => {  
         setTimeout(() => {
