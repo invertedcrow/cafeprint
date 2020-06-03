@@ -832,7 +832,7 @@ export default {
       }
 
       let area = this.editableAreaEl.getBoundingClientRect();
-      items.forEach((item, i) => {
+      items.forEach(item => {
         const selectedElementIndex = this.sideItems.indexOf(item);
         const selectedElementNode = document.querySelector(
           `#group-${selectedElementIndex}`
