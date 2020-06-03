@@ -157,12 +157,12 @@ export default {
       SAVE_ADD_PRODUCT
     ]),
     saveChangesToCartItem() {
-      let print_sizes = [];
+      let printSizes = [];
       let svg = [];
       this.base.sides.forEach(side => {
         if (side.items && side.items.length) {
           if (this.base.printSizes && this.base.printSizes.length) {
-            print_sizes.push({
+            printSizes.push({
               sideId: side.id,
               print_size_id: side.printSize
                 ? side.printSize.id
@@ -183,7 +183,7 @@ export default {
         size_id: this.size.id,
         is_service: false,
         svg,
-        print_sizes,
+        printSizes,
         features: this.features
       };
       let id = this.editCartProduct;
