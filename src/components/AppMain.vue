@@ -1445,7 +1445,14 @@ export default {
 
       document.onmousemove = event => {
         if (!isCanMove) return;
-        this.handleMove(event, item, handle, selectedElementNode, edBounds);
+        this.handleMove(
+          event,
+          item,
+          handle,
+          selectedElementNode,
+          edBounds,
+          elBounds
+        );
       };
 
       document.ontouchmove = event => {
@@ -1453,10 +1460,17 @@ export default {
         event.y = event.changedTouches[0].clientY;
         event.clientX = event.changedTouches[0].clientX;
         event.clientY = event.changedTouches[0].clientY;
-        this.handleMove(event, item, handle, selectedElementNode, edBounds);
+        this.handleMove(
+          event,
+          item,
+          handle,
+          selectedElementNode,
+          edBounds,
+          elBounds
+        );
       };
     },
-    handleMove(event, item, handle, selectedElementNode, edBounds) {
+    handleMove(event, item, handle, selectedElementNode, edBounds, elBounds) {
       this.itemTouch = true;
       if (!handle) {
         this.hideLines();
@@ -1658,6 +1672,8 @@ export default {
         // );
       }
       if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
+        //old
+
         const startAngle =
           item.drag.angle -
           Math.atan2(
@@ -1678,6 +1694,41 @@ export default {
         //   newAngle *= 2;
         // }
         item.rotate = newAngle % 359;
+
+        ///new
+        // TODO: fixed angle on mobile
+        // console.log(event);
+        // const startAngleR =
+        //   Math.atan2(
+        //     elBounds.y + elBounds.height / 2,
+        //     elBounds.x + elBounds.width / 2
+        //   ) *
+        //   (180 / Math.PI);
+        // let boxCenter = [
+        //   elBounds.x + elBounds.width / 2,
+        //   elBounds.y + elBounds.height / 2
+        // ];
+
+        // let angleR =
+        //   Math.atan2(event.y - boxCenter[1], event.x - boxCenter[0]) *
+        //   (180 / Math.PI);
+
+        // let newAR =
+        //   angleR + startAngleR < 0
+        //     ? 360 - Math.abs(angleR + startAngleR)
+        //     : angleR + startAngleR;
+        // // console.log("test new", newAR);
+        // item.rotate = newAR % 359;
+        // console.log(
+        //   "angleR",
+        //   angleR,
+        //   "START ANGLE",
+        //   startAngleR,
+        //   "OLD",
+        //   newAngle % 359,
+        //   "NEW",
+        //   newAR % 359
+        // );
 
         if (item.rotate > 357 || item.rotate < 3) {
           item.rotate = 0;
