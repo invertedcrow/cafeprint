@@ -16,7 +16,14 @@
           <defs>
             <mask id="mainMask" v-html="side.area.svg_area" maskUnits="userSpaceOnUse" />
           </defs>
-          <image v-bind:xlink:href="side.image" style="width: 100%; height: 100%" />
+          <image
+            v-bind:xlink:href="side.image"
+            style="width: 100%; height: 100%"
+            :x="image.x"
+            :y="image.y"
+            :width="image.width"
+            :height="image.height"
+          />
           <g id="containerGroupMain">
             <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
               <g
@@ -57,11 +64,10 @@
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
                       overflow="visible"
-                      dominant-baseline="text-before-edge"
                     >
                       <tspan
                         :y="0"
-                        :dy="index + 'em'"
+                        :dy="index*0.9 + 0.9 + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
                         v-for="(text, index) in item.text"
@@ -93,7 +99,13 @@ export default {
   data() {
     return {
       TextAlignment,
-      sides: []
+      sides: [],
+      image: {
+        x: 0,
+        y: 0,
+        width: 500,
+        height: 500
+      }
     };
   },
   methods: {

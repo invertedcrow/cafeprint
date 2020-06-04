@@ -47,19 +47,39 @@ export default {
         parallelUploads: 5,
         acceptedFiles: ".png, .jpg, .jpeg, .svg",
         accept: (file, done) => {
-          file.text().then(text => {
-            let textSlice = text.slice(0, 20);
-            if (
-              textSlice.indexOf("JFIF") == -1 &&
-              textSlice.indexOf("Exif") == -1 &&
-              textSlice.indexOf("PNG") == -1 &&
-              textSlice.indexOf("svg") == -1
-            ) {
+          if (file) {
+            let reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function(evt) {
+              let textSlice = evt.target.result.slice(0, 20);
+              if (
+                textSlice.indexOf("JFIF") == -1 &&
+                textSlice.indexOf("Exif") == -1 &&
+                textSlice.indexOf("PNG") == -1 &&
+                textSlice.indexOf("svg") == -1
+              ) {
+                done("Изображение не может быть загружено");
+              } else {
+                done();
+              }
+            };
+            reader.onerror = function(evt) {
               done("Изображение не может быть загружено");
-            } else {
-              done();
-            }
-          });
+            };
+          }
+          // file.text().then(text => {
+          //   let textSlice = text.slice(0, 20);
+          //   if (
+          //     textSlice.indexOf("JFIF") == -1 &&
+          //     textSlice.indexOf("Exif") == -1 &&
+          //     textSlice.indexOf("PNG") == -1 &&
+          //     textSlice.indexOf("svg") == -1
+          //   ) {
+          //     done("Изображение не может быть загружено");
+          //   } else {
+          //     done();
+          //   }
+          // });
         }
       }
     };

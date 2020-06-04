@@ -142,11 +142,10 @@
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
                       overflow="visible"
-                      dominant-baseline="text-before-edge"
                     >
                       <tspan
                         :y="0"
-                        :dy="index + 'em'"
+                        :dy="index*0.9 + 0.9 + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
                         v-for="(text, index) in item.text"
@@ -325,11 +324,10 @@
                       :font-style="item.italic ? 'italic' : 'normal'"
                       :fill="item.color"
                       overflow="visible"
-                      dominant-baseline="text-before-edge"
                     >
                       <tspan
                         :y="0"
-                        :dy="index + 'em'"
+                        :dy="index*0.9 + 0.9 + 'em'"
                         v-bind:key="index"
                         :textLength="item.textAnchor === TextAlignment.JUSTIFIED ? item.width : 0"
                         v-for="(text, index) in item.text"
