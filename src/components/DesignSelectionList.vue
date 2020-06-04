@@ -54,6 +54,10 @@ export default {
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     },
     imgUrl(item) {
+      if (item.preview_print.startsWith("http")) {
+        return item.preview_print;
+      }
+
       let link =
         API_URL +
         (item.preview_print[0] == "/" ? "" : "/") +
