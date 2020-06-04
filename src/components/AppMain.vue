@@ -1395,6 +1395,16 @@ export default {
         x: edBounds.left + item.width / 2,
         y: edBounds.top + item.height / 2
       };
+      let mouseX =
+        (eDown.touches ? eDown.touches[0].clientX : eDown.clientX) -
+        (elBounds.x + elBounds.width / 2);
+      let mouseY =
+        (eDown.touches ? eDown.touches[0].clientY : eDown.clientY) -
+        (elBounds.y + elBounds.height / 2);
+      let startAngle = Math.atan2(mouseY, mouseX) * (180 / Math.PI);
+      if (item.rotate) {
+        startAngle -= item.rotate;
+      }
       item.drag = {
         x: !handle ? item.x + item.x * (this.scaleWidth / 100 - 1) : item.x,
         y: !handle ? item.y + item.y * (this.scaleWidth / 100 - 1) : item.y,
@@ -1408,7 +1418,8 @@ export default {
         left: elBounds.left - edBounds.left,
         right: elBounds.right - edBounds.left,
         top: elBounds.top - edBounds.top,
-        bottom: elBounds.bottom - edBounds.top
+        bottom: elBounds.bottom - edBounds.top,
+        startAngle
       };
 
       if (!handle) {
@@ -1672,63 +1683,23 @@ export default {
         // );
       }
       if (handle === CONSTRUCTOR_HANDLES.ROTATE) {
-        //old
+        let boxCenter = {
+          x: elBounds.x + elBounds.width / 2,
+          y: elBounds.y + elBounds.height / 2
+        };
 
-        const startAngle =
-          item.drag.angle -
-          Math.atan2(
-            item.drag.my - (item.drag.oY + item.drag.top + item.drag.h / 2),
-            item.drag.mx - (item.drag.oX + item.drag.left + item.drag.w / 2)
-          ) *
-            (180 / Math.PI);
+        const startAngle = item.drag.startAngle;
 
-        var dx = event.x - (item.drag.oX + item.drag.left + item.drag.w / 2),
-          dy = event.y - (item.drag.oY + item.drag.top + item.drag.h / 2),
-          angle = Math.atan2(dy, dx) * (180 / Math.PI);
-        ///here
+        let angle =
+          Math.atan2(event.y - boxCenter.y, event.x - boxCenter.x) *
+          (180 / Math.PI);
+
         let newAngle =
-          angle + startAngle < 0
-            ? 360 - Math.abs(angle + startAngle)
-            : angle + startAngle;
-        // if (item.width < 75) {
-        //   newAngle *= 2;
-        // }
+          angle - startAngle < 0
+            ? 360 - Math.abs(angle - startAngle)
+            : angle - startAngle;
+
         item.rotate = newAngle % 359;
-
-        ///new
-        // TODO: fixed angle on mobile
-        // console.log(event);
-        // const startAngleR =
-        //   Math.atan2(
-        //     elBounds.y + elBounds.height / 2,
-        //     elBounds.x + elBounds.width / 2
-        //   ) *
-        //   (180 / Math.PI);
-        // let boxCenter = [
-        //   elBounds.x + elBounds.width / 2,
-        //   elBounds.y + elBounds.height / 2
-        // ];
-
-        // let angleR =
-        //   Math.atan2(event.y - boxCenter[1], event.x - boxCenter[0]) *
-        //   (180 / Math.PI);
-
-        // let newAR =
-        //   angleR + startAngleR < 0
-        //     ? 360 - Math.abs(angleR + startAngleR)
-        //     : angleR + startAngleR;
-        // // console.log("test new", newAR);
-        // item.rotate = newAR % 359;
-        // console.log(
-        //   "angleR",
-        //   angleR,
-        //   "START ANGLE",
-        //   startAngleR,
-        //   "OLD",
-        //   newAngle % 359,
-        //   "NEW",
-        //   newAR % 359
-        // );
 
         if (item.rotate > 357 || item.rotate < 3) {
           item.rotate = 0;
