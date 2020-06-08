@@ -16,6 +16,9 @@
         :style="{'touch-action': itemTouch ? 'none' : 'auto'}"
         @mousedown="resetSelected"
         @touchstart="resetSelected"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
       >
         <defs>
           <mask id="mainMask" v-html="side.svg_area" maskUnits="userSpaceOnUse" />
@@ -119,9 +122,17 @@
             </template>
           </g>
 
-          <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
+          <svg
+            :x="0"
+            :y="0"
+            viewBox="0 0 500 500"
+            width="500"
+            height="500"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns="http://www.w3.org/2000/svg"
+            version="1.1"
+          >
             <template v-for="(item, index) in sideItems">
-              <!-- <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)"> -->
               <g :key="'r' + side.id + index" :transform="item.matrix ? item.matrix : ''">
                 <svg
                   v-if="item"
@@ -170,6 +181,7 @@
                   :width="item.width"
                   :height="item.height"
                   class="ctrl-bounds"
+                  fill="none"
                   :class="{invalid: item.invalid}"
                 />
               </g>
@@ -184,13 +196,13 @@
                   :width="item.width"
                   :height="item.height"
                   class="ctrl-bounds"
+                  fill="none"
                 />
                 <g
                   fill="#5e6a7d"
                   font-size="12px"
                   :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
                 >
-                  <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
                   <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
                   <text
                     v-if="item.height > 40 && item.real_height > 0 && !rotation"
@@ -305,7 +317,7 @@
                   :y="item.y"
                   :width="item.width"
                   :height="item.height"
-                  fill="transparent"
+                  fill="none"
                 />
                 <svg
                   :height="item.height"
@@ -314,6 +326,11 @@
                   :y="item.y"
                   :opacity="base.layers_opacity"
                   :style="{'overflow': item.type=='text' ? 'visible' : 'hidden'}"
+                  :viewBox="'0 0 ' + `${item.width}` + ' ' + `${item.height}`"
+                  preserveAspectRatio="none"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  xmlns="http://www.w3.org/2000/svg"
+                  version="1.1"
                 >
                   <template v-if="item.type=='text'">
                     <text
@@ -354,6 +371,8 @@
                     height="40"
                     viewBox="0 0 38 38"
                     xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    version="1.1"
                   >
                     <defs>
                       <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
@@ -400,6 +419,7 @@
                     :width="item.width"
                     :height="item.height"
                     class="ctrl-bounds"
+                    fill="none"
                   />
                   <g
                     fill="#5e6a7d"
@@ -462,6 +482,8 @@
                       <svg
                         class="ctrl-icon"
                         xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        version="1.1"
                         :height="tools.squaresizeIcon"
                         viewBox="-18 0 511 512"
                         :width="tools.squaresizeIcon"
@@ -514,6 +536,7 @@
                   :width="item.width"
                   :height="item.height"
                   class="ctrl-bounds"
+                  fill="none"
                   :class="{invalid: item.invalid}"
                 />
               </g>
@@ -526,6 +549,7 @@
               :width="groupParams.width"
               :height="groupParams.height"
               class="ctrl-bounds group-bound"
+              fill="none"
             />
             <g>
               <!-- <g
@@ -2075,7 +2099,7 @@ var swapArrayElements = function(arr, indexA, indexB) {
     fill: #757575;
   }
   .ctrl-bounds {
-    fill-opacity: 0;
+    //  fill-opacity: 0;
     stroke: #a4a7ae;
     stroke-width: 1;
     stroke-linecap: round;

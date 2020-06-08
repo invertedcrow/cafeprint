@@ -25,7 +25,16 @@
             :height="image.height"
           />
           <g id="containerGroupMain">
-            <svg :x="0" :y="0" viewBox="0 0 500 500" width="500" height="500">
+            <svg
+              :x="0"
+              :y="0"
+              viewBox="0 0 500 500"
+              width="500"
+              height="500"
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
               <g
                 v-for="(item, index) in side.items"
                 ref="groupEls"
