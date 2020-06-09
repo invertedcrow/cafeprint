@@ -21,9 +21,8 @@
         version="1.1"
       >
         <defs>
-          <mask id="mainMask" v-html="side.svg_area" maskUnits="userSpaceOnUse" />
+          <mask id="mainMaskEditor" v-html="side.svg_area" maskUnits="userSpaceOnUse" />
         </defs>
-        <!-- <polygon v-if="sideArea.tag == 'polygon'" id="mainMask" class="area" :points="sideArea.points" /> -->
         <image
           v-bind:xlink:href="baseImg"
           :x="image.x"
@@ -304,7 +303,7 @@
                 </g>
               </g>
             </template>
-            <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMask)">
+            <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMaskEditor)">
               <g
                 ref="groupEls"
                 :id="'group-'+index"

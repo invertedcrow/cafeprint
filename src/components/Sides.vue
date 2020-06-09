@@ -14,7 +14,7 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <defs>
-            <mask id="mainMask" v-html="side.area.svg_area" maskUnits="userSpaceOnUse" />
+            <mask :id="'mainMask'+side.id" v-html="side.svg_area" maskUnits="userSpaceOnUse" />
           </defs>
           <image
             v-bind:xlink:href="side.image"
@@ -39,7 +39,7 @@
                 v-for="(item, index) in side.items"
                 ref="groupEls"
                 :key="index"
-                mask="url(#mainMask)"
+                :mask="'url(#mainMask' + side.id + ')'"
               >
                 <g :transform="item.matrix ? item.matrix : ''">
                   <svg
