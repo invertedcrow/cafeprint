@@ -52,8 +52,8 @@ const actions = {
     }
 
     for(let side in prints) {      
-        let svg = await Vue.axios.get(prints[side].url_zip);    
-        renderSvg(context, svg.data, side);
+        let svg = prints[side].svg;   
+        renderSvg(context, svg, side);
     }  
 
     context.commit(CONSTRUCTOR_SET_LOADING, false);
