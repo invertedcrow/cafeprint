@@ -59,12 +59,22 @@ const actions = {
     state.commit(DESIGN_SET_LIST_LOADING, false);
    },
    [GET_DESIGN_ITEM]: async (context, design) => {  
-    const img = await Vue.axios.get(`/constructor-new/clip-arts/${design.id}`)
-   
-    let svg = await Vue.axios.get(img.data.url_zip); 
-    let side = context.rootState.constructor.side.id;   
-    renderSvg(context, svg.data, side);
-    
+    const prints = await Vue.axios.get(`/constructor-new/clip-arts/${design.id}`)
+    let arrPrints = Object.values(prints.data);
+
+    if(arrPrints.length) {
+        if(arrPrints.length > 1) {
+            let sidesEditor = context.rootState.constructor.base.sides;
+            arrPrints.forEach((item, i) => {
+                if(sidesEditor[i]) {
+                    renderSvg(context, item.svg, sidesEditor[i].id);
+                }
+            })
+        } else {
+            let activeSideId = context.rootState.constructor.side.id;   
+            renderSvg(context, arrPrints[0].svg, activeSideId);    
+        }  
+    }
    } 
 }
 

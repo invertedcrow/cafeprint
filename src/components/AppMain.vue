@@ -719,6 +719,11 @@ export default {
         }
       }
     },
+    items: function(val) {
+      this.$nextTick(() => {
+        this.checkPrintSize();
+      });
+    },
     size: function(val) {
       if (this.currSize && val) {
         let diff = Math.min(
@@ -946,7 +951,9 @@ export default {
 
         return null;
       }
-
+      if (!this.editableAreaEl) {
+        return;
+      }
       const area = this.editableAreaEl.getBoundingClientRect();
 
       items.forEach((item, i) => {
@@ -1133,6 +1140,9 @@ export default {
     },
     resizeAllLayers(diff) {
       let arr = [...this.items];
+      if (!diff) {
+        diff = 1;
+      }
       arr.forEach(item => {
         const diff_before = (item.width - 500) / 2;
         item.width = +item.width * diff;

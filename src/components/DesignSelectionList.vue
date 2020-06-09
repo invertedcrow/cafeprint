@@ -12,7 +12,8 @@
             class="design__item-img d-flex justify-content-center align-items-center"
             :ref="'el' + item.id"
           >
-            <img :src="imgUrl(item)" :ref="item.id" @load="getAverageColor(item)" />
+            <!-- @load="getAverageColor(item)" -->
+            <img :src="imgUrl(item)" :ref="item.id" />
           </div>
           <div class="design__item-title" :title="item.name">{{item.name}}</div>
           <div class="design__item-hover">
@@ -76,24 +77,24 @@ export default {
     },
     handleResize() {
       this.windowWidth = window.innerWidth;
-    },
-    getAverageColor(item) {
-      item.substrate = false;
-
-      let colorThief = new ColorThief();
-      let color = colorThief.getColor(this.$refs[item.id][0]);
-      let current = 0;
-      if (color && color.length) {
-        color.forEach(value => {
-          current += value;
-        });
-        if (current > 763) {
-          this.$refs["el" + item.id][0].style.background = "#e9e9e9";
-        }
-      } else {
-        this.$refs["el" + item.id][0].style.background = "#e9e9e9";
-      }
     }
+    // getAverageColor(item) {
+    //   item.substrate = false;
+
+    //   let colorThief = new ColorThief();
+    //   let color = colorThief.getColor(this.$refs[item.id][0]);
+    //   let current = 0;
+    //   if (color && color.length) {
+    //     color.forEach(value => {
+    //       current += value;
+    //     });
+    //     if (current > 763) {
+    //       this.$refs["el" + item.id][0].style.background = "#e9e9e9";
+    //     }
+    //   } else {
+    //     this.$refs["el" + item.id][0].style.background = "#e9e9e9";
+    //   }
+    // }
   },
   mounted() {
     window.addEventListener("resize", this.handleResize);
@@ -142,6 +143,7 @@ export default {
       height: 100%;
       height: 125px;
       margin-bottom: 20px;
+      background-color: whitesmoke;
       .substrate {
         background-color: whitesmoke;
       }
