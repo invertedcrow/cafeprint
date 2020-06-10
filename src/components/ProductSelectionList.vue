@@ -1,7 +1,10 @@
 <template>
-  <div class="d-flex h-100">
+  <div class="d-flex h-100 position-relative">
     <spinner v-if="isProductsListLoading" />
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd('inside')">
+    <perfect-scrollbar
+      @ps-y-reach-end="onReachEnd('inside')"
+      :options="{suppressScrollY: windowWidth < 768}"
+    >
       <div class="list d-flex flex-wrap justify-content-start">
         <div
           class="list__item d-flex flex-column justify-content-between"
@@ -44,6 +47,7 @@ export default {
     ...mapActions([GET_BASE, GET_BASES_LIST]),
     onReachEnd(param) {
       if (param == "inside" && this.windowWidth < 768) return;
+      if (param == "outside" && this.windowWidth > 768) return;
 
       const params = this.filterParams;
       if (params.limit == this.bases.length) {
@@ -69,6 +73,7 @@ export default {
     }
   },
   mounted() {
+    this.handleResize();
     window.addEventListener("resize", this.handleResize);
   },
   computed: {
@@ -93,7 +98,7 @@ export default {
 .list {
   padding-right: 10px;
   width: 100%;
-  height: 100%;
+  //height: 100%;
   //overflow-y: scroll;
   &__item {
     padding: 15px 0;

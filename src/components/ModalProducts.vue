@@ -1,5 +1,5 @@
 <template>
-  <div class="product">
+  <div class="product d-flex flex-column">
     <div class="modal-title">Категории товаров</div>
 
     <div class="modal-head">
@@ -21,12 +21,12 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd" :options="{suppressScrollY: hideScroll}">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
       <div class="product-selection">
-        <div class="product-selection__filter-pane">
+        <div class="product-selection__filter-pane d-flex flex-column">
           <product-filter />
         </div>
-        <div class="product-selection__center-block d-flex flex-column justify-content-between">
+        <div class="product-selection__center-block d-flex">
           <product-selection-list :reach="reachEnd" @onLoadList="reachEnd = false" />
         </div>
       </div>
@@ -107,6 +107,8 @@ export default {
   }
   @media screen and (max-width: 768px) {
     flex-direction: column;
+    height: 750px;
+    max-height: calc(100vh - 200px);
     &__filter-pane {
       width: 100%;
     }

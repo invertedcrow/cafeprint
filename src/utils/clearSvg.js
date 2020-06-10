@@ -1,5 +1,4 @@
 export default function clearSvg(str) { 
-    console.log('CLEAR');
     let elementDom = new DOMParser().parseFromString(
       str,
       "text/html"
