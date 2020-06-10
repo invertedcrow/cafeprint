@@ -105,6 +105,7 @@ import { eventBus } from "../main";
 import { PRICE_SET_ITEM } from "../store/mutations.type";
 import { SAVE_TO_CART } from "../store/actions.type";
 import Spinner from "./Spinner";
+import clearSvg from "../utils/clearSvg";
 
 export default {
   name: "SidebarPrice",
@@ -136,33 +137,32 @@ export default {
     onAddToCart() {
       const items = [];
       this.sizesList.forEach(size => {
-        let item = {};
-        let print_sizes = [];
-        let svg = [];
-        this.base.sides.forEach(side => {
-          if (side.items && side.items.length) {
-            if (this.base.printSizes && this.base.printSizes.length) {
-              print_sizes.push({
-                sideId: side.id,
-                print_size_id: side.printSize
-                  ? side.printSize.id
-                  : this.base.printSizes[0].id
-              });
-            }
-
-            let svgItem = this.sidesElems.find(item => item.sideId == side.id);
-            svgItem.svg = svgItem.svg
-              .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
-              .replace(/<mask.*mask>/, "")
-              .replace(/mask="url\(#mainMask\)"/g, "");
-            svg.push(svgItem);
-          }
-        });
-
-        // if(!svg.length) {
-        //   svg.push(this.sidesElems[0]);
-        // }
         if (size.quantity) {
+          let item = {};
+          let print_sizes = [];
+          let svg = [];
+          this.base.sides.forEach(side => {
+            if (side.items && side.items.length) {
+              if (this.base.printSizes && this.base.printSizes.length) {
+                print_sizes.push({
+                  sideId: side.id,
+                  print_size_id: side.printSize
+                    ? side.printSize.id
+                    : this.base.printSizes[0].id
+                });
+              }
+
+              let svgItem = this.sidesElems.find(
+                item => item.sideId == side.id
+              );
+              if (svgItem.svg) {
+                svgItem.svg = clearSvg(svgItem.svg);
+
+                svg.push(svgItem);
+              }
+            }
+          });
+
           item = {
             color_id: this.color.id,
             size_id: size.id,
@@ -175,6 +175,7 @@ export default {
           items.push(item);
         }
       });
+
       this.$store.dispatch(SAVE_TO_CART, { items });
     }
   },

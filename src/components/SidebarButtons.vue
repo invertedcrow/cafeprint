@@ -115,6 +115,8 @@ import { PRICE_SET_ITEM, PRICE_RESET } from "../store/mutations.type";
 
 import { Sidebar, USER_ROLE } from "../consts";
 
+import clearSvg from "../utils/clearSvg";
+
 export default {
   data() {
     return {
@@ -171,10 +173,12 @@ export default {
           }
 
           let svgItem = this.sidesElems.find(item => item.sideId == side.id);
-          svgItem.svg = svgItem.svg
-            .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
-            .replace(/<mask.*mask>/, "")
-            .replace(/mask="url\(#mainMask\)"/g, "");
+          svgItem.svg = clearSvg(svgItem.svg);
+
+          // svgItem.svg
+          //   .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
+          //   .replace(/<mask.*mask>/, "")
+          //   .replace(/mask="url\(#mainMask\)"/g, "");
           svg.push(svgItem);
         }
       });
@@ -234,10 +238,12 @@ export default {
       let sides = this.sidesElems.slice();
       let id = this.editProfileProduct;
       sides.forEach(side => {
-        side.svg = side.svg
-          .replace(/<mask.*mask>/, "")
-          .replace(/mask="url\(#mainMask\)"/g, "")
-          .replace(/<image.*?<\/image>/, "");
+        side.svg = clearSvg(side.svg);
+
+        // side.svg
+        //   .replace(/<mask.*mask>/, "")
+        //   .replace(/mask="url\(#mainMask\)"/g, "")
+        //   .replace(/<image.*?<\/image>/, "");
         if (id) {
           side.isModify = true;
         }
@@ -261,11 +267,12 @@ export default {
           itemSide => itemSide.sideId == side.id
         );
 
-        let svg = svgSide.svg
-          .replace(/<mask.*mask>/, "")
-          .replace(/mask="url\(#mainMask\)"/g, "")
-          //.replace(/\<image.*?<\/image>/, "");
-          .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
+        let svg = clearSvg(svgSide.svg);
+        // svgSide.svg
+        //   .replace(/<mask.*mask>/, "")
+        //   .replace(/mask="url\(#mainMask\)"/g, "")
+        //   //.replace(/\<image.*?<\/image>/, "");
+        //   .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
         if (side.items.length) {
           let itemSide = {
             svg: svg,
@@ -321,11 +328,13 @@ export default {
           itemSide => itemSide.sideId == side.id
         );
 
-        let svg = svgSide.svg
-          .replace(/<mask.*mask>/, "")
-          .replace(/mask="url\(#mainMask\)"/g, "")
-          //.replace(/\<image.*?<\/image>/, "");
-          .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
+        let svg = clearSvg(svgSide.svg);
+
+        // svgSide.svg
+        //   .replace(/<mask.*mask>/, "")
+        //   .replace(/mask="url\(#mainMask\)"/g, "")
+        //   //.replace(/\<image.*?<\/image>/, "");
+        //   .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
         if (side.items.length && side.printSize) {
           sides.push({
             svg: svg,
