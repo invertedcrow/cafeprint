@@ -71,10 +71,10 @@ const actions = {
         // console.log(params)
         context.commit(CONSTRUCTOR_SET_LOADING, true);
         const tokenElement = document.querySelector('[name="csrf-token"]');
-        const _csrf = tokenElement.getAttribute("content");
-       // const encParams = qs.stringify(data.params);
+        //const _csrf = tokenElement.getAttribute("content");
+        const encParams = qs.stringify(params.data);
         try {
-            const response =  await Vue.axios.put(`constructor-new/save/order-product/${params.id}`, {data: params.data, selected_color: params.selected_color, _csrf });  
+            const response =  await Vue.axios.put(`constructor-new/save/order-product/${params.id}`, encParams);  
             context.commit(CONSTRUCTOR_SET_LOADING, false);
             if(response.data) {
                 eventBus.$emit("showModal", MODALS.MESSAGE, MESSAGE.UPDATE_SUCCES);
