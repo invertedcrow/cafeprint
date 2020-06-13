@@ -285,6 +285,8 @@ export default {
             itemSide.print_size_id = side.printSize
               ? side.printSize.id
               : this.base.printSizes[0].id;
+          } else {
+            itemSide.print_size_id = "";
           }
 
           sides.push(itemSide);
@@ -309,8 +311,8 @@ export default {
 
           preview: "",
           second_preview: null
-        },
-        selected_color: 85
+        }
+        // selected_color: 85
       };
       if (this.editOrderProduct) {
         params.id = this.editOrderProduct;
