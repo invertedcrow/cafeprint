@@ -22,6 +22,7 @@ export default {
   props: ["feature", "selected", "index"],
   methods: {
     selectFeature() {
+      console.log("on select feature, ind, id", this.index, this.selected);
       this.$store.commit(CONSTRUCTOR_SET_FEATURES, {
         index: this.index,
         id: this.selected
