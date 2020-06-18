@@ -117,6 +117,7 @@ const actions = {
     if(features && features.length) {       
         features.forEach((item, index) => {
             for(let key in item) {
+                let index = base.features.findIndex((f) => f.id == key);               
                 context.commit(CONSTRUCTOR_SET_FEATURES, {index, id: item[key]});
             }            
         })
@@ -176,8 +177,6 @@ const actions = {
     const base =  response.data.colorMainBlank.mainBlank
     const sides = response.data.sides;
     const features = response.data.features;
-    console.log('ORDER feat', features)
-    console.log(base)
     let side = base.sides.find(item => item.id == response.data.preview_side_id);
     let color = { 
         id: response.data.colorMainBlank.id,
@@ -202,8 +201,9 @@ const actions = {
 
     ///set saved features here
     if(features && features.length) {       
-        features.forEach((item, index) => {
-            for(let key in item) {
+        features.forEach((item) => {
+            for(let key in item) {               
+                let index = base.features.findIndex((f) => f.id == key)
                 context.commit(CONSTRUCTOR_SET_FEATURES, {index, id: item[key]});
             }            
         })

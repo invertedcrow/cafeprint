@@ -301,7 +301,7 @@ export default {
           mainblankid: item.mainblank_id,
           isConstructor: true,
           colormainblank_id: this.color.id,
-          size_id: this.size.id,
+          size_id: this.size.id || null,
           sides: sides,
           //  sides: this.sidesElems,
           previewSideId: item.id,
@@ -316,6 +316,7 @@ export default {
       };
       if (this.editOrderProduct) {
         params.id = this.editOrderProduct;
+        params.data.features = this.features;
         this.$store.dispatch(SAVE_UPDATE_ORDER_ITEM, params);
       } else {
         this.$store.dispatch(SAVE_CHANGES, params);

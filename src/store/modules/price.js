@@ -72,7 +72,13 @@ const mutations = {
         state.sizesList = arr;
        
     },    
-    [PRICE_RESET]: (state) => state.sizesList = [...state.sizesList.map(item => {item.quantity = 0; return item})],
+    [PRICE_RESET]: (state) => {       
+        if(state.sizesList.length && state.sizesList.length == 1) {
+            state.sizesList = [...state.sizesList.map(item => {item.quantity = 1; return item})]
+        } else {
+            state.sizesList = [...state.sizesList.map(item => {item.quantity = 0; return item})]
+        }
+    },
     [PRICE_ARTICLE_SET]: (state, article) => state.article = article, 
     [PRICE_SET_LOADING]: (state, isLoading) => state.isPriceLoading = isLoading
 }

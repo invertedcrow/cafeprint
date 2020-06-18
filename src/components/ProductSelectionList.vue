@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex h-100 position-relative">
+  <div class="d-flex h-100 position-relative w-100">
     <spinner v-if="isProductsListLoading" />
     <perfect-scrollbar
       @ps-y-reach-end="onReachEnd('inside')"
