@@ -189,7 +189,8 @@ export default {
       "base",
       "sidesElems",
       "color",
-      "editCartProduct"
+      "editCartProduct",
+      "features"
     ])
   },
   components: {
