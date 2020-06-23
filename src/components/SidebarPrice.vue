@@ -106,6 +106,7 @@ import { PRICE_SET_ITEM } from "../store/mutations.type";
 import { SAVE_TO_CART } from "../store/actions.type";
 import Spinner from "./Spinner";
 import clearSvg from "../utils/clearSvg";
+import setSvgBySize from "../utils/setSvgBySize";
 
 export default {
   name: "SidebarPrice",
@@ -136,6 +137,16 @@ export default {
     },
     onAddToCart() {
       const items = [];
+      console.log(this.size);
+      console.log(this.sizesList);
+      let centerItems = null;
+
+      if (this.allItemsParams) {
+        centerItems = {
+          y: (this.allItemsParams.yEl + this.allItemsParams.y2El) / 2,
+          x: (this.allItemsParams.xEl + this.allItemsParams.x2El) / 2
+        };
+      }
       this.sizesList.forEach(size => {
         if (size.quantity) {
           let item = {};
@@ -157,6 +168,15 @@ export default {
               );
               if (svgItem.svg) {
                 svgItem = { ...svgItem };
+                svgItem.svg = setSvgBySize({
+                  current: this.size,
+                  target: size,
+                  svgStr: svgItem.svg,
+                  centerItems,
+                  items: this.items,
+                  sideArea: this.allItemsParams.sideArea,
+                  edBounds: this.allItemsParams.edBounds
+                });
                 svgItem.svg = clearSvg(svgItem.svg);
 
                 svg.push(svgItem);
@@ -191,7 +211,10 @@ export default {
       "sidesElems",
       "color",
       "editCartProduct",
-      "features"
+      "features",
+      "size",
+      "allItemsParams",
+      "items"
     ])
   },
   components: {

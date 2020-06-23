@@ -21,6 +21,7 @@ export const CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT = 'setEditOrderProduct';
 export const CONSTRUCTOR_SET_FEATURES       = 'setFeatures';
 export const CONSTRUCTOR_RESET_FEATURES     = 'resetFeatures';
 export const CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE = 'CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE';
+export const CONSTRUCTOR_SET_ALL_ITEMS_PARAMS = 'CONSTRUCTOR_SET_ALL_ITEMS_PARAMS';
 
 export const DESIGN_SET_CATEGORIES          = 'setCategories';
 export const DESIGN_SET_ACTIVE_CATEGORIES   = 'setActiveCategory';

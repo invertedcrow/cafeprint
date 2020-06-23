@@ -571,7 +571,8 @@ import {
   CONSTRUCTOR_ADD_ITEM,
   CONSTRUCTOR_SET_SELECTED_ITEM,
   CONSTRUCTOR_SET_PRINT_SIZE,
-  CONSTRUCTOR_SET_SIDE_INVALID
+  CONSTRUCTOR_SET_SIDE_INVALID,
+  CONSTRUCTOR_SET_ALL_ITEMS_PARAMS
 } from "../store/mutations.type";
 const defaultProps = {
   hex: "#fff",
@@ -1026,6 +1027,9 @@ export default {
           (this.allItemsParams.height / area.height) *
           this.sideArea.real_height;
       }
+      this.allItemsParams.sideArea = this.sideArea;
+      this.allItemsParams.edBounds = area;
+      this.$store.commit(CONSTRUCTOR_SET_ALL_ITEMS_PARAMS, this.allItemsParams);
 
       printsSizes.forEach(size => {
         let verticalSize = null;
@@ -1847,7 +1851,8 @@ export default {
         o: {
           x: 0,
           y: 0
-        }
+        },
+        dataId: Date.now()
       };
     },
     createImgField(file) {
@@ -1874,7 +1879,8 @@ export default {
           y: 0
         },
         selected: false,
-        spinner: true
+        spinner: true,
+        dataId: Date.now()
       };
     },
     checkItemPosition(item) {

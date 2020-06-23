@@ -42,18 +42,33 @@
                 :mask="'url(#mainMask' + side.id + ')'"
               >
                 <g :transform="item.matrix ? item.matrix : ''">
+                  <defs v-if="printSizeMask(side)">
+                    <mask :id="'printSizeMask'+side.id" maskUnits="userSpaceOnUse">
+                      <rect
+                        :width="printSizeMask(side).width"
+                        :height="printSizeMask(side).height"
+                        :x="printSizeMask(side).x"
+                        :y="printSizeMask(side).y"
+                        class="printSizeMask"
+                        rx="0"
+                        ry="0"
+                        fill="white"
+                      />
+                    </mask>
+                  </defs>
                   <svg
                     :height="item.height"
                     :width="item.width"
                     :x="item.x"
                     :y="item.y"
                     :opacity="base.layers_opacity"
+                    :mask="'url(#printSizeMask' + side.id + ')'"
                     :style="{'overflow': item.type=='text' ? 'visible' : 'hidden'}"
                   >
                     <image
                       v-if="item.type=='img'"
                       class="image control"
-                      :data-id="`id${Date.now()}`"
+                      :data-id="item.dataId"
                       :data-layername="item.name"
                       :xlink:href="item.url ? imgUrl(item.url) : item.dataUrl"
                       :height="item.height"
@@ -65,7 +80,7 @@
                       v-if="item.type=='text'"
                       class="text control"
                       :data-layername="item.name"
-                      :data-id="`id${Date.now()}`"
+                      :data-id="item.dataId"
                       :font-family="item.font.name"
                       :font-size="item.fontSize"
                       :text-anchor="item.textAnchor"
@@ -146,10 +161,129 @@ export default {
     },
     active() {
       return this.side.id;
+    },
+    printSizeMask(side) {
+      this.getRealSideAreaSize(side);
+      console.log(side);
+      let mask = null;
+      let items = side.items;
+      let printSize = side.printSize;
+      let arrX = items.map(item => item.x);
+      let arrY = items.map(item => item.y);
+      // let arrX2 = items.map(item => item.x + item.width);
+      // let arrY2 = items.map(item => item.y + item.height);
+      mask = {
+        x: Math.min(...arrX),
+        y: Math.min(...arrY)
+      };
+      this.isVertical(side);
+
+      if (printSize) {
+        let width =
+          (+printSize.real_width / side.real_width) * +side.area.width;
+        let height =
+          (+printSize.real_height / side.real_height) * +side.area.height;
+
+        mask.width = side.isVertical ? width : height;
+        mask.height = side.isVertical ? height : width;
+      }
+      console.log("MASK");
+      console.log(mask);
+      return mask;
+    },
+    getRealSideAreaSize(side) {
+      let realSideWidth = +side.real_width;
+      let realSideHeight = +side.real_height;
+      if (side.real_for_size_id) {
+        let realForSize = this.baseSizes.find(
+          item => item.id == side.real_for_size_id
+        );
+        if (realForSize) {
+          realSideWidth =
+            (side.real_width * +this.size.width) / +realForSize.width;
+          realSideHeight =
+            (side.real_height * +this.size.height) / +realForSize.height;
+        }
+      }
+      side.real_width = realSideWidth;
+      side.real_height = realSideHeight;
+    },
+    isVertical(side) {
+      side.isVertical = true;
+
+      let arrX = side.items.map(item => item.visibleX);
+      let arrY = side.items.map(item => item.visibleY);
+      let arrW = side.items.map(item => item.visibleWidth);
+      let arrH = side.items.map(item => item.visibleHeight);
+      let arrX2 = side.items.map(item => item.visibleX + item.visibleWidth);
+      let arrY2 = side.items.map(item => item.visibleY + item.visibleHeight);
+
+      let allItemsParams = {
+        x: Math.min(...arrX),
+        y: Math.min(...arrY),
+        width: Math.max(...arrW),
+        height: Math.max(...arrH),
+        x2: Math.max(...arrX2),
+        y2: Math.max(...arrY2)
+      };
+      if (this.size) {
+        if (side.area.x > allItemsParams.x) {
+          allItemsParams.x = side.area.x;
+        }
+        if (side.area.right < this.allItemsParams.x2) {
+          allItemsParams.x2 = side.area.right;
+        }
+
+        allItemsParams.width = allItemsParams.x2 - allItemsParams.x;
+
+        if (side.area.y > allItemsParams.y) {
+          allItemsParams.y = side.area.y;
+        }
+        if (side.area.bottom < allItemsParams.y2) {
+          allItemsParams.y2 = side.area.bottom;
+        }
+        allItemsParams.height = allItemsParams.y2 - allItemsParams.y;
+
+        allItemsParams.realItemsWidth =
+          (allItemsParams.width / side.area.width) * side.real_width;
+        allItemsParams.realItemsHeight =
+          (allItemsParams.height / side.area.height) * side.real_height;
+      }
+
+      let verticalSize = null;
+      let horizontalSize = null;
+      if (
+        this.allItemsParams.realItemsHeight <= size.real_height &&
+        this.allItemsParams.realItemsWidth <= size.real_width
+      ) {
+        verticalSize = size;
+      }
+      if (
+        this.allItemsParams.realItemsHeight <= size.real_width &&
+        this.allItemsParams.realItemsWidth <= size.real_height
+      ) {
+        horizontalSize = size;
+      }
+
+      if (verticalSize && horizontalSize) {
+        side.isVertical =
+          +verticalSize.real_width < +horizontalSize.real_width ? true : false;
+      } else if (verticalSize) {
+        side.isVertical = true;
+      } else if (horizontalSize) {
+        side.isVertical = false;
+      }
     }
   },
   computed: {
-    ...mapGetters(["side", "renderSides", "base", "maxPrintSize"])
+    ...mapGetters([
+      "side",
+      "renderSides",
+      "base",
+      "maxPrintSize",
+      "size",
+      "baseSizes"
+    ])
   },
   watch: {
     renderSides: function(val) {

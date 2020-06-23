@@ -37,6 +37,7 @@ function createImageLayers(context, arr, side) {
             side: side,
             sideName: "Перед",
             rotate: 0,
+            dataId: Date.now()
         }
         if(item.parentNode.parentNode.getAttribute('transform') && item.parentNode.parentNode.getAttribute('transform').includes('matrix')) {          
             layer.matrix = item.parentNode.parentNode.getAttribute('transform');
@@ -80,7 +81,8 @@ function createTextLayers(context, arr, side) {
             color: item.getAttribute('fill') || '#000',
             bold: item.getAttribute('font-weight') == 'bold' ? true : false, 
             italic: item.getAttribute('font-style') == 'italic' ? true : false, 
-            rotate: 0,    
+            rotate: 0,   
+            dataId: Date.now() 
         }        
         if(item.children.length) {           
             Array.from(item.children).forEach(tSpan => {
