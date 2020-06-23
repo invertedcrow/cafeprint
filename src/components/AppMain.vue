@@ -656,16 +656,17 @@ export default {
     },
     size: function(val) {
       if (this.currSize && val) {
-        let diff = Math.min(
-          +this.currSize.width / +val.width,
-          +this.currSize.height / +val.height
-        );
-        if (+this.currSize.width > +val.width) {
-          diff = Math.max(
-            +this.currSize.width / +val.width,
-            +this.currSize.height / +val.height
-          );
-        }
+        let diff = +this.currSize.width / +val.width;
+        // let diff = Math.min(
+        //   +this.currSize.width / +val.width,
+        //   +this.currSize.height / +val.height
+        // );
+        // if (+this.currSize.width > +val.width) {
+        //   diff = Math.max(
+        //     +this.currSize.width / +val.width,
+        //     +this.currSize.height / +val.height
+        //   );
+        // }
 
         if (
           !this.currBase ||
@@ -894,6 +895,7 @@ export default {
         const element = selectedElementNode
           .querySelector("rect")
           .getBoundingClientRect();
+        item.el = element;
         if (this.size) {
           let coefW = +this.sideArea.width / area.width;
           let coefH = +this.sideArea.height / area.height;
@@ -981,6 +983,10 @@ export default {
       let arrH = items.map(item => item.visibleHeight);
       let arrX2 = items.map(item => item.visibleX + item.visibleWidth);
       let arrY2 = items.map(item => item.visibleY + item.visibleHeight);
+      let arrElX = items.map(item => item.el.x);
+      let arrElY = items.map(item => item.el.y);
+      let arrElX2 = items.map(item => item.el.x + item.el.width);
+      let arrElY2 = items.map(item => item.el.y + item.el.height);
 
       this.allItemsParams = {
         x: Math.min(...arrX),
@@ -988,7 +994,11 @@ export default {
         width: Math.max(...arrW),
         height: Math.max(...arrH),
         x2: Math.max(...arrX2),
-        y2: Math.max(...arrY2)
+        y2: Math.max(...arrY2),
+        xEl: Math.min(...arrElX),
+        yEl: Math.min(...arrElY),
+        x2El: Math.max(...arrElX2),
+        y2El: Math.max(...arrElY2)
       };
       if (this.size) {
         if (area.x > this.allItemsParams.x) {
@@ -1072,15 +1082,43 @@ export default {
       let arr = [...this.items];
       if (!diff) {
         diff = 1;
+        return;
       }
+
+      let allCenterY = 1;
+      let allCenterX = 1;
+
+      if (this.allItemsParams) {
+        allCenterY = (this.allItemsParams.yEl + this.allItemsParams.y2El) / 2;
+        allCenterX = (this.allItemsParams.xEl + this.allItemsParams.x2El) / 2;
+      }
+
+      const edBounds = document
+        .querySelector(".constructor #editor #editable-area")
+        .getBoundingClientRect();
+      let sideCoef = +this.sideArea.width / edBounds.width;
+
       arr.forEach(item => {
-        const diff_before = (item.width - 500) / 2;
+        // const diff_before = (item.width - 500) / 2;
+
+        // const diff_current = (item.width - 500) / 2;
+        // item.x = item.x + diff_before - diff_current;
+        // item.y = item.y + diff_before - diff_current;
+        let difCenterBeforeX = (allCenterX - item.el.x - item.el.width / 2) / 2;
+        let difCenterBeforeY =
+          (allCenterY - item.el.y - item.el.height / 2) / 2;
+
+        let difCenterAfterY = difCenterBeforeY * diff;
+        let difCenterAfterX = difCenterBeforeX * diff;
+
+        item.x -=
+          (difCenterAfterX - difCenterBeforeX) * sideCoef * 2 +
+          (item.width * diff - item.width) / 2;
+        item.y -=
+          (difCenterAfterY - difCenterBeforeY) * sideCoef * 2 +
+          (item.height * diff - item.height) / 2;
         item.width = +item.width * diff;
         item.height = +item.height * diff;
-        const diff_current = (item.width - 500) / 2;
-        item.x = item.x + diff_before - diff_current;
-        item.y = item.y + diff_before - diff_current;
-
         if (item.type == "text") {
           item.fontSize = Math.floor(+item.height / item.text.length);
         }
@@ -1197,6 +1235,10 @@ export default {
       this.itemTouch = true;
       let groupCenterY = this.groupParams.y + this.groupParams.height / 2;
       let groupCenterX = this.groupParams.x + this.groupParams.width / 2;
+
+      // relative to top-left
+      // let groupY = this.groupParams.y;
+      // let groupX = this.groupParams.x;
       this.selectedLayers.forEach(item => {
         if (!handle) {
           this.hideLines();
@@ -1304,9 +1346,14 @@ export default {
           if (this.groupParams.width < 20 || this.groupParams.height < 20) {
             return;
           }
-
+          // scale relative to center
           let difCenterBeforeX = (groupCenterX - item.x + item.width / 2) / 2;
           let difCenterBeforeY = (groupCenterY - item.y + item.height / 2) / 2;
+
+          //scale relative to left/top
+          // let difBeforeX = (groupX - item.x) / 2;
+          // let difBeforeY = (groupY - item.y) / 2;
+          //
 
           const diff_before_w = item.width / 2;
           const ratio = item.drag.h / item.drag.w;
@@ -1316,11 +1363,18 @@ export default {
           const diff_current_w = item.width / 2;
 
           let coefScale = diff_current_w / diff_before_w;
-
+          // scale relative to center
           let difCenterAfterY = difCenterBeforeY * coefScale;
           let difCenterAfterX = difCenterBeforeX * coefScale;
           item.x -= difCenterAfterX - difCenterBeforeX;
           item.y -= difCenterAfterY - difCenterBeforeY;
+
+          //scale relative to left/top
+          // let difAfterY = difBeforeY * coefScale;
+          // let difAfterX = difBeforeX * coefScale;
+          // item.x -= difAfterX - difBeforeX;
+          // item.y -= difAfterY - difBeforeY;
+          //
 
           if (item.type == "text") {
             item.fontSize *= coefScale;
