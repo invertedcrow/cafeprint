@@ -156,6 +156,7 @@ export default {
                 item => item.sideId == side.id
               );
               if (svgItem.svg) {
+                svgItem = { ...svgItem };
                 svgItem.svg = clearSvg(svgItem.svg);
 
                 svg.push(svgItem);

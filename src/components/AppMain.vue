@@ -211,96 +211,6 @@
                     v-if="item.width > 37 && item.real_width > 0 && !rotation"
                   >{{round(item.real_width)}} см</text>
                 </g>
-                <g>
-                  <g
-                    @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
-                    @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
-                    :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
-                  >
-                    <rect
-                      class="ctrl-rect"
-                      :width="tools.squaresize"
-                      :x="item.x"
-                      :y="item.y"
-                      :height="tools.squaresize"
-                    />
-                    <svg
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      class="ctrl-icon"
-                      :width="tools.squaresizeIcon"
-                      :height="tools.squaresizeIcon"
-                      xmlns="http://www.w3.org/2000/svg"
-                      version="1.1"
-                      :x="(+item.x + 5)"
-                      :y="(+item.y + 3)"
-                      viewBox="0 0 76.398 76.398"
-                      style="enable-background:new 0 0 76.398 76.398;"
-                      xml:space="preserve"
-                    >
-                      <path
-                        d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
-                      />
-                    </svg>
-                  </g>
-                  <g
-                    @click="removeActiveItem()"
-                    @touchstart="removeActiveItem()"
-                    :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'"
-                  >
-                    <rect
-                      class="ctrl-rect"
-                      :x="item.x"
-                      :y="item.y"
-                      :width="tools.squaresize"
-                      :height="tools.squaresize"
-                    />
-                    <svg
-                      class="ctrl-icon"
-                      xmlns="http://www.w3.org/2000/svg"
-                      :height="tools.squaresizeIcon"
-                      viewBox="-18 0 511 512"
-                      :width="tools.squaresizeIcon"
-                      fill="#757575"
-                      :x="(+item.x + 5)"
-                      :y="(+item.y + 3)"
-                    >
-                      <path
-                        d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"
-                      />
-                    </svg>
-                  </g>
-
-                  <g
-                    @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
-                    @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
-                    :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
-                  >
-                    <rect
-                      class="ctrl-rect"
-                      :x="item.x"
-                      :y="item.y"
-                      :width="tools.squaresize"
-                      :height="tools.squaresize"
-                    />
-                    <svg
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      class="ctrl-icon"
-                      :width="tools.squaresizeIcon"
-                      :height="tools.squaresizeIcon"
-                      xmlns="http://www.w3.org/2000/svg"
-                      version="1.1"
-                      :x="(+item.x + 5)"
-                      :y="(+item.y + 4)"
-                      viewBox="0 0 472.774 472.774"
-                      xml:space="preserve"
-                    >
-                      <polygon
-                        transform="rotate(-45 236.387 236.387)"
-                        points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
-                      />
-                    </svg>
-                  </g>
-                </g>
               </g>
             </template>
             <g v-for="(item, index) in sideItems" :key="index" mask="url(#mainMaskEditor)">
@@ -411,123 +321,7 @@
                     </g>
                   </svg>
                 </svg>
-                <g v-if="selectedElement === item && !selectedLayers.length">
-                  <rect
-                    :x="item.x"
-                    :y="item.y"
-                    :width="item.width"
-                    :height="item.height"
-                    class="ctrl-bounds"
-                    fill="none"
-                  />
-                  <g
-                    fill="#5e6a7d"
-                    font-size="12px"
-                    :transform="'translate('+item.x+', '+(+item.y - 5)+')'"
-                  >
-                    <!-- <text v-if="dragging">X: {{round(item.x)}} Y: {{round(item.y)}}</text> -->
-                    <text v-if="rotation">{{round(item.rotate)}}&#176;</text>
-                    <text
-                      v-if="item.height > 40 && item.real_height > 0 && !rotation"
-                      :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
-                    >{{round(item.real_height)}} см</text>
-                    <text
-                      v-if="item.width > 37 && item.real_width > 0 && !rotation"
-                    >{{round(item.real_width)}} см</text>
-                  </g>
-                  <g>
-                    <g
-                      @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
-                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.ROTATE)"
-                      :transform="'translate('+(item.width+1)+' '+(-1-tools.squaresize)+')'"
-                    >
-                      <rect
-                        class="ctrl-rect"
-                        :width="tools.squaresize"
-                        :x="item.x"
-                        :y="item.y"
-                        :height="tools.squaresize"
-                      />
-                      <svg
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        class="ctrl-icon"
-                        :width="tools.squaresizeIcon"
-                        :height="tools.squaresizeIcon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        version="1.1"
-                        :x="(+item.x + 5)"
-                        :y="(+item.y + 3)"
-                        viewBox="0 0 76.398 76.398"
-                        style="enable-background:new 0 0 76.398 76.398;"
-                        xml:space="preserve"
-                      >
-                        <path
-                          d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
-                        />
-                      </svg>
-                    </g>
-                    <g
-                      @click="removeActiveItem()"
-                      @touchstart="removeActiveItem()"
-                      :transform="'translate('+(-1-tools.squaresize)+' '+(item.height+1)+')'"
-                    >
-                      <rect
-                        class="ctrl-rect"
-                        :x="item.x"
-                        :y="item.y"
-                        :width="tools.squaresize"
-                        :height="tools.squaresize"
-                      />
-                      <svg
-                        class="ctrl-icon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        version="1.1"
-                        :height="tools.squaresizeIcon"
-                        viewBox="-18 0 511 512"
-                        :width="tools.squaresizeIcon"
-                        fill="#757575"
-                        :x="(+item.x + 5)"
-                        :y="(+item.y + 3)"
-                      >
-                        <path
-                          d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"
-                        />
-                      </svg>
-                    </g>
 
-                    <g
-                      @mousedown="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
-                      @touchstart="onMouseDown($event,item, CONSTRUCTOR_HANDLES.SCALE)"
-                      :transform="'translate('+(item.width+1)+' '+(item.height+1)+')'"
-                    >
-                      <rect
-                        class="ctrl-rect"
-                        :x="item.x"
-                        :y="item.y"
-                        :width="tools.squaresize"
-                        :height="tools.squaresize"
-                      />
-                      <svg
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        class="ctrl-icon"
-                        :width="tools.squaresizeIcon"
-                        :height="tools.squaresizeIcon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        version="1.1"
-                        :x="(+item.x + 5)"
-                        :y="(+item.y + 4)"
-                        viewBox="0 0 472.774 472.774"
-                        xml:space="preserve"
-                      >
-                        <polygon
-                          transform="rotate(-45 236.387 236.387)"
-                          points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
-                        />
-                      </svg>
-                    </g>
-                  </g>
-                </g>
                 <rect
                   v-if="item.invalid"
                   :x="item.x"
@@ -541,17 +335,154 @@
               </g>
             </g>
           </svg>
-          <g v-if="selectedLayers.length && selectedLayersSide == side.id">
-            <rect
-              :x="+groupParams.x"
-              :y="+groupParams.y"
-              :width="groupParams.width"
-              :height="groupParams.height"
-              class="ctrl-bounds group-bound"
-              fill="none"
-            />
-            <g>
-              <!-- <g
+        </g>
+
+        <!-- if base has overlay (each side) -->
+        <image
+          v-if="sideArea.overlay_image"
+          v-bind:xlink:href="imgUrl(sideArea.overlay_image)"
+          class="constructor__overlay"
+          :x="image.x"
+          :y="image.y"
+          :width="image.width"
+          :height="image.height"
+        />
+
+        <g
+          v-if="selectedElement && selectedElement.side && !selectedLayers.length"
+          :transform="selectedElement.matrix ? selectedElement.matrix : ''"
+        >
+          <rect
+            :x="selectedElement.x"
+            :y="selectedElement.y"
+            :width="selectedElement.width"
+            :height="selectedElement.height"
+            class="ctrl-bounds"
+            fill="none"
+            :class="{invalid: selectedElement.invalid}"
+          />
+          <g
+            fill="#5e6a7d"
+            font-size="12px"
+            :transform="'translate('+selectedElement.x+', '+(+selectedElement.y - 5)+')'"
+          >
+            <text v-if="rotation">{{round(selectedElement.rotate)}}&#176;</text>
+            <text
+              v-if="selectedElement.height > 40 && selectedElement.real_height > 0 && !rotation"
+              :transform="'translate(-5 45) ' + 'rotate( -90 0 0)'"
+            >{{round(selectedElement.real_height)}} см</text>
+            <text
+              v-if="selectedElement.width > 37 && selectedElement.real_width > 0 && !rotation"
+            >{{round(selectedElement.real_width)}} см</text>
+          </g>
+          <g>
+            <g
+              @mousedown="onMouseDown($event,selectedElement, CONSTRUCTOR_HANDLES.ROTATE)"
+              @touchstart="onMouseDown($event,selectedElement, CONSTRUCTOR_HANDLES.ROTATE)"
+              :transform="'translate('+(selectedElement.width+1)+' '+(-1-tools.squaresize)+')'"
+              class="hover-icon"
+            >
+              <rect
+                class="ctrl-rect"
+                :width="tools.squaresize"
+                :x="selectedElement.x"
+                :y="selectedElement.y"
+                :height="tools.squaresize"
+              />
+              <svg
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                class="ctrl-icon"
+                :width="tools.squaresizeIcon"
+                :height="tools.squaresizeIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                :x="(+selectedElement.x + 5)"
+                :y="(+selectedElement.y + 3)"
+                viewBox="0 0 76.398 76.398"
+                style="enable-background:new 0 0 76.398 76.398;"
+                xml:space="preserve"
+              >
+                <path
+                  d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
+                />
+              </svg>
+            </g>
+            <g
+              @mousedown="removeActiveItem()"
+              @touchstart="removeActiveItem()"
+              :transform="'translate('+(-1-tools.squaresize)+' '+(selectedElement.height+1)+')'"
+              class="hover-icon"
+            >
+              <rect
+                class="ctrl-rect"
+                :x="selectedElement.x"
+                :y="selectedElement.y"
+                :width="tools.squaresize"
+                :height="tools.squaresize"
+              />
+              <svg
+                class="ctrl-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                version="1.1"
+                :height="tools.squaresizeIcon"
+                viewBox="-18 0 511 512"
+                :width="tools.squaresizeIcon"
+                fill="#757575"
+                :x="(+selectedElement.x + 5)"
+                :y="(+selectedElement.y + 3)"
+              >
+                <path
+                  d="m454.5 76c-6.28125 0-110.601562 0-117 0v-56c0-11.046875-8.953125-20-20-20h-160c-11.046875 0-20 8.953125-20 20v56c-6.398438 0-110.703125 0-117 0-11.046875 0-20 8.953125-20 20s8.953125 20 20 20h37v376c0 11.046875 8.953125 20 20 20h320c11.046875 0 20-8.953125 20-20v-376h37c11.046875 0 20-8.953125 20-20s-8.953125-20-20-20zm-277-36h120v36h-120zm200 432h-280v-356h280zm-173.332031-300v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm106.664062 0v244c0 11.046875-8.953125 20-20 20s-20-8.953125-20-20v-244c0-11.046875 8.953125-20 20-20s20 8.953125 20 20zm0 0"
+                />
+              </svg>
+            </g>
+
+            <g
+              @mousedown="onMouseDown($event,selectedElement, CONSTRUCTOR_HANDLES.SCALE)"
+              @touchstart="onMouseDown($event,selectedElement, CONSTRUCTOR_HANDLES.SCALE)"
+              :transform="'translate('+(selectedElement.width+1)+' '+(selectedElement.height+1)+')'"
+              class="hover-icon"
+            >
+              <rect
+                class="ctrl-rect"
+                :x="selectedElement.x"
+                :y="selectedElement.y"
+                :width="tools.squaresize"
+                :height="tools.squaresize"
+              />
+              <svg
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                class="ctrl-icon"
+                :width="tools.squaresizeIcon"
+                :height="tools.squaresizeIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                :x="(+selectedElement.x + 5)"
+                :y="(+selectedElement.y + 4)"
+                viewBox="0 0 472.774 472.774"
+                xml:space="preserve"
+              >
+                <polygon
+                  transform="rotate(-45 236.387 236.387)"
+                  points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
+                />
+              </svg>
+            </g>
+          </g>
+        </g>
+
+        <g v-if="selectedLayers.length && selectedLayersSide == side.id">
+          <rect
+            :x="+groupParams.x"
+            :y="+groupParams.y"
+            :width="groupParams.width"
+            :height="groupParams.height"
+            class="ctrl-bounds group-bound"
+            fill="none"
+          />
+          <g>
+            <!-- <g
                 @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.ROTATE)"
                 :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y - tools.squaresize)+')'"
@@ -580,42 +511,41 @@
                     d="M58.828,16.208l-3.686,4.735c7.944,6.182,11.908,16.191,10.345,26.123C63.121,62.112,48.954,72.432,33.908,70.06   C18.863,67.69,8.547,53.522,10.912,38.477c1.146-7.289,5.063-13.694,11.028-18.037c5.207-3.79,11.433-5.613,17.776-5.252   l-5.187,5.442l3.848,3.671l8.188-8.596l0.002,0.003l3.668-3.852L46.39,8.188l-0.002,0.001L37.795,0l-3.671,3.852l5.6,5.334   c-7.613-0.36-15.065,1.853-21.316,6.403c-7.26,5.286-12.027,13.083-13.423,21.956c-2.879,18.313,9.676,35.558,27.989,38.442   c1.763,0.277,3.514,0.411,5.245,0.411c16.254-0.001,30.591-11.85,33.195-28.4C73.317,35.911,68.494,23.73,58.828,16.208z"
                   />
                 </svg>
-              </g>-->
+            </g>-->
 
-              <g
-                @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
-                @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
-                :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
+            <g
+              @mousedown="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
+              @touchstart="onMouseDownGroup($event, selectedLayers, CONSTRUCTOR_HANDLES.SCALE)"
+              :transform="'translate('+(groupParams.x + groupParams.width+1)+' '+(groupParams.y + groupParams.height +1)+')'"
+            >
+              <rect
+                class="ctrl-rect"
+                :x="0"
+                :y="0"
+                :width="tools.squaresize"
+                :height="tools.squaresize"
+              />
+              <svg
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                class="ctrl-icon"
+                :width="tools.squaresizeIcon"
+                :height="tools.squaresizeIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                :x="5"
+                :y="5"
+                viewBox="0 0 472.774 472.774"
+                xml:space="preserve"
               >
-                <rect
-                  class="ctrl-rect"
-                  :x="0"
-                  :y="0"
-                  :width="tools.squaresize"
-                  :height="tools.squaresize"
+                <polygon
+                  transform="rotate(45 236.387 236.387)"
+                  points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
                 />
-                <svg
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  class="ctrl-icon"
-                  :width="tools.squaresizeIcon"
-                  :height="tools.squaresizeIcon"
-                  xmlns="http://www.w3.org/2000/svg"
-                  version="1.1"
-                  :x="5"
-                  :y="5"
-                  viewBox="0 0 472.774 472.774"
-                  xml:space="preserve"
-                >
-                  <polygon
-                    transform="rotate(45 236.387 236.387)"
-                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
-                  />
-                  <polygon
-                    transform="rotate(-45 236.387 236.387)"
-                    points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
-                  />
-                </svg>
-              </g>
+                <polygon
+                  transform="rotate(-45 236.387 236.387)"
+                  points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
+                />
+              </svg>
             </g>
           </g>
         </g>
@@ -769,7 +699,7 @@ export default {
 
       let element = new DOMParser().parseFromString(val.svg_area, "text/xml");
       this.sideArea.tag = element.documentElement.tagName;
-
+      this.sideArea.overlay_image = val.overlay_image || null;
       this.getRealSideAreaSize();
 
       if (this.sideArea.tag == "rect") {
@@ -2070,6 +2000,10 @@ var swapArrayElements = function(arr, indexA, indexB) {
   width: 100%;
   height: 100%;
   z-index: 2;
+
+  &__overlay {
+    pointer-events: none;
+  }
   @media screen and (max-width: 1200px) {
     width: 100%;
     height: auto;
@@ -2103,6 +2037,9 @@ var swapArrayElements = function(arr, indexA, indexB) {
     &:hover {
       cursor: pointer;
     }
+  }
+  .hover-icon {
+    cursor: pointer;
   }
   .ctrl-icon {
     fill: #757575;
