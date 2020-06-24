@@ -889,6 +889,7 @@ export default {
       const area = this.editableAreaEl.getBoundingClientRect();
 
       items.forEach((item, i) => {
+        item.areaBound = area;
         const selectedElementIndex = this.sideItems.indexOf(item);
         const selectedElementNode = document.querySelector(
           `#group-${selectedElementIndex}`
@@ -1101,7 +1102,7 @@ export default {
         .querySelector(".constructor #editor #editable-area")
         .getBoundingClientRect();
       let sideCoef = +this.sideArea.width / edBounds.width;
-
+      console.log("APP MAIN diff, coef", diff, sideCoef);
       arr.forEach(item => {
         // const diff_before = (item.width - 500) / 2;
 

@@ -1,4 +1,4 @@
-export default function setSvgBySize({current, target, svgStr, centerItems, items, sideArea, edBounds}) {
+export default function setSvgBySize({id, current, target, svgStr, centerItems, items, sideArea, edBounds}) {
     let elementDom = new DOMParser().parseFromString(
         svgStr,
         "text/html"
@@ -14,15 +14,24 @@ export default function setSvgBySize({current, target, svgStr, centerItems, item
    
     let images = groups.querySelectorAll('image') || [];
     let texts = groups.querySelectorAll('text') || [];
-    let sideCoef = +sideArea.width*diff / +edBounds.width;
+    let prinSizemask = groups.querySelector('.printSizemask') || null;
+   
+    let sideCoef = +sideArea.width / +edBounds.width;
+    // let UID = Math.random().toString(36).substr(2, 9);    
     setItemsAttrs({elements: images, items, diff, y: centerItems.y, x: centerItems.x, sideCoef})
     setItemsAttrs({elements: texts, items, diff, y: centerItems.y, x: centerItems.x, sideCoef})
     
+    if(prinSizemask) {   
+      let inside = groups.querySelector('svg [mask]');
+      inside.setAttribute('mask', `url(#printMask${id})` ) 
+      prinSizemask.parentNode.setAttribute('id', `printMask${id}`)   
+      setPrintSizeMaskAttr(prinSizemask, diff, centerItems, sideCoef);
+    }
 
     return svg.parentElement.innerHTML;
  }
 
- function setItemsAttrs({elements, items, diff, y, x, sideCoef}) {
+ function setItemsAttrs({elements, items, diff, y, x, sideCoef}) {   
     elements.forEach(curEl => {
         let itemId = curEl.getAttribute("data-id");
         let item = items.find(el => el.dataId == itemId);
@@ -56,4 +65,28 @@ export default function setSvgBySize({current, target, svgStr, centerItems, item
         }
        
       });
+ }
+
+ function setPrintSizeMaskAttr(prinSizemask, diff, centerItems, sideCoef) {
+      let x = +prinSizemask.getAttribute('x');
+      let y = +prinSizemask.getAttribute('y');
+      let width = +prinSizemask.getAttribute('width');
+      let height = +prinSizemask.getAttribute('height');
+      let difCenterBeforeX = (x + width / 2)*sideCoef / 2;
+      let difCenterBeforeY = (y + height / 2)*sideCoef / 2;
+
+      let difCenterAfterY = difCenterBeforeY * diff;
+      let difCenterAfterX = difCenterBeforeX * diff;
+
+      let newX = +x - ((+difCenterAfterX - +difCenterBeforeX) +
+      (+width * diff - +width) / 2);
+     
+      let newY = +y - ((difCenterAfterY - difCenterBeforeY) +
+        (+height * diff - +height) / 2);
+      let newWidth =  +width * diff;
+      let newHeight = +height * diff;     
+      prinSizemask.setAttribute('width', newWidth);
+      prinSizemask.setAttribute('height', newHeight);        
+      prinSizemask.setAttribute('x', (newX + x)/2); 
+      prinSizemask.setAttribute('y', (newY + y)/2);
  }

@@ -137,8 +137,7 @@ export default {
     },
     onAddToCart() {
       const items = [];
-      console.log(this.size);
-      console.log(this.sizesList);
+
       let centerItems = null;
 
       if (this.allItemsParams) {
@@ -147,12 +146,12 @@ export default {
           x: (this.allItemsParams.xEl + this.allItemsParams.x2El) / 2
         };
       }
-      this.sizesList.forEach(size => {
+      this.sizesList.forEach((size, i) => {
         if (size.quantity) {
           let item = {};
           let print_sizes = [];
           let svg = [];
-          this.base.sides.forEach(side => {
+          this.base.sides.forEach((side, index) => {
             if (side.items && side.items.length) {
               if (this.base.printSizes && this.base.printSizes.length) {
                 print_sizes.push({
@@ -169,6 +168,7 @@ export default {
               if (svgItem.svg) {
                 svgItem = { ...svgItem };
                 svgItem.svg = setSvgBySize({
+                  id: i.toString() + index.toString(),
                   current: this.size,
                   target: size,
                   svgStr: svgItem.svg,
