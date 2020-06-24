@@ -14,7 +14,8 @@ import {
     CONSTRUCTOR_SET_EDIT_CART_PRODUCT,
     CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT,
     CONSTRUCTOR_SET_FEATURES,
-    CONSTRUCTOR_RESET_FEATURES
+    CONSTRUCTOR_RESET_FEATURES,
+    CONSTRUCTOR_CHECK_PRINTSIZES_SIDES
  } from '../mutations.type';
 
 import renderSvg from '../../utils/renderSvg';
@@ -138,6 +139,7 @@ const actions = {
        
     }
     context.commit(CONSTRUCTOR_SET_LOADING, false);
+    context.commit(CONSTRUCTOR_CHECK_PRINTSIZES_SIDES, side ? side.id : base.sides[0].id)
    },
    [BLANKLOAD_PROFILE_GET]: async (context, id) => {
     context.commit(CONSTRUCTOR_SET_LOADING, true);
