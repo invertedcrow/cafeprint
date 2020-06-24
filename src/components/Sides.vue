@@ -1,6 +1,7 @@
 <template>
   <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
+      {{side.isVertical ? 'vertical' : 'horizontal'}}
       <div
         class="sides__item d-flex flex-column"
         :class="{active: side.id == active(), invalid: side.invalid && maxPrintSize }"
@@ -42,13 +43,13 @@
                 :mask="'url(#mainMask' + side.id + ')'"
               >
                 <g :transform="item.matrix ? item.matrix : ''">
-                  <defs v-if="printSizeMask(side)">
+                  <defs v-if="side.mask">
                     <mask :id="'printSizeMask'+side.id" maskUnits="userSpaceOnUse">
                       <rect
-                        :width="printSizeMask(side).width"
-                        :height="printSizeMask(side).height"
-                        :x="printSizeMask(side).x"
-                        :y="printSizeMask(side).y"
+                        :width="side.mask.width"
+                        :height="side.mask.height"
+                        :x="side.mask.x"
+                        :y="side.mask.y"
                         class="printSizeMask"
                         rx="0"
                         ry="0"
@@ -163,8 +164,12 @@ export default {
       return this.side.id;
     },
     printSizeMask(side) {
-      this.getRealSideAreaSize(side);
-      console.log(side);
+      console.log("GET MASK");
+      if (side && side.real_height) {
+        this.getRealSideAreaSize(side);
+        this.isVertical(side);
+      }
+
       let mask = null;
       let items = side.items;
       let printSize = side.printSize;
@@ -176,9 +181,8 @@ export default {
         x: Math.min(...arrX),
         y: Math.min(...arrY)
       };
-      this.isVertical(side);
 
-      if (printSize) {
+      if (printSize && side.area) {
         let width =
           (+printSize.real_width / side.real_width) * +side.area.width;
         let height =
@@ -187,9 +191,9 @@ export default {
         mask.width = side.isVertical ? width : height;
         mask.height = side.isVertical ? height : width;
       }
-      console.log("MASK");
+      console.log("MASK ready");
       console.log(mask);
-      return mask;
+      side.mask = mask;
     },
     getRealSideAreaSize(side) {
       let realSideWidth = +side.real_width;
@@ -210,7 +214,7 @@ export default {
     },
     isVertical(side) {
       side.isVertical = true;
-
+      console.log("is vertical");
       let arrX = side.items.map(item => item.visibleX);
       let arrY = side.items.map(item => item.visibleY);
       let arrW = side.items.map(item => item.visibleWidth);
@@ -226,11 +230,12 @@ export default {
         x2: Math.max(...arrX2),
         y2: Math.max(...arrY2)
       };
-      if (this.size) {
+      console.log("this.side", side);
+      if (side && side.printSize && side.area) {
         if (side.area.x > allItemsParams.x) {
           allItemsParams.x = side.area.x;
         }
-        if (side.area.right < this.allItemsParams.x2) {
+        if (side.area.right < allItemsParams.x2) {
           allItemsParams.x2 = side.area.right;
         }
 
@@ -248,31 +253,35 @@ export default {
           (allItemsParams.width / side.area.width) * side.real_width;
         allItemsParams.realItemsHeight =
           (allItemsParams.height / side.area.height) * side.real_height;
+
+        let verticalSize = null;
+        let horizontalSize = null;
+        if (
+          allItemsParams.realItemsHeight <= side.printSize.real_height &&
+          allItemsParams.realItemsWidth <= side.printSize.real_width
+        ) {
+          verticalSize = side.printSize;
+        }
+        if (
+          allItemsParams.realItemsHeight <= side.printSize.real_width &&
+          allItemsParams.realItemsWidth <= side.printSize.real_height
+        ) {
+          horizontalSize = side.printSize;
+        }
+
+        if (verticalSize && horizontalSize) {
+          side.isVertical =
+            +verticalSize.real_width < +horizontalSize.real_width
+              ? true
+              : false;
+        } else if (verticalSize) {
+          side.isVertical = true;
+        } else if (horizontalSize) {
+          side.isVertical = false;
+        }
       }
 
-      let verticalSize = null;
-      let horizontalSize = null;
-      if (
-        this.allItemsParams.realItemsHeight <= size.real_height &&
-        this.allItemsParams.realItemsWidth <= size.real_width
-      ) {
-        verticalSize = size;
-      }
-      if (
-        this.allItemsParams.realItemsHeight <= size.real_width &&
-        this.allItemsParams.realItemsWidth <= size.real_height
-      ) {
-        horizontalSize = size;
-      }
-
-      if (verticalSize && horizontalSize) {
-        side.isVertical =
-          +verticalSize.real_width < +horizontalSize.real_width ? true : false;
-      } else if (verticalSize) {
-        side.isVertical = true;
-      } else if (horizontalSize) {
-        side.isVertical = false;
-      }
+      console.log(side);
     }
   },
   computed: {
@@ -288,8 +297,10 @@ export default {
   watch: {
     renderSides: function(val) {
       this.sides = [...val];
-      if (val && val.length) {
-        val.forEach(item => {
+      //  console.log("render sides");
+      if (this.sides && this.sides.length) {
+        this.sides.forEach(item => {
+          //this.printSizeMask(item);
           let element = new DOMParser().parseFromString(
             item.svg_area,
             "text/xml"
