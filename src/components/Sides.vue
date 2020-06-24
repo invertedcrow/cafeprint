@@ -1,7 +1,7 @@
 <template>
   <div id="sidesContainer" class="sides d-flex justify-content-center">
     <div v-for="(side) in sides" :key="side.id" @click="setActiveSide(side)">
-      {{side.isVertical ? 'vertical' : 'horizontal'}}
+      <!-- {{side.isVertical ? 'vertical' : 'horizontal'}} -->
       <div
         class="sides__item d-flex flex-column"
         :class="{active: side.id == active(), invalid: side.invalid && maxPrintSize }"
