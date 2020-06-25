@@ -44,7 +44,7 @@
       <div class="hint">
         <span class="hint__content">Загрузить</span>
       </div>
-      <div class="app-menu__item-title">Импорт</div>
+      <div class="app-menu__item-title">Свое</div>
     </div>
   </div>
 </template>

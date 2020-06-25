@@ -464,7 +464,7 @@
                 xml:space="preserve"
               >
                 <polygon
-                  transform="rotate(-45 236.387 236.387)"
+                  transform="rotate(45 236.387 236.387)"
                   points="377.06,140.665 356.462,161.198 417.11,221.845 55.664,221.845 116.279,161.222     95.706,140.657 0,236.387 95.698,332.101 116.287,311.576 55.664,250.929 417.102,250.929 356.471,311.544 377.044,332.117     472.774,236.387   "
                 />
               </svg>
@@ -1085,7 +1085,12 @@ export default {
     },
     resizeAllLayers(diff) {
       let arr = [...this.items];
-      if (!diff) {
+      if (
+        !diff ||
+        !this.base.printSizes ||
+        !this.base.printSizes.length ||
+        this.base.printSizes.length == 1
+      ) {
         diff = 1;
         return;
       }
@@ -1762,10 +1767,13 @@ export default {
         // } else if (item.width < item.drag.w + distance && this.isReachMax()) {
         //   return
         // }
+
+        let speedCoef = this.windowWidth < 500 ? 1.1 : 1;
         const diff_before_w = (item.width - 500) / 2;
         const diff_before_h = (item.height - 500) / 2;
         const ratio = item.drag.h / item.drag.w;
-        item.width = Math.max(item.drag.w + event.x - item.drag.mx, 20);
+        item.width =
+          Math.max(item.drag.w + event.x - item.drag.mx, 20) * speedCoef;
         item.height = item.width * ratio;
         const diff_current_w = (item.width - 500) / 2;
         const diff_current_h = (item.height - 500) / 2;
