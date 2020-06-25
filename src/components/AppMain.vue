@@ -1102,7 +1102,6 @@ export default {
         .querySelector(".constructor #editor #editable-area")
         .getBoundingClientRect();
       let sideCoef = +this.sideArea.width / edBounds.width;
-      console.log("APP MAIN diff, coef", diff, sideCoef);
       arr.forEach(item => {
         // const diff_before = (item.width - 500) / 2;
 

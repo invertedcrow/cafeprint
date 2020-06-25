@@ -164,7 +164,14 @@ export default {
       return this.side.id;
     },
     printSizeMask(side) {
-      if (!side.items || !side.items.length) {
+      if (
+        !side.items ||
+        !side.items.length ||
+        !this.base.printSizes ||
+        !this.base.printSizes.length ||
+        this.base.printSizes.length == 1 ||
+        !side.printSize
+      ) {
         this.sideMask[side.id] = null;
         return;
       }
@@ -279,10 +286,7 @@ export default {
         // ) {
         //   horizontalSize = side.printSize;
         // }
-        console.log(
-          allItemsParams.realItemsHeight,
-          allItemsParams.realItemsWidth
-        );
+
         if (allItemsParams.realItemsHeight < allItemsParams.realItemsWidth) {
           horizontalSize = side.printSize;
         } else {
@@ -294,13 +298,10 @@ export default {
             +verticalSize.real_width < +horizontalSize.real_width
               ? true
               : false;
-          console.log("11 set isVertical", this.sideMask[side.id].isVertical);
         } else if (verticalSize) {
           this.sideMask[side.id].isVertical = true;
-          console.log("22 set isVertical", this.sideMask[side.id].isVertical);
         } else if (horizontalSize) {
           this.sideMask[side.id].isVertical = false;
-          console.log("33 set isVertical", this.sideMask[side.id].isVertical);
         }
         this.sideMask[side.id].x = allItemsParams.x;
         this.sideMask[side.id].y = allItemsParams.y;
