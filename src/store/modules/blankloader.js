@@ -79,7 +79,7 @@ const actions = {
     }  
 
     context.commit(CONSTRUCTOR_SET_LOADING, false);
-    
+    context.commit(CONSTRUCTOR_CHECK_PRINTSIZES_SIDES, base.sides[0].id)
    },
    [BLANKLOAD_CART_GET]: async (context, id) => {
     context.commit(CONSTRUCTOR_SET_LOADING, true);
@@ -171,6 +171,7 @@ const actions = {
     })  
 
     context.commit(CONSTRUCTOR_SET_LOADING, false);
+    context.commit(CONSTRUCTOR_CHECK_PRINTSIZES_SIDES, side ? side.id : base.sides[0].id)
    },
    [BLANKLOAD_ORDER_GET]: async (context, id) => {
     context.commit(CONSTRUCTOR_SET_LOADING, true);
@@ -226,6 +227,7 @@ const actions = {
        
     }
     context.commit(CONSTRUCTOR_SET_LOADING, false);
+    context.commit(CONSTRUCTOR_CHECK_PRINTSIZES_SIDES, side ? side.id : base.sides[0].id)
    },
 }
 

@@ -115,6 +115,25 @@ const getters = {
       }
     return sides
   },
+  renderSidesReversedItems:(state) => {
+    const sides = state.base.sides.map(x => {
+        return {...x}
+    });
+    let items = state.items.map(x => x);   
+    if (sides && sides.length) {
+        for (let i = 0; i < sides.length; i++) {            
+            sides[i].items = items.filter(
+            layer => layer.side == sides[i].id
+         )
+          sides[i].items = [...sides[i].items].slice().reverse();
+          const sideImg = state.base.images.find(item => item.sidemainblank_id == sides[i].id && item.colormainblank_id == state.baseColor.id);
+            if(sideImg) {
+                sides[i].image = API_URL + '/' + sideImg.url;
+            } 
+        }
+      }
+    return sides
+  },
   sidesList: (state) => state.base.sides,
   maxPrintSize: (state) => state.maxPrintSize,
   isLoading: (state) => state.isLoading,
