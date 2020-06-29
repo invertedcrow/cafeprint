@@ -38,7 +38,7 @@
     </div>
     <perfect-scrollbar ref="scrollContainer" :options="{suppressScrollX: true}">
       <div class="sidebar-layers__layers">
-        <div :key="index" v-for="(side, index) in renderSides">
+        <div :key="index" v-for="(side, index) in renderSidesReversedItems">
           <div class="sidebar-layers__side-head">
             <div class="sidebar-layers__side-head__title">{{side.name}}</div>
             <!-- <div class="sidebar-layers__side-head__tools">
@@ -240,11 +240,11 @@ export default {
       this.draggList.forEach((item, index) => {
         let list = [...item.items];
         list.map(lay => {
-          lay.side = this.renderSides[index].id;
+          lay.side = this.renderSidesReversedItems[index].id;
           lay.selected = false;
-          side = this.renderSides[index];
+          side = this.renderSidesReversedItems[index];
         });
-        items.push(...list);
+        items.push(...list.reverse());
       });
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_SIDE, side);
@@ -280,13 +280,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["renderSides", "sidesList"]),
+    ...mapGetters(["renderSidesReversedItems", "sidesList"]),
     draggList: {
       get() {
-        let sidesList = this.renderSides.slice();
-        sidesList.forEach(item => {
-          if (item.items) item.items.reverse();
-        });
+        let sidesList = this.renderSidesReversedItems.slice();
+        // sidesList.forEach(item => {
+        //   if (item.items) item.items.slice().reverse();
+        // });
         return sidesList;
       }
     }

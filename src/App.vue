@@ -59,7 +59,7 @@ export default {
   mounted() {
     let init = true;
     const url = new URL(window.location);
-
+    window.history.pushState(null, null, window.location.href);
     const id = url.searchParams.get("product");
     const uid = url.searchParams.get("cart-item");
     const save_uid = url.searchParams.get("save_uid");

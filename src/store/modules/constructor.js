@@ -4,7 +4,7 @@ import {
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
     CONSTRUCTOR_SET_PRINT_SIZE, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
-    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES, CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT, CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE
+    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES, CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT, CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE, CONSTRUCTOR_SET_ALL_ITEMS_PARAMS, CONSTRUCTOR_CHECK_PRINTSIZES_SIDES
 } from '../mutations.type';
 
 import {
@@ -60,7 +60,8 @@ const initialState = () => ({
     editProfileProduct: null,
     editCartProduct: null,
     editOrderProduct: null,
-    features: []
+    features: [],
+    allItemsParams: null
 });
 
 export const state = initialState;
@@ -114,6 +115,25 @@ const getters = {
       }
     return sides
   },
+  renderSidesReversedItems:(state) => {
+    const sides = state.base.sides.map(x => {
+        return {...x}
+    });
+    let items = state.items.map(x => x);   
+    if (sides && sides.length) {
+        for (let i = 0; i < sides.length; i++) {            
+            sides[i].items = items.filter(
+            layer => layer.side == sides[i].id
+         )
+          sides[i].items = [...sides[i].items].slice().reverse();
+          const sideImg = state.base.images.find(item => item.sidemainblank_id == sides[i].id && item.colormainblank_id == state.baseColor.id);
+            if(sideImg) {
+                sides[i].image = API_URL + '/' + sideImg.url;
+            } 
+        }
+      }
+    return sides
+  },
   sidesList: (state) => state.base.sides,
   maxPrintSize: (state) => state.maxPrintSize,
   isLoading: (state) => state.isLoading,
@@ -134,7 +154,8 @@ const getters = {
   editOrderProduct: (state) => state.editOrderProduct,
   baseFeatures: (state) => state.base.features,
   features: (state) => state.features,
-  selectedLayersSide: (state) => state.selectedLayersSide
+  selectedLayersSide: (state) => state.selectedLayersSide,
+  allItemsParams: (state) => state.allItemsParams
 };
 
 const actions = {
@@ -290,6 +311,22 @@ const mutations = {
     [CONSTRUCTOR_SET_EDIT_CART_PRODUCT]: (state, product) => state.editCartProduct = product,
     [CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT]: (state, product) => state.editOrderProduct = product,
     [CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE]: (state, id) => state.selectedLayersSide = id,
+    [CONSTRUCTOR_SET_ALL_ITEMS_PARAMS]: (state, params) => state.allItemsParams = params,
+    [CONSTRUCTOR_CHECK_PRINTSIZES_SIDES]: (state, id) => {
+        state.isLoading = true;
+
+        let sides = state.base.sides;
+        let previewSide = sides.find(item => item.id == id)
+        sides.forEach(side => {
+            if(side.id != id) {
+                state.side = side
+            }            
+        })
+        setTimeout(() => {
+             state.side = previewSide;
+             state.isLoading = false;
+        }, 100); 
+    }
 };
 
 export default {

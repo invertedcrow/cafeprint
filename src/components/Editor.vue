@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-lg-2 col-12">
+      <div class="constructor__menu col-lg-2 col-12">
         <app-menu />
       </div>
 
@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <div class="col-lg-4 col-md-5">
+      <div class="constructor__sidebar col-lg-4 col-md-5">
         <app-sidebar />
       </div>
     </div>
@@ -50,6 +50,13 @@ export default {
 .controls-wrapper {
   @media screen and (max-width: 1200px) {
     display: none;
+  }
+}
+
+.constructor {
+  &__menu,
+  &__sidebar {
+    z-index: 3;
   }
 }
 </style>
