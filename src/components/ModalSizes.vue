@@ -34,8 +34,8 @@
           <div
             class="table__body-item"
             :style="{ pointerEvents: readonly ? 'none' : 'auto' }"
-            :class="{active: size && item.id == size.id && !readonly }"
-            v-for="item in base.sizes"
+            :class="{active: size && item.id == size.id && !readonly, isDisabled: item.isDisabled }"
+            v-for="item in avaliableSizes"
             :key="item.id"
             @click="setSelectedSize(item)"
           >
@@ -72,7 +72,7 @@ export default {
       eventBus.$emit("hideModal", MODALS.SIZES);
     },
     setSelectedSize(size) {
-      if (this.readonly) {
+      if (this.readonly || size.isDisabled) {
         return;
       }
       this.$store.commit(CONSTRUCTOR_SET_SIZE, size);
@@ -80,7 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["size", "base"]),
+    ...mapGetters(["size", "base", "avaliableSizes"]),
     imgUrl() {
       let link =
         API_URL +
@@ -124,6 +124,9 @@ export default {
           padding-right: 16px;
           border-radius: 23px;
           border: 1px solid transparent;
+          &.isDisabled {
+            opacity: 0.5;
+          }
           .wrapper-item {
             padding: 15px 10px;
             cursor: pointer;
@@ -144,7 +147,7 @@ export default {
               border-bottom: 1px solid transparent;
             }
           }
-          &:hover {
+          &:hover:not(.isDisabled) {
             border: 1px solid #81b241;
             .wrapper-item {
               border-bottom: 1px solid transparent;

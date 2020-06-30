@@ -78,16 +78,16 @@ export default {
       this.$store.dispatch(BLANKLOAD_ORDER_GET, order_id);
       init = false;
     }
-    this.$store.dispatch(GET_BASES_CATEGORIES);
+    // this.$store.dispatch(GET_BASES_CATEGORIES);
     this.$store.dispatch(GET_BASES_LIST, { limit: 10, init });
 
-    this.$store.dispatch(GET_DESIGN_CATEGORIES);
-    this.$store.dispatch(GET_DESIGN, {
-      limit: 16,
-      search: ""
-      // category_ids: []
-    });
-    this.$store.dispatch(GET_FONTS);
+    // this.$store.dispatch(GET_DESIGN_CATEGORIES);
+    // this.$store.dispatch(GET_DESIGN, {
+    //   limit: 16,
+    //   search: ""
+    //   // category_ids: []
+    // });
+    // this.$store.dispatch(GET_FONTS);
     this.$store.dispatch(USER_GET_ROLE);
     setInterval(() => {
       this.$store.dispatch(USER_GET_ROLE);

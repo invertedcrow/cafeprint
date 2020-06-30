@@ -12,7 +12,24 @@ const initialState = () => ({
 const state =  initialState();
 
 const getters = {
-    sizesList: (state) => state.sizesList,
+    sizesList: (state) => {
+        let sizes = state.sizesList.slice();
+
+        // console.log('sizes here')
+        // console.log(sizes)
+            
+        // let ignoredSizes = state.base.ignoreSizes.slice()
+        // let currentColor = state.baseColor.id;    
+        // sizes.forEach(size => {
+        //     let ignoredColors = ignoredSizes.filter(ign => ign.colormainblank_id == currentColor);
+        //     if(ignoredColors.length) {
+        //       size.isDisabled = ignoredColors.find(ign => ign.size_id == size.id) ? true : false
+        //     }
+        // })
+
+
+        return sizes
+    },
     quantity: (state) =>  {
         let totalQuantity = 0;
         state.sizesList.forEach(item => totalQuantity += +item.quantity)

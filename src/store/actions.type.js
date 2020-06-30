@@ -24,3 +24,5 @@ export const BLANKLOAD_GET         = "getBlank";
 export const BLANKLOAD_CART_GET    = "getBlankFromCarts";
 export const BLANKLOAD_PROFILE_GET = "getBlankFromProfile";
 export const BLANKLOAD_ORDER_GET   = "getBlankFromOrder";
+
+export const CONSTRUCTOR_LOAD_RESOURCES = "CONSTRUCTOR_LOAD_RESOURCES"
