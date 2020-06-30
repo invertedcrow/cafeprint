@@ -167,16 +167,19 @@ export default {
               );
               if (svgItem.svg) {
                 svgItem = { ...svgItem };
-                svgItem.svg = setSvgBySize({
-                  id: i.toString() + index.toString(),
-                  current: this.size,
-                  target: size,
-                  svgStr: svgItem.svg,
-                  centerItems,
-                  items: this.items,
-                  sideArea: this.allItemsParams.sideArea,
-                  edBounds: this.allItemsParams.edBounds
-                });
+                if (this.sizesList && this.sizesList.length > 1) {
+                  svgItem.svg = setSvgBySize({
+                    id: i.toString() + index.toString(),
+                    current: this.size,
+                    target: size,
+                    svgStr: svgItem.svg,
+                    centerItems,
+                    items: this.items,
+                    sideArea: this.allItemsParams.sideArea,
+                    edBounds: this.allItemsParams.edBounds
+                  });
+                }
+
                 svgItem.svg = clearSvg(svgItem.svg);
 
                 svg.push(svgItem);

@@ -9,7 +9,8 @@ import {
 
 import {
     GET_BASE,
-    GET_FONTS
+    GET_FONTS,
+    CONSTRUCTOR_LOAD_RESOURCES
 } from '../actions.type';
 
 import { API_URL, Sidebar } from '../../consts';
@@ -88,6 +89,19 @@ const getters = {
       return state.size;
   },
   baseSizes: (state) => state.base.sizes,
+  avaliableSizes: (state) => {
+      let sizes = state.base.sizes.slice();
+
+      let ignoredSizes = state.base.ignoreSizes.slice()
+      let currentColor = state.baseColor.id;    
+      sizes.forEach(size => {
+          let ignoredColors = ignoredSizes.filter(ign => ign.colormainblank_id == currentColor);
+          if(ignoredColors.length) {
+            size.isDisabled = ignoredColors.find(ign => ign.size_id == size.id) ? true : false
+          }
+      })
+      return sizes
+  },
   printSize: (state) => state.printSize,
   side: (state) => {
     let side = {...state.side };
@@ -209,6 +223,7 @@ const actions = {
         cleanUri();
         state.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, null)
         state.commit(CONSTRUCTOR_SET_LOADING, false)
+        state.dispatch(CONSTRUCTOR_LOAD_RESOURCES)
        // console.log(state.state)
     },
     [GET_FONTS]: async (state) => {
