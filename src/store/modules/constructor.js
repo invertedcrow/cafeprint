@@ -90,10 +90,11 @@ const getters = {
   },
   baseSizes: (state) => state.base.sizes,
   avaliableSizes: (state) => {
-      let sizes = state.base.sizes.slice();
-
+      let sizes = state.base.sizes.map(x => {
+          return {...x}
+      });
       let ignoredSizes = state.base.ignoreSizes.slice()
-      let currentColor = state.baseColor.id;    
+      let currentColor = state.baseColor.id;  
       sizes.forEach(size => {
           let ignoredColors = ignoredSizes.filter(ign => ign.colormainblank_id == currentColor);
           if(ignoredColors.length) {
@@ -240,7 +241,13 @@ const mutations = {
     [CONSTRUCTOR_SET_SELECTED_ITEM]: (state, value) => state.selectedElement = value,
     [CONSTRUCTOR_SET_SELECTED_SIDE]: (state, value) => state.side = value,
     [CONSTRUCTOR_SET_SIZE]: (state, value) => state.size = value,
-    [CONSTRUCTOR_SET_COLOR]: (state, value) => state.baseColor = value,
+    [CONSTRUCTOR_SET_COLOR]: (state, value) => {
+        state.baseColor = value;
+        let ignoredSizes = state.base.ignoreSizes.slice();
+        if(ignoredSizes.find(item => item.size_id == state.size.id && item.colormainblank_id == value.id)) {           
+            state.size = state.base.sizes[0]
+        }
+    },
     [CONSTRUCTOR_DELETE_ITEM] (state, value) {
         const index = state.items.indexOf(value);
         if (index >= 0) {
