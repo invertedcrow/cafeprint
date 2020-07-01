@@ -1,7 +1,7 @@
 <template>
   <div class="constructor-sidebar__btns">
     <button
-      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editProfileProduct && !editOrderProduct"
+      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editOrderProduct"
       @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
