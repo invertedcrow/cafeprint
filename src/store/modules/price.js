@@ -12,23 +12,19 @@ const initialState = () => ({
 const state =  initialState();
 
 const getters = {
-    sizesList: (state) => {
+    sizesList: (state, rootState) => {
         let sizes = state.sizesList.slice();
 
-        // console.log('sizes here')
-        // console.log(sizes)
-            
-        // let ignoredSizes = state.base.ignoreSizes.slice()
-        // let currentColor = state.baseColor.id;    
-        // sizes.forEach(size => {
-        //     let ignoredColors = ignoredSizes.filter(ign => ign.colormainblank_id == currentColor);
-        //     if(ignoredColors.length) {
-        //       size.isDisabled = ignoredColors.find(ign => ign.size_id == size.id) ? true : false
-        //     }
-        // })
-
-
-        return sizes
+        let ignoredSizes = rootState.base.ignoreSizes.slice()
+        let currentColor = rootState.color.id;  
+        sizes.forEach((size, i) => {
+            let ignoredColors = ignoredSizes.filter(ign => ign.colormainblank_id == currentColor);
+            if(ignoredColors.length) {
+              size.isDisabled = ignoredColors.find(ign => ign.size_id == size.id) ? true : false
+            }
+        })
+           
+        return sizes.filter(item => !item.isDisabled)
     },
     quantity: (state) =>  {
         let totalQuantity = 0;

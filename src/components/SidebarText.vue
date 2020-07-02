@@ -402,6 +402,7 @@ export default {
     setTextAlignment(alignment) {
       if (this.selectedElement) {
         this.selectedElement.textAnchor = alignment;
+        eventBus.$emit(UPDATE_ELEMENT_SIZE, this.selectedElement);
       }
     },
     onFontSizeChanged(fontSize) {
@@ -422,6 +423,7 @@ export default {
       }
       if (this.selectedElement) {
         this.selectedElement.color = color;
+        eventBus.$emit(UPDATE_ELEMENT_SIZE, this.selectedElement);
       }
     },
     sidebarClose() {

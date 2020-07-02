@@ -1,7 +1,7 @@
 <template>
   <div class="constructor-sidebar__btns">
     <button
-      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editProfileProduct && !editOrderProduct"
+      v-if="activeSidebar !== Sidebar.PRICE && activeSidebar !== Sidebar.ARTICLE && this.sidesElems.length && items.length && !editOrderProduct"
       @click.prevent="onGetPriceClicked"
       class="get-price"
     >Узнать стоимость</button>
@@ -338,12 +338,17 @@ export default {
         //   .replace(/mask="url\(#mainMask\)"/g, "")
         //   //.replace(/\<image.*?<\/image>/, "");
         //   .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "");
-        if (side.items.length && side.printSize) {
+        if (
+          (side.items.length && side.printSize) ||
+          (side.items.length &&
+            this.base.printSizeMainblanks &&
+            !this.base.printSizeMainblanks.length)
+        ) {
           sides.push({
             svg: svg,
-            print_size_id: side.printSize.id,
+            print_size_id: side.printSize ? side.printSize.id : "",
             sideId: side.id,
-            sizePrint: side.printSize.id,
+            sizePrint: side.printSize ? side.printSize.id : "",
             size: this.size.id
           });
         }
