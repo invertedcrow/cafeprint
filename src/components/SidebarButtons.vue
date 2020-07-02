@@ -266,8 +266,9 @@ export default {
         let svgSide = this.sidesElems.find(
           itemSide => itemSide.sideId == side.id
         );
+        let type = this.editProduct ? "product" : null;
 
-        let svg = clearSvg(svgSide.svg);
+        let svg = clearSvg(svgSide.svg, type);
         // svgSide.svg
         //   .replace(/<mask.*mask>/, "")
         //   .replace(/mask="url\(#mainMask\)"/g, "")
@@ -331,7 +332,7 @@ export default {
           itemSide => itemSide.sideId == side.id
         );
 
-        let svg = clearSvg(svgSide.svg);
+        let svg = clearSvg(svgSide.svg, "product");
 
         // svgSide.svg
         //   .replace(/<mask.*mask>/, "")

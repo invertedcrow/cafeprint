@@ -25,7 +25,7 @@
             :height="image.height"
           />
           <g id="containerGroupMain">
-            <defs v-if="sideMask[side.id]">
+            <defs v-if="sideMask[side.id]" class="printSize-def">
               <mask :id="'printSizeMask'+side.id" maskUnits="userSpaceOnUse">
                 <rect
                   :width="sideMask[side.id].width"

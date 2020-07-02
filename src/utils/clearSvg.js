@@ -1,4 +1,4 @@
-export default function clearSvg(str) { 
+export default function clearSvg(str, type) { 
     let elementDom = new DOMParser().parseFromString(
       str,
       "text/html"
@@ -30,6 +30,20 @@ export default function clearSvg(str) {
             }           
         })
     }   
+
+    if(type && type == 'product') {
+        if(elementsMask) {
+            elementsMask.forEach(node => {
+                if(node.getAttribute('mask') && node.getAttribute('mask').includes('printSizeMask')) {
+                     node.removeAttribute('mask')
+                }           
+            })
+        }
+        let defPrintSize = svg.querySelector('.printSize-def');
+        if(defPrintSize) {
+            defPrintSize.remove();
+        }
+    }
     
     return svg.parentElement.innerHTML;
 } 
