@@ -79,7 +79,7 @@ export default {
       init = false;
     }
     // this.$store.dispatch(GET_BASES_CATEGORIES);
-    this.$store.dispatch(GET_BASES_LIST, { limit: 10, init });
+    this.$store.dispatch(GET_BASES_LIST, { page: 1, init });
 
     // this.$store.dispatch(GET_DESIGN_CATEGORIES);
     // this.$store.dispatch(GET_DESIGN, {

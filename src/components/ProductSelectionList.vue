@@ -50,8 +50,13 @@ export default {
       if (param == "outside" && this.windowWidth > 768) return;
 
       const params = this.filterParams;
-      if (params.limit == this.bases.length) {
-        params.limit = +params.limit + 10;
+
+      if (
+        !this.isProductsListLoading &&
+        this.bases.length &&
+        !(this.bases.length % params.limit)
+      ) {
+        params.page++;
 
         this.$store.dispatch(GET_BASES_LIST, params);
       }

@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     onLoadAllProducts() {
-      this.$store.dispatch(GET_BASES_LIST, { limit: 10 });
+      this.$store.dispatch(GET_BASES_LIST, { page: 1 });
     }
   }
 };

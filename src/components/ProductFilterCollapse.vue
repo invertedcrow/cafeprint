@@ -43,7 +43,7 @@ export default {
       this.$store.dispatch(GET_BASES_LIST, {
         category_ids: id,
         sex: this.category.sex,
-        limit: 10
+        page: 1
       });
     }
   },
