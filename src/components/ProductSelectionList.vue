@@ -65,7 +65,7 @@ export default {
       // this.$store.commit("setPreviewSize", filter.size);
       // this.$store.commit("showFilterPreview", true);
       // TODO: add product to constructor
-      this.$store.dispatch(GET_BASE, id);
+      this.$store.dispatch(GET_BASE, { id });
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
     },
     getUrl(imgURL) {

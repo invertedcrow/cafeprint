@@ -62,7 +62,7 @@ const actions = {
     state.commit(FILTER_SET_LOADING_LIST, true);
     const bases = await Vue.axios.get('/constructor-new/bases', {params});
     if(params.init) {
-        state.dispatch(GET_BASE, bases.data[0].id)
+        state.dispatch(GET_BASE, { id: bases.data[0].id, isInit: true})
         delete params.init
     }
     state.commit(FILTER_SET_PARAMS, params);  
