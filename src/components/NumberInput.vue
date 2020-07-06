@@ -70,6 +70,11 @@ export default {
   },
   created() {
     this.innerValue = this.value;
+  },
+  watch: {
+    value: function(val) {
+      this.innerValue = val;
+    }
   }
 };
 </script>
