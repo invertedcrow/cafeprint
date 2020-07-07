@@ -7,7 +7,7 @@
       v-if="!isValid"
       class="main__alert-message"
     >Размер принта превышает допустимый размер печати.</div>
-    <div class="constructor">
+    <div class="constructor" :class="{'area-hidden': !isShowEditBorder}">
       <svg
         id="editor"
         :viewBox="'0 0 500 500'"
@@ -764,7 +764,8 @@ export default {
       "color",
       "isValid",
       "selectedLayersSide",
-      "baseSizes"
+      "baseSizes",
+      "isShowEditBorder"
     ]),
     sideItems() {
       return this.filterBySide(this.items);

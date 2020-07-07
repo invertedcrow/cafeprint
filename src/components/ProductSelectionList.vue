@@ -105,6 +105,9 @@ export default {
   width: 100%;
   //height: 100%;
   //overflow-y: scroll;
+  @media screen and (max-width: 992px) {
+    padding-bottom: 60px;
+  }
   &__item {
     padding: 15px 0;
     background-color: #fff;

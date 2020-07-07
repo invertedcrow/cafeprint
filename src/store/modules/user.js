@@ -21,10 +21,18 @@ const actions = {
       const roles = response.data.roles;
       
       let role = USER_ROLE.guest;
-      if(roles.length == 2) {
-        role = USER_ROLE.printer;              
+
+      // if(roles.length == 2) {
+      //   role = USER_ROLE.printer;              
+      // }
+      // if (roles.length == 3) {
+      //   role = USER_ROLE.admin;
+      // }
+
+      if(roles.includes('designer')) {
+        role = USER_ROLE.printer
       }
-      if (roles.length == 3) {
+      if (roles.includes('admin')) {
         role = USER_ROLE.admin;
       }
 

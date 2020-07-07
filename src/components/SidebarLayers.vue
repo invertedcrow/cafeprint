@@ -20,6 +20,9 @@
         </svg>
       </div>
       <div class="sidebar-card-header__title">Управление слоями</div>
+      <div class="sidebar-card-header__toggle-border" @click="onToggleEditBorder()">
+        <checkbox :checked="isShowEditBorder" />
+      </div>
       <div @click="close" class="sidebar-card-header__close">
         <svg
           version="1.1"
@@ -184,7 +187,8 @@ import {
   CONSTRUCTOR_SET_ITEMS,
   CONSTRUCTOR_ADD_ITEM,
   CONSTRUCTOR_SET_SELECTED_SIDE,
-  CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE
+  CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE,
+  CONSTRUCTOR_SHOW_EDIT_BORDER
 } from "../store/mutations.type";
 export default {
   components: {
@@ -203,7 +207,8 @@ export default {
       CONSTRUCTOR_SET_ITEMS,
       CONSTRUCTOR_ADD_ITEM,
       CONSTRUCTOR_SET_SELECTED_SIDE,
-      CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE
+      CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE,
+      CONSTRUCTOR_SHOW_EDIT_BORDER
     ]),
     close() {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
@@ -277,10 +282,18 @@ export default {
       sides.forEach(item => items.push(...item.items.reverse()));
       this.$store.commit(CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE, sideId);
       this.$store.commit(CONSTRUCTOR_SET_ITEMS, items);
+    },
+    onToggleEditBorder() {
+      let isShow = this.isShowEditBorder;
+      this.$store.commit(CONSTRUCTOR_SHOW_EDIT_BORDER, !isShow);
     }
   },
   computed: {
-    ...mapGetters(["renderSidesReversedItems", "sidesList"]),
+    ...mapGetters([
+      "renderSidesReversedItems",
+      "sidesList",
+      "isShowEditBorder"
+    ]),
     draggList: {
       get() {
         let sidesList = this.renderSidesReversedItems.slice();
@@ -299,6 +312,15 @@ export default {
 .sidebar-layers {
   .sidebar-card-header {
     margin-bottom: 5px;
+    &__toggle-border {
+      cursor: pointer;
+      padding: 3px;
+      border: 1px dashed #000;
+      display: inline-block;
+      margin-left: 20px;
+      vertical-align: middle;
+      margin: 5px;
+    }
   }
   &__layers {
     height: 500px;
