@@ -182,9 +182,15 @@ export default {
           svg.push(svgItem);
         }
       });
+
+      let savedSize = this.sizesList.find(s => s.quantity);
+      if (!savedSize) {
+        return;
+      }
       let params = {
         color_id: this.color.id,
-        size_id: this.size.id,
+        size_id: savedSize.id, //this.size.id,
+        count: savedSize.quantity,
         is_service: false,
         svg,
         printSizes,

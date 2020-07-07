@@ -31,7 +31,7 @@ export default {
       this.$store.dispatch(GET_DESIGN, {
         category_ids: this.category_ids,
         search: this.text,
-        limit: 16
+        page: 1
       });
     },
     setSearchText() {

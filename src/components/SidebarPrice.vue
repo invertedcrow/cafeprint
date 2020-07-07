@@ -133,6 +133,9 @@ export default {
       this.$store.commit("setActiveSidebar", Sidebar.PRODUCT);
     },
     changeQuantity(size) {
+      if (this.editCartProduct) {
+        size.isCartItem = true;
+      }
       this.$store.commit(PRICE_SET_ITEM, size);
     },
     onAddToCart() {

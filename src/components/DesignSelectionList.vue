@@ -70,8 +70,12 @@ export default {
       if (param == "outside" && this.windowWidth > 768) return;
 
       let filter = { ...this.designFilter };
-      if (filter.limit == this.designList.length) {
-        filter.limit = +filter.limit + 10;
+      if (
+        !this.isDesignListLoading &&
+        this.designList.length &&
+        !(this.designList.length % filter.limit)
+      ) {
+        filter.page++;
         this.$store.dispatch(GET_DESIGN, filter);
       }
     },

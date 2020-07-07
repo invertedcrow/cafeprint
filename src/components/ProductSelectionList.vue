@@ -50,8 +50,13 @@ export default {
       if (param == "outside" && this.windowWidth > 768) return;
 
       const params = this.filterParams;
-      if (params.limit == this.bases.length) {
-        params.limit = +params.limit + 10;
+
+      if (
+        !this.isProductsListLoading &&
+        this.bases.length &&
+        !(this.bases.length % params.limit)
+      ) {
+        params.page++;
 
         this.$store.dispatch(GET_BASES_LIST, params);
       }
@@ -65,7 +70,7 @@ export default {
       // this.$store.commit("setPreviewSize", filter.size);
       // this.$store.commit("showFilterPreview", true);
       // TODO: add product to constructor
-      this.$store.dispatch(GET_BASE, id);
+      this.$store.dispatch(GET_BASE, { id });
       eventBus.$emit("hideModal", MODALS.PRODUCTS);
     },
     getUrl(imgURL) {

@@ -4,6 +4,7 @@ import {
     FILTER_SET_CATEGORIES,
     FILTER_SET_PARAMS,
     FILTER_SET_BASES,
+    FILTER_ADD_BASES,
     FILTER_SET_LOADING_LIST
 } from '../mutations.type';
 
@@ -15,8 +16,8 @@ import {
 
 const getDefaultState = () => ({    
     filterParams: {
-        sex: null,
-        limit: 0
+        page: 1,
+        sex: null
     }, 
     categories: [],
     bases: [],
@@ -60,13 +61,19 @@ const actions = {
 },
    [GET_BASES_LIST]: async (state, params) => {
     state.commit(FILTER_SET_LOADING_LIST, true);
+    params = {...params, limit: 12};
     const bases = await Vue.axios.get('/constructor-new/bases', {params});
     if(params.init) {
-        state.dispatch(GET_BASE, bases.data[0].id)
+        state.dispatch(GET_BASE, { id: bases.data[0].id, isInit: true})
         delete params.init
     }
     state.commit(FILTER_SET_PARAMS, params);  
-    state.commit(FILTER_SET_BASES, bases.data);
+    if(params.page == 1) {
+        state.commit(FILTER_SET_BASES, bases.data);
+    } else {
+        state.commit(FILTER_ADD_BASES, bases.data);
+    }
+   
     state.commit(FILTER_SET_LOADING_LIST, false);
    },
 }
@@ -75,6 +82,7 @@ const mutations = {
     [FILTER_SET_CATEGORIES]: (state, categories) => state.categories = categories,
     [FILTER_SET_PARAMS]: (state, params) => state.filterParams = params,
     [FILTER_SET_BASES]: (state, bases) => state.bases = bases,
+    [FILTER_ADD_BASES]: (state, bases) => state.bases = [...state.bases, ...bases],
     [FILTER_SET_LOADING_LIST]: (state, isLoading) => state.isProductsListLoading = isLoading
 }
 

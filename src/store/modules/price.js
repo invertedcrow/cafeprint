@@ -81,6 +81,12 @@ const mutations = {
     [PRICE_SET_ITEM]: (state, item) => {
         const index = state.sizesList.findIndex(i => i.id == item.id)      
         let arr = [...state.sizesList.slice()];
+        if(item.isCartItem) {
+            arr = arr.map(size => {
+                return {...size, quantity: 0}
+            })
+            delete item.isCartItem
+        }
         arr[index] = item;      
         state.sizesList = arr;
        

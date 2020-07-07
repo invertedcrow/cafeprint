@@ -25,7 +25,7 @@ export default function clearSvg(str, type) {
     let elementsMask = svg.querySelectorAll('[mask]');
     if(elementsMask) {
         elementsMask.forEach(node => {
-            if(node.getAttribute('mask').includes('mainMask')) {
+            if(node.getAttribute('mask').includes('mainMask') || node.getAttribute('mask').includes('printSizeMask')) {
                  node.removeAttribute('mask')
             }           
         })

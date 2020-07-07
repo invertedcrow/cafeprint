@@ -237,7 +237,7 @@ const actions = {
     context.dispatch(GET_BASES_CATEGORIES);
     context.dispatch(GET_DESIGN_CATEGORIES);
     context.dispatch(GET_DESIGN, {
-      limit: 16,
+      page: 1,
       search: ""
       // category_ids: []
     });

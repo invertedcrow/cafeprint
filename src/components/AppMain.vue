@@ -886,6 +886,9 @@ export default {
       if (!this.editableAreaEl) {
         return;
       }
+      this.editableAreaEl = document.querySelector(
+        ".constructor #editor #editable-area"
+      );
       const area = this.editableAreaEl.getBoundingClientRect();
 
       items.forEach((item, i) => {

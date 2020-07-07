@@ -25,24 +25,39 @@
     </div>
     <div class="sizes__content">
       <div class="sizes__content-table">
-        <div class="table__head d-flex justify-content-between">
-          <div>Размер</div>
-          <div>A, см</div>
-          <div>B, см</div>
+        <div class="table__head" :class="{isAdditional: isAdditionalSizes}">
+          <div :style="{width: cellWidth}">Размер</div>
+          <div :style="{width: cellWidth}">A, см</div>
+          <div :style="{width: cellWidth}">B, см</div>
+          <template v-if="isAdditionalSizes">
+            <div
+              v-for="label in additionalSizesNames.slice(0, additionalsLength)"
+              :style="{width: cellWidth}"
+              :key="label"
+            >{{label}}</div>
+          </template>
         </div>
         <div class="table__body d-flex flex-column justify-content-between">
           <div
             class="table__body-item"
             :style="{ pointerEvents: readonly ? 'none' : 'auto' }"
             :class="{active: size && item.id == size.id && !readonly, isDisabled: item.isDisabled }"
-            v-for="item in avaliableSizes"
+            v-for="item in sizes"
             :key="item.id"
             @click="setSelectedSize(item)"
           >
-            <div class="wrapper-item d-flex justify-content-between">
-              <div class="size">{{item.name}}</div>
-              <div class="length">{{item.width}}</div>
-              <div class="length">{{item.height}}</div>
+            <div class="wrapper-item" :class="{isAdditional: isAdditionalSizes}">
+              <div class="size" :style="{width: cellWidth}">{{item.name}}</div>
+              <div class="length" :style="{width: cellWidth}">{{item.width}}</div>
+              <div class="length" :style="{width: cellWidth}">{{item.height}}</div>
+              <template v-if="isAdditionalSizes">
+                <div
+                  class="length"
+                  v-for="adSize in item.additionalArray"
+                  :key="adSize"
+                  :style="{width: cellWidth}"
+                >{{adSize ? adSize : ''}}</div>
+              </template>
             </div>
           </div>
         </div>
@@ -63,6 +78,14 @@ import { CONSTRUCTOR_SET_SIZE } from "../store/mutations.type";
 import { API_URL } from "../consts";
 export default {
   props: ["readonly"],
+  data() {
+    return {
+      additionalsLength: 0,
+      sizes: [],
+      cellWidth: "33%",
+      additionalSizesNames: ["C", "D", "E", "F", "G", "H", "I", "K", "L"]
+    };
+  },
   methods: {
     ...mapMutations([CONSTRUCTOR_SET_SIZE]),
     onHide() {
@@ -77,6 +100,22 @@ export default {
       }
       this.$store.commit(CONSTRUCTOR_SET_SIZE, size);
       eventBus.$emit("hideModal", MODALS.SIZES);
+    },
+    getAdditionalSizes() {
+      this.sizes = this.avaliableSizes.slice();
+      this.additionalsLength = 0;
+      this.sizes.forEach((item, i) => {
+        if (item.additional) {
+          item.additionalArray = item.additional.slice().split(":");
+          if (
+            item.additionalArray &&
+            item.additionalArray.length > this.additionalsLength
+          ) {
+            this.additionalsLength = item.additionalArray.length;
+          }
+        }
+      });
+      this.cellWidth = 100 / (this.additionalsLength + 3) + "%";
     }
   },
   computed: {
@@ -87,7 +126,13 @@ export default {
         (this.base.size_image[0] == "/" ? "" : "/") +
         this.base.size_image;
       return link;
+    },
+    isAdditionalSizes() {
+      return this.avaliableSizes.find(item => item.additional);
     }
+  },
+  mounted() {
+    this.getAdditionalSizes();
   }
 };
 </script>
@@ -111,8 +156,16 @@ export default {
         font-weight: 300;
       }
       .table__head {
+        & > div {
+          text-align: center;
+        }
         border-bottom: 2px solid #ebebeb;
         padding-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        &.isAdditional {
+          justify-content: start;
+        }
       }
       .table__body {
         padding-top: 5px;
@@ -131,12 +184,24 @@ export default {
             padding: 15px 10px;
             cursor: pointer;
             border-bottom: 1px solid #ebebeb;
+            display: flex;
+            justify-content: space-between;
+
             .size {
               width: 20px;
               font-weight: 600;
+              text-align: center;
+              padding: 0 3px;
+              white-space: nowrap;
             }
             .length {
               font-weight: 300;
+              text-align: center;
+              padding: 0 3px;
+              white-space: nowrap;
+            }
+            &.isAdditional {
+              justify-content: start;
             }
           }
           &.active {

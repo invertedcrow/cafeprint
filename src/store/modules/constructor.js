@@ -174,7 +174,7 @@ const getters = {
 };
 
 const actions = {
-    [GET_BASE]: async (state, id) => {
+    [GET_BASE]: async (state, {id, isInit}) => {
         state.commit(CONSTRUCTOR_SET_LOADING, true);
         const base = await Vue.axios.get(`/constructor-new/bases/${id}`)
              
@@ -222,9 +222,12 @@ const actions = {
             state.commit(CONSTRUCTOR_RESET_FEATURES);
         }
         cleanUri();
-        state.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, null)
-        state.commit(CONSTRUCTOR_SET_LOADING, false)
-        state.dispatch(CONSTRUCTOR_LOAD_RESOURCES)
+        state.commit(CONSTRUCTOR_SET_EDIT_PRODUCT, null);
+        state.commit(CONSTRUCTOR_SET_LOADING, false);
+        if(isInit) {
+             state.dispatch(CONSTRUCTOR_LOAD_RESOURCES);
+        }
+       
        // console.log(state.state)
     },
     [GET_FONTS]: async (state) => {

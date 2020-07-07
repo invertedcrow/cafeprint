@@ -69,7 +69,7 @@ export default {
       this.$store.dispatch(GET_DESIGN, {
         category_ids: arr,
         search: this.designFilter.search,
-        limit: 16
+        page: 1
       });
     },
     isActive(id) {
