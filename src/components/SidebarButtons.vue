@@ -36,7 +36,7 @@
       custom-class="sides-popover"
       placement="top"
       target="popover-select-side"
-      triggers="focus"
+      triggers="focus click touchstart"
       title="Выберите сторону которую отображать на превью"
     >
       <div
@@ -51,7 +51,7 @@
       custom-class="sides-popover"
       placement="top"
       target="popover-select-side-admin"
-      triggers="focus"
+      triggers="focus click touchstart"
       title="Выберите сторону которую отображать на превью"
     >
       <div
@@ -66,7 +66,7 @@
       custom-class="sides-popover"
       placement="top"
       target="popover-select-side-admin-save"
-      triggers="focus"
+      triggers="focus click touchstart"
       title="Выберите сторону которую отображать на превью"
     >
       <div
@@ -81,7 +81,7 @@
       custom-class="sides-popover"
       placement="top"
       target="popover-select-side-product"
-      triggers="focus"
+      triggers="focus click touchstart"
       title="Выберите сторону которую отображать на превью"
     >
       <div

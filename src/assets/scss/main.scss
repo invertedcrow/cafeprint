@@ -129,6 +129,13 @@ hr {
       stroke: #fff;
     }
   }
+
+.area-hidden {
+  .area {
+    stroke: transparent;
+  }
+}
+
 .scroll-btn {
   z-index: 5 !important;
 }

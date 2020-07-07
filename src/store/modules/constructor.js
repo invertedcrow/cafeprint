@@ -4,7 +4,7 @@ import {
     CONSTRUCTOR_SET_SELECTED_SIDE, CONSTRUCTOR_SET_COLOR, CONSTRUCTOR_SET_SIZE,
     CONSTRUCTOR_MOVE_LAYER_UP, CONSTRUCTOR_MOVE_LAYER_DOWN, CONSTRUCTOR_DELETE_ITEM, CONSTRUCTOR_SET_BASE, CONSTRUCTOR_SET_FONTS, PRICE_SET_SIZES_LIST,
     CONSTRUCTOR_SET_PRINT_SIZE, SIDEBAR_SET_ACTIVE, CONSTRUCTOR_SET_MAX_PRINT_SIZE, CONSTRUCTOR_SET_LOADING, CONSTRUCTOR_SET_SIDE_INVALID,
-    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES, CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT, CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE, CONSTRUCTOR_SET_ALL_ITEMS_PARAMS, CONSTRUCTOR_CHECK_PRINTSIZES_SIDES
+    CONSTRUCTOR_SET_EDIT_PRODUCT, CONSTRUCTOR_SET_EDIT_PROFILE_PRODUCT, CONSTRUCTOR_SET_EDIT_CART_PRODUCT, CONSTRUCTOR_SET_FEATURES, CONSTRUCTOR_RESET_FEATURES, CONSTRUCTOR_SET_EDIT_ORDER_PRODUCT, CONSTRUCTOR_SET_SELECTED_LAYERS_SIDE, CONSTRUCTOR_SET_ALL_ITEMS_PARAMS, CONSTRUCTOR_CHECK_PRINTSIZES_SIDES, CONSTRUCTOR_SHOW_EDIT_BORDER
 } from '../mutations.type';
 
 import {
@@ -62,7 +62,8 @@ const initialState = () => ({
     editCartProduct: null,
     editOrderProduct: null,
     features: [],
-    allItemsParams: null
+    allItemsParams: null,
+    isShowEditBorder: true
 });
 
 export const state = initialState;
@@ -170,7 +171,8 @@ const getters = {
   baseFeatures: (state) => state.base.features,
   features: (state) => state.features,
   selectedLayersSide: (state) => state.selectedLayersSide,
-  allItemsParams: (state) => state.allItemsParams
+  allItemsParams: (state) => state.allItemsParams,
+  isShowEditBorder: (state) => state.isShowEditBorder
 };
 
 const actions = {
@@ -351,7 +353,8 @@ const mutations = {
              state.side = previewSide;
              state.isLoading = false;
         }, 100); 
-    }
+    },
+    [CONSTRUCTOR_SHOW_EDIT_BORDER]: (state, show) => state.isShowEditBorder = show,
 };
 
 export default {

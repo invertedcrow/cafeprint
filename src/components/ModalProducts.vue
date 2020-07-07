@@ -21,12 +21,12 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd" ref="basesScrollRef">
       <div class="product-selection">
         <div class="product-selection__filter-pane d-flex flex-column">
           <product-filter />
         </div>
-        <div class="product-selection__center-block d-flex">
+        <div class="product-selection__center-block d-flex" ref="basesListRef">
           <product-selection-list :reach="reachEnd" @onLoadList="reachEnd = false" />
         </div>
       </div>
@@ -39,6 +39,7 @@ import ProductFilter from "./ProductFilter";
 import ProductSelectionList from "./ProductSelectionList";
 import { MODALS } from "../consts";
 import { eventBus } from "../main";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -52,6 +53,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["bases", "filterParams"]),
     getActiveCategory() {
       return this.$store.state.filter.category;
     }
@@ -64,6 +66,10 @@ export default {
       if (this.reachEnd) return;
 
       this.reachEnd = true;
+    },
+    scrollToList() {
+      let scrollTop = this.$refs.basesListRef.offsetTop;
+      this.$refs.basesScrollRef.$el.scrollTop = scrollTop;
     }
   },
   mounted() {
@@ -72,6 +78,19 @@ export default {
         this.hideScroll = window.innerWidth > 768 ? true : false;
       });
     });
+  },
+  watch: {
+    bases: function(val) {
+      if (
+        this.filterParams &&
+        this.filterParams.category_ids &&
+        window.innerWidth < 768
+      ) {
+        this.$nextTick(() => {
+          this.scrollToList();
+        });
+      }
+    }
   }
 };
 </script>

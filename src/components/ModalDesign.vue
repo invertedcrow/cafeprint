@@ -20,14 +20,14 @@
         </svg>
       </div>
     </div>
-    <perfect-scrollbar @ps-y-reach-end="onReachEnd">
+    <perfect-scrollbar @ps-y-reach-end="onReachEnd" ref="printsScrollRef">
       <div class="design d-flex justify-content-between">
         <div class="design__search-pane d-flex flex-column">
           <div class="modal-title">Категории товаров</div>
           <design-selection-search />
           <design-selection-categories />
         </div>
-        <div class="design__list d-flex">
+        <div class="design__list d-flex" ref="printsListRef">
           <design-selection-list
             :list="designList"
             :reach="reachEnd"
@@ -58,7 +58,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["designList"])
+    ...mapGetters(["designList", "designFilter"])
   },
   methods: {
     onHide() {
@@ -68,6 +68,23 @@ export default {
       if (this.reachEnd) return;
 
       this.reachEnd = true;
+    },
+    scrollToList() {
+      let scrollTop = this.$refs.printsListRef.offsetTop;
+      this.$refs.printsScrollRef.$el.scrollTop = scrollTop;
+    }
+  },
+  watch: {
+    designList: function(val) {
+      if (
+        this.designFilter &&
+        this.designFilter.category_ids &&
+        window.innerWidth < 768
+      ) {
+        this.$nextTick(() => {
+          this.scrollToList();
+        });
+      }
     }
   }
 };
