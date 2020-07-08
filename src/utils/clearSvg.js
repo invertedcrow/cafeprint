@@ -1,4 +1,4 @@
-export default function clearSvg(str, type) { 
+export default function clearSvg(str, isNeedPrintsizeMask) { 
     let elementDom = new DOMParser().parseFromString(
       str,
       "text/html"
@@ -25,13 +25,13 @@ export default function clearSvg(str, type) {
     let elementsMask = svg.querySelectorAll('[mask]');
     if(elementsMask) {
         elementsMask.forEach(node => {
-            if(node.getAttribute('mask').includes('mainMask') || node.getAttribute('mask').includes('printSizeMask')) {
+            if(node.getAttribute('mask').includes('mainMask')) {
                  node.removeAttribute('mask')
             }           
         })
     }   
 
-    if(type && type == 'product') {
+    if(!isNeedPrintsizeMask) {
         if(elementsMask) {
             elementsMask.forEach(node => {
                 if(node.getAttribute('mask') && node.getAttribute('mask').includes('printSizeMask')) {

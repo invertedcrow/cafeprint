@@ -161,6 +161,7 @@ export default {
     saveChangesToCartItem() {
       let printSizes = [];
       let svg = [];
+      let savedSize = this.sizesList.find(s => s.quantity);
       this.base.sides.forEach(side => {
         if (side.items && side.items.length) {
           if (this.base.printSizes && this.base.printSizes.length) {
@@ -173,7 +174,12 @@ export default {
           }
 
           let svgItem = this.sidesElems.find(item => item.sideId == side.id);
-          svgItem.svg = clearSvg(svgItem.svg);
+          let isNeedPrintsizeMask = savedSize
+            ? this.size.id == savedSize.id
+              ? false
+              : true
+            : false;
+          svgItem.svg = clearSvg(svgItem.svg, isNeedPrintsizeMask);
 
           // svgItem.svg
           //   .replace(/.([^<]*)mainblanks(.*?)<\/image>/, "")
@@ -183,7 +189,6 @@ export default {
         }
       });
 
-      let savedSize = this.sizesList.find(s => s.quantity);
       if (!savedSize) {
         return;
       }
@@ -272,9 +277,8 @@ export default {
         let svgSide = this.sidesElems.find(
           itemSide => itemSide.sideId == side.id
         );
-        let type = this.editProduct ? "product" : null;
 
-        let svg = clearSvg(svgSide.svg, type);
+        let svg = clearSvg(svgSide.svg);
         // svgSide.svg
         //   .replace(/<mask.*mask>/, "")
         //   .replace(/mask="url\(#mainMask\)"/g, "")
@@ -338,7 +342,7 @@ export default {
           itemSide => itemSide.sideId == side.id
         );
 
-        let svg = clearSvg(svgSide.svg, "product");
+        let svg = clearSvg(svgSide.svg);
 
         // svgSide.svg
         //   .replace(/<mask.*mask>/, "")
