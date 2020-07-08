@@ -183,7 +183,9 @@ export default {
                   });
                 }
 
-                svgItem.svg = clearSvg(svgItem.svg);
+                let isNeedPrintsizeMask =
+                  this.size.id == size.id ? false : true;
+                svgItem.svg = clearSvg(svgItem.svg, isNeedPrintsizeMask);
 
                 svg.push(svgItem);
               }
