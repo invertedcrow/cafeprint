@@ -20,9 +20,6 @@
         </svg>
       </div>
       <div class="sidebar-card-header__title">Управление слоями</div>
-      <div class="sidebar-card-header__toggle-border" @click="onToggleEditBorder()">
-        <checkbox :checked="isShowEditBorder" />
-      </div>
       <div @click="close" class="sidebar-card-header__close">
         <svg
           version="1.1"
@@ -38,6 +35,10 @@
           />
         </svg>
       </div>
+    </div>
+    <div class="sidebar-layers__switcher" @click="onToggleEditBorder()">
+      <div class="sidebar-layers__switcher--title">Включить рамку</div>
+      <Switcher :active="isShowEditBorder" />
     </div>
     <perfect-scrollbar ref="scrollContainer" :options="{suppressScrollX: true}">
       <div class="sidebar-layers__layers">
@@ -180,6 +181,7 @@
 
 <script>
 import Checkbox from "./Checkbox";
+import Switcher from "./Switcher";
 import { Sidebar } from "../consts";
 import { mapGetters, mapMutations } from "vuex";
 import draggable from "vuedraggable";
@@ -193,7 +195,8 @@ import {
 export default {
   components: {
     Checkbox,
-    draggable
+    draggable,
+    Switcher
   },
   data() {
     return {
@@ -310,18 +313,15 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-layers {
-  .sidebar-card-header {
-    margin-bottom: 5px;
-    &__toggle-border {
-      cursor: pointer;
-      padding: 3px;
-      border: 1px dashed #000;
-      display: inline-block;
-      margin-left: 20px;
-      vertical-align: middle;
-      margin: 5px;
-    }
+  &__switcher {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 2px solid #ebebeb;
+    cursor: pointer;
   }
+
   &__layers {
     height: 500px;
     margin-right: 10px;

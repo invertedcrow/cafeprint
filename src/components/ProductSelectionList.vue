@@ -54,7 +54,8 @@ export default {
       if (
         !this.isProductsListLoading &&
         this.bases.length &&
-        !(this.bases.length % params.limit)
+        !(this.bases.length % params.limit) &&
+        !this.isBlockLoad
       ) {
         params.page++;
 
@@ -82,7 +83,12 @@ export default {
     window.addEventListener("resize", this.handleResize);
   },
   computed: {
-    ...mapGetters(["bases", "filterParams", "isProductsListLoading"])
+    ...mapGetters([
+      "bases",
+      "filterParams",
+      "isProductsListLoading",
+      "isBlockLoad"
+    ])
   },
   watch: {
     reach(val) {
