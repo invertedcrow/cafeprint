@@ -5,7 +5,8 @@ import {
     FILTER_SET_PARAMS,
     FILTER_SET_BASES,
     FILTER_ADD_BASES,
-    FILTER_SET_LOADING_LIST
+    FILTER_SET_LOADING_LIST,
+    FILTER_BLOCK_LOAD_LIST
 } from '../mutations.type';
 
 import {
@@ -22,6 +23,7 @@ const getDefaultState = () => ({
     categories: [],
     bases: [],
     isProductsListLoading: true,
+    isBlockLoad: false
 });
 
 const state = getDefaultState();
@@ -32,7 +34,8 @@ const getters = {
     categories: (state) => state.categories,
     filterParams: (state) => state.filterParams,
     bases: (state) => state.bases,
-    isProductsListLoading: (state) => state.isProductsListLoading
+    isProductsListLoading: (state) => state.isProductsListLoading,
+    isBlockLoad: (state) => state.isBlockLoad,
 }
 
 const actions = {
@@ -73,8 +76,14 @@ const actions = {
     } else {
         state.commit(FILTER_ADD_BASES, bases.data);
     }
-   
-    state.commit(FILTER_SET_LOADING_LIST, false);
+    
+   if(!bases.data || bases.data && !bases.data.length) {
+    state.commit(FILTER_BLOCK_LOAD_LIST, true);   
+   } else {
+    state.commit(FILTER_BLOCK_LOAD_LIST, false);   
+   }
+
+   state.commit(FILTER_SET_LOADING_LIST, false);
    },
 }
 
@@ -83,7 +92,8 @@ const mutations = {
     [FILTER_SET_PARAMS]: (state, params) => state.filterParams = params,
     [FILTER_SET_BASES]: (state, bases) => state.bases = bases,
     [FILTER_ADD_BASES]: (state, bases) => state.bases = [...state.bases, ...bases],
-    [FILTER_SET_LOADING_LIST]: (state, isLoading) => state.isProductsListLoading = isLoading
+    [FILTER_SET_LOADING_LIST]: (state, isLoading) => state.isProductsListLoading = isLoading,
+    [FILTER_BLOCK_LOAD_LIST]: (state, block) => state.isBlockLoad = block,
 }
 
 export default {

@@ -31,11 +31,13 @@ export const DESIGN_ADD_LIST                = 'DESIGN_ADD_LIST';
 export const DESIGN_SET_SEARCHTEXT          = 'setSearchText';
 export const DESIGN_SET_FILTER              = 'setDesignFilter';
 export const DESIGN_SET_LIST_LOADING        = 'setDesignListLoading';
+export const DESIGN_BLOCK_LOAD_LIST         = 'DESIGN_BLOCK_LOAD_LIST';
 export const FILTER_SET_CATEGORIES          = 'setFilterCategories';
 export const FILTER_SET_PARAMS              = 'setFilterActiveCategory';
 export const FILTER_SET_BASES               = 'setFilterBases'; 
 export const FILTER_ADD_BASES               = 'FILTER_ADD_BASES'; 
 export const FILTER_SET_LOADING_LIST        = 'setFilterListLoading';
+export const FILTER_BLOCK_LOAD_LIST         = 'FILTER_BLOCK_LOAD_LIST';
 export const UPLOAD_ADD_FILE                = 'addFile';
 export const UPLOAD_REMOVE_FILE             = 'removeFile';
 

@@ -55,7 +55,10 @@ export default {
       eventBus.$emit("hideModal", MODALS.DESIGNS);
     },
     imgUrl(item) {
-      if (item.preview_print.startsWith("http")) {
+      if (!item || !item.preview_print) {
+        return "";
+      }
+      if (item && item.preview_print && item.preview_print.startsWith("http")) {
         return item.preview_print;
       }
 
@@ -73,7 +76,8 @@ export default {
       if (
         !this.isDesignListLoading &&
         this.designList.length &&
-        !(this.designList.length % filter.limit)
+        !(this.designList.length % filter.limit) &&
+        !this.isBlockLoadPrints
       ) {
         filter.page++;
         this.$store.dispatch(GET_DESIGN, filter);
@@ -104,7 +108,12 @@ export default {
     window.addEventListener("resize", this.handleResize);
   },
   computed: {
-    ...mapGetters(["designFilter", "designList", "isDesignListLoading"])
+    ...mapGetters([
+      "designFilter",
+      "designList",
+      "isDesignListLoading",
+      "isBlockLoadPrints"
+    ])
   },
   watch: {
     reach(val) {

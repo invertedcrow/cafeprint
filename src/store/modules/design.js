@@ -6,7 +6,8 @@ import {
     DESIGN_ADD_LIST,
     DESIGN_SET_SEARCHTEXT,
     DESIGN_SET_FILTER,
-    DESIGN_SET_LIST_LOADING
+    DESIGN_SET_LIST_LOADING,
+    DESIGN_BLOCK_LOAD_LIST
 } from '../mutations.type';
 import {
     GET_DESIGN,
@@ -24,7 +25,8 @@ const getDefaultState = () => ({
         search: '',
         limit: 16,
         page: 1
-    }
+    },
+    isBlockLoadPrints: false
 });
 
 const state = getDefaultState();
@@ -40,7 +42,8 @@ const getters = {
     designCategories: (state) => state.designCategories,   
     designList: (state) => state.designs,
     designFilter: (state) => state.designFilter,
-    isDesignListLoading: (state) => state.isDesignListLoading
+    isDesignListLoading: (state) => state.isDesignListLoading,
+    isBlockLoadPrints: (state) => state.isBlockLoadPrints
 }
 
 const actions = {
@@ -63,6 +66,12 @@ const actions = {
         state.commit(DESIGN_ADD_LIST, designs.data || []);
     }
    
+    if(!designs.data || designs.data && !designs.data.length) {
+        state.commit(DESIGN_BLOCK_LOAD_LIST, true);   
+       } else {
+        state.commit(DESIGN_BLOCK_LOAD_LIST, false);   
+       }
+
     state.commit(DESIGN_SET_LIST_LOADING, false);
    },
    [GET_DESIGN_ITEM]: async (context, design) => {  
@@ -92,7 +101,8 @@ const mutations = {
     [DESIGN_SET_SEARCHTEXT]: (state, search) => state.designFilter.search = search,
     [DESIGN_SET_ACTIVE_CATEGORIES]: (state, categories) => state.category_ids = categories,
     [DESIGN_SET_FILTER]: (state, filter) => state.designFilter = filter,
-    [DESIGN_SET_LIST_LOADING]: (state, isLoading) => state.isDesignListLoading = isLoading
+    [DESIGN_SET_LIST_LOADING]: (state, isLoading) => state.isDesignListLoading = isLoading,
+    [DESIGN_BLOCK_LOAD_LIST]: (state, block) => state.isBlockLoadPrints = block,
 }
 
 export default {
