@@ -246,6 +246,8 @@ export default {
       };
 
       if (side && side.printSize && side.area) {
+        side.area.right = +side.area.x + +side.area.width;
+        side.area.bottom = +side.area.y + +side.area.height;
         if (+side.area.x > allItemsParams.x) {
           allItemsParams.x = side.area.x;
         }
