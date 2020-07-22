@@ -30,30 +30,6 @@ $baseColor: #72B425;
     right: 3px !important;
 }
 
-.custom-checkbox {
-    width: 21px;
-    height: 21px;
-    border-radius: 4px;
-    border: 1px solid #a2a2a2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    img {
-        width: 80%;
-        height: 80%;
-        display: none;
-    }
-    &.checked {
-        background-color: $baseColor;
-        img {
-            display: block;
-        }
-
-    }
-    
-   
-}
 .select-side,
 .picker-popover {
     .arrow {
