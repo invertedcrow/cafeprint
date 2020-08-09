@@ -1,3 +1,6 @@
+var fs = require("fs");
+var str = fs.readFileSync("./hash");
+
 module.exports = {
    // filenameHashing: false,
     productionSourceMap: false,
@@ -12,5 +15,7 @@ module.exports = {
         .tap(options => Object.assign(options, {
           name: 'img/[name].[ext]'
         }))
+      config.output.chunkFilename(`js/[name].${str.toString()}.js`)
+      config.output.filename(`js/[name].${str.toString()}.js`)
     },
   }
