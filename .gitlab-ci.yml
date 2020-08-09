@@ -2,6 +2,7 @@ stages:
   - openmergereqf
   - openmergereqh
   - build
+  - version
 
 variables:
   DOCKER_TLS_CERTDIR: ""
@@ -44,3 +45,17 @@ build-master:
     - docker push "$CI_REGISTRY_IMAGE"
   only:
     - master
+
+version:
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^master$/
+  stage: version
+  image: node:erbium
+  script:
+    - echo -n "${CI_COMMIT_SHORT_SHA}" > hash
+    - git add --all
+    - git commit -m "GitLab update version"
+    - git push "https://${GITLAB_USER_NAME}:${CI_GIT_TOKEN}@${CI_REPOSITORY_URL#*@}" "HEAD:master"
