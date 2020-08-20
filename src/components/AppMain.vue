@@ -1790,15 +1790,21 @@ export default {
             `#group-${index} svg > text > tspan`
           );
           let addHeight = 2;
-          if (tSpans && tSpans.length) {
-            if (tSpans[0] && tSpans[0].getBBox()) {
-              addHeight +=
-                tSpans[0].getBBox().height / item.text.length - item.fontSize;
-              if (addHeight < 2) {
-                addHeight = 2;
+          if (tSpans && tSpans.length) {           
+            try {
+              if (tSpans[0] && tSpans[0].getBBox()) {
+                addHeight +=
+                  tSpans[0].getBBox().height / item.text.length - item.fontSize;
+                if (addHeight < 2) {
+                  addHeight = 2;
+                }
               }
+            } catch(e) {
+              console.log(e)
             }
+            
           }
+        
           item.fontSize = (item.height - addHeight) / item.text.length;
         }
         item = this.checkItemPosition(item);
@@ -1946,29 +1952,40 @@ export default {
       // }
 
       setTimeout(() => {
-        this.sideItems.forEach((item, i) => {
-          const tSpans = document.querySelectorAll(
-            `#group-${i} svg > text > tspan`
-          );
-          let addHeight = 2;
-          const widths = Array.from(tSpans).map((x, i) => {
-            if (i == 0 && x.getBBox()) {
-              addHeight +=
-                x.getBBox().height / item.text.length - item.fontSize;
-              if (addHeight < 0) {
-                addHeight = 0;
+        try {
+          this.sideItems.forEach((item, i) => {
+            const tSpans = document.querySelectorAll(
+              `#group-${i} svg > text > tspan`
+            );
+            let addHeight = 2;
+            
+            const widths = Array.from(tSpans).map((x, i) => {
+              try {
+                if (i == 0 && x.getBBox()) {
+                addHeight +=
+                  x.getBBox().height / item.text.length - item.fontSize;
+                  if (addHeight < 0) {
+                    addHeight = 0;
+                  }
+                }
+              } catch(e) {
+                console.log(e)
               }
+              
+              return x.getComputedTextLength();
+            });
+            const maxWidth = widths.length ? Math.max(...widths) : 115;
+            if (item && item.fontSize) {
+              item.height = item.fontSize * item.text.length + addHeight;
+              item.height += item.text.length > 1 ? addHeight : 0;
+              item.width = maxWidth;
+              item = this.checkItemPosition(item);
             }
-            return x.getComputedTextLength();
           });
-          const maxWidth = widths.length ? Math.max(...widths) : 115;
-          if (item && item.fontSize) {
-            item.height = item.fontSize * item.text.length + addHeight;
-            item.height += item.text.length > 1 ? addHeight : 0;
-            item.width = maxWidth;
-            item = this.checkItemPosition(item);
-          }
-        });
+        } catch(e) {
+          console.log(e)
+        }
+       
         this.checkPrintSize();
       }, 100);
       // });
