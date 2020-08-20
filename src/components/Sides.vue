@@ -228,13 +228,23 @@ export default {
       if (!this.sideMask[side.id]) {
         this.sideMask[side.id] = {};
       }
+      // console.log('items')
+      // console.log(side.items)
       this.sideMask[side.id].isVertical = true;
-      let arrX = side.items.map(item => item.x);
-      let arrY = side.items.map(item => item.y);
-      let arrW = side.items.map(item => item.width);
-      let arrH = side.items.map(item => item.height);
-      let arrX2 = side.items.map(item => item.x + item.width);
-      let arrY2 = side.items.map(item => item.y + item.height);
+      // let arrX = side.items.map(item => item.x);
+      // let arrY = side.items.map(item => item.y);
+      // let arrW = side.items.map(item => item.width);
+      // let arrH = side.items.map(item => item.height);
+      // let arrX2 = side.items.map(item => item.x + item.width);
+      // let arrY2 = side.items.map(item => item.y + item.height);
+
+     
+      let arrX = side.items.map(item => (item.visibleX - item.areaBound.x)/item.areaBound.width * +side.area.width + +side.area.x);
+      let arrY = side.items.map(item => (item.visibleY - item.areaBound.y)/item.areaBound.height * +side.area.height + +side.area.y);
+      let arrW = side.items.map(item => item.visibleWidth / item.areaBound.width * +side.area.width);
+      let arrH = side.items.map(item => item.visibleHeight / item.areaBound.height * +side.area.height);
+      let arrX2 = side.items.map(item => ((item.visibleX - item.areaBound.x) + item.visibleWidth) / item.areaBound.width * +side.area.width);
+      let arrY2 = side.items.map(item => ((item.visibleY - item.areaBound.y) + item.visibleHeight) / item.areaBound.height * +side.area.height);
 
       let allItemsParams = {
         x: Math.min(...arrX),
